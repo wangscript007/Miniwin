@@ -1,0 +1,25 @@
+{
+   "items":[
+    {"name":"Irdeto CA status","id":0,
+        "items":[
+            {"name":"menu","type":"selector","focused":true,"items":"languages"},
+            {"name":"audio","type":"selector","items":"languages"},            
+            {"name":"subtitle","type":"selector","items":"languages"} 
+        ],
+    },   
+    {"name":"Email information","id":1,"items":[
+               {"name":"timezone","type":"selector","focused":true,"items":[]},
+               {"name":"time","type":"selector","items":[{"name":"auto","value":0},{"name":"custom","value":1}]}, 
+               {"name":"hour_minute","type":"edit"}   
+            ]},
+    {"name":"OAD","id":2,"items":[
+            {"name":"resolution","type":"selector","focused":true,"items":"resolutions"},
+            {"name":"screenformat","type":"selector","items":"screenformats"},
+            {"name":"aspectratio","type":"selector","items":"aspectratios"},
+            {"name":"brightness","type":"selector","items":"ranges55"},
+            {"name":"constract","type":"selector","type":"selector","items":"ranges55"},
+            {"name":"saturation","type":"selector","items":"ranges55"}
+        ],
+        
+    },    
+]}

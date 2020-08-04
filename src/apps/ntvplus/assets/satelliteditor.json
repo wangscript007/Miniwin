@@ -1,0 +1,15 @@
+{
+   "items":[/*对于最后一级可编辑的界面必须设置id值,id<0表示定制界面*/
+      {"name":"tvrecords","id":-1,"items":[
+              {"name":"tvrecords"},
+              {"name":"recordschedule"}
+          ]},
+      {"name":"media","id":-2,"items":[
+              {"name":"movie"},
+              {"name":"music"},
+              {"name":"photo"},
+              {"name":"folrders"}
+          ]}
+   ]
+}
+

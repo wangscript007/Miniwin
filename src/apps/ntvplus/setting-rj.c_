@@ -1,0 +1,308 @@
+#include <windows.h>
+#include <stdlib.h>
+#include <ngl_log.h>
+#include <appmenus.h>
+#include <iostream> 
+#include <strstream>
+#include <preferences.h>
+
+#define RAPIDJSON_HAS_STDSTRING 1
+#include <rapidjson/document.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/memorystream.h>
+#include <rapidjson/error/en.h>
+
+NGL_MODULE(SETTING)
+#define IDC_FIRST_EDITABLE_ID 100
+#define IDC_LEFT 101
+#define IDC_RIGHT 102
+
+namespace ntvplus{
+
+bool NTVSettingLoadData(Window*w,int id);
+void NTVSettingChanged(int winid,View&v,int value);
+Window*NTVCreateCustomSettingWindow(int id);
+
+class SettingItem:public AbsListView::ListItem{
+public:
+   rapidjson::Value value;
+public:
+   SettingItem(rapidjson::Value& v):AbsListView::ListItem(std::string()){
+       if(v.HasMember("name")){
+           std::string id=v["name"].GetString();
+           setText(App::getInstance().getString(id));
+       }else{//no name ,value is name
+           char buf[32];
+           sprintf(buf,"%d",v["value"].GetInt());
+           setText(buf);
+       }
+       if(v.HasMember("value")&&v["value"].IsInt())
+            setId(v["value"].GetInt());
+       if(v.HasMember("value")&&v["value"].IsBool())
+            setId(v["value"].GetBool());
+       value=v;
+   }
+   virtual void onGetSize(AbsListView&lv,int* w,int* h)override{
+       if(h)*h=40;
+   }
+   bool isLeaf(){
+      return value.HasMember("id");
+   }
+};
+
+class EditableWindow:public NTVWindow{
+protected:
+public :
+   int id;
+   Preferences*pref;
+   EditableWindow(Preferences*p,int x,int y,int w,int h):NTVWindow(x,y,w,h){
+        id=-1;
+        pref=p;
+        initContent(NWS_TITLE|NWS_TOOLTIPS);
+   }
+   static void ItemChangeListener(AbsListView&lv,int index){
+       //EditableWindow*w=(EditableWindow*)lv.getParent();
+       AbsListView::ListItem*itm=lv.getItem(index);
+       EditableWindow*win=(EditableWindow*)lv.getParent();
+       NGLOG_DEBUG("index=%d value=%d",index,itm->getId());
+       win->pref->setValue(win->getText(),lv.getText(),itm->getId());
+       NTVSettingChanged(win->id,lv,itm->getId());
+   }
+   static void OnTextChanged(EditText&e){
+       EditableWindow*win=(EditableWindow*)e.getParent();
+       NTVSettingChanged(win->id,e,-1);
+   }
+};
+
+class SettingWindow:public NTVWindow{
+protected:
+    ListView*left;
+    ListView*right;
+    //std::vector<rapidjson::Value >stacks;
+    rapidjson::Value stacks;
+    INT control_id;
+    Preferences pref;
+public:
+    rapidjson::Document doc;
+public:
+    SettingWindow(int x,int y,int w,int h):NTVWindow(x,y,w,h){
+       initContent(NWS_TITLE|NWS_TOOLTIPS);
+       pref.load("settings.pref");
+       left=new ListView(680,580);
+       left->setPos(40,70);
+       left->setItemPainter(SettingPainter);
+       left->setBgColor(0xFF000000).setFgColor(0xFFFFFFFF);
+       addChildView(left);
+       right=new ListView(400,580);
+       right->setPos(820,70);
+       right->setItemPainter(SettingPainter);
+       right->setBgColor(0xFF222222).setFgColor(0xFFFFFFFF);
+       addChildView(right)->setId(IDC_RIGHT);
+       right->clearFlag(Attr::ATTR_FOCUSABLE);
+       left->setItemSelectListener(onItemSelect);
+       stacks.SetArray();
+   }
+   ~SettingWindow(){
+       pref.save("settings.pref");
+   }
+   bool onKeyUp(KeyEvent&k)override;
+   int loadSettings(rapidjson::Value& root,bool statcked=true);
+   void loadUIItems(EditableWindow*w,rapidjson::Value& root,int y);
+   Window*createEditable(rapidjson::Value& root);
+   int getArray(const std::string&key,rapidjson::Value&,rapidjson::Value*root_=nullptr);
+   static void onItemSelect(AbsListView&lv,int index){
+       SettingItem*itm=(SettingItem*)lv.getItem(index);
+       ListView*right=(ListView*)lv.getParent()->findViewById(IDC_RIGHT);
+       rapidjson::Value& array=itm->value["items"];
+       right->clearAllItems();
+       for(int i=0;i<array.Size();i++){
+           rapidjson::Value&a=array[i];
+           right->addItem(new SettingItem(a));
+       }
+  }
+};
+
+int SettingWindow::getArray(const std::string&key,rapidjson::Value&array,rapidjson::Value*root_){
+    rapidjson::Value& rot=root_?*root_:stacks[0];
+    NGLOG_VERBOSE("key=%s type=%d",key.c_str(),rot.GetType());
+    switch(rot.GetType()){
+    case rapidjson::kObjectType:{
+             for(rapidjson::Value::MemberIterator m = rot.MemberBegin(); m != rot.MemberEnd(); ++m){
+                 if(!rot[m->name].IsArray())continue;
+                 if(key.compare(m->name.GetString())==0){
+                      array=rot[m->name];
+                      return 0;
+                 }else for(int i=0;i<rot[m->name].Size();i++){
+                      int rc=getArray(key,array,&rot[m->name][i]);
+                      if(rc==0)return 0;
+                 }
+             }
+         }break;
+    case rapidjson::kArrayType:
+         break;//array=
+    }
+    return -1;
+}
+
+bool SettingWindow::onKeyUp(KeyEvent&k){
+    switch((NGLKEYCODE)k.getKeyCode()){
+    case NGL_KEY_LEFT:{
+             rapidjson::Value&pop=stacks.PopBack();
+             NGLOG_VERBOSE("presskey %d",k.getKeyCode());
+             loadSettings(pop,false);
+         }break;
+    case NGL_KEY_RIGHT:{
+             NGLOG_VERBOSE("presskey %d item=%d",k.getKeyCode(),left->getIndex());
+             SettingItem*itm=(SettingItem*)left->getItem(left->getIndex());
+             if(itm){
+                 //stacks.back()["remembered_index"]=left->getIndex();
+                 (*stacks.End())["remembered_index"]=left->getIndex();
+                 NGLOG_VERBOSE("child is leaf=%d index=%d",itm->isLeaf(),left->getIndex()); 
+                 if(itm->isLeaf())createEditable(itm->value);
+                 else loadSettings(itm->value,true);
+             }
+         }break;
+       default:return NTVWindow::onKeyUp(k);
+    }
+}
+
+int SettingWindow::loadSettings(rapidjson::Value& root_,bool stacked){
+   rapidjson::Value& array=root_["items"];
+   int index=0;
+   NGLOG_DEBUG("type=%d %d",root_.GetType(),array.GetType());
+   NGLOG_VERBOSE("items.size=%d",array.Size());
+   if(left)left->clearAllItems();
+   if(root_.HasMember("remembered_index")&&root_["remembered_index"].IsInt())
+       index=root_["remembered_index"].GetInt();
+   for(int i=0;i<array.Size();i++){
+       rapidjson::Value& v=array[i];
+       NGLOG_VERBOSE("%d:%s",i,v["name"].GetString());
+       left->addItem(new SettingItem(v));
+   }
+   NGLOG_VERBOSE("set focus to last focused item %d",index);
+   left->setFlag(View::Attr::ATTR_FOCUSED);
+   left->setIndex(index);
+   
+   if(stacked)stacks.PushBack(root_,doc.GetAllocator());
+   return array.Size();
+}
+
+void SettingWindow::loadUIItems(EditableWindow*w,rapidjson::Value& root,int y){
+    if(root.HasMember("type")&&root["type"].IsString()){
+        std::string ctrl=root["type"].GetString();
+        rapidjson::Value& v=root;
+        if(ctrl.compare("selector")==0){
+            Selector*s=new NTVSelector(v["name"].GetString(),1000,40);
+            if(v.HasMember("focused")&&v["focused"].GetBool()){
+                 s->setFlag(View::Attr::ATTR_FOCUSED);
+            }
+            if(v.HasMember("items")){
+                rapidjson::Value& values=v["items"];
+                if(values.IsString())getArray(values.GetString(),values);
+                int vsaved=pref.getInt(w->getText(),s->getText(),0);
+                NGLOG_DEBUG("%s.%s=%d",w->getText().c_str(),s->getText().c_str(),vsaved);
+                for(int j=0;j<values.Size();j++){
+                    SettingItem*itm=new SettingItem(values[j]);
+                    s->addItem(itm);
+                    if(itm->getId()==vsaved)
+                        s->setIndex(j);
+                } 
+            }
+            s->setLabelWidth(600);
+            s->setPos(140,y);y+=40;
+            s->setPopupRect(900,80,360,560);
+            s->setPopupListener([](int w,int h)->Window*{
+                Window*win=new Window(0,0,w,h);
+                ListView*lv=new ListView(w,h);
+                lv->setBgColor(0xFF222222);
+                lv->setFgColor(0xFFFFFFFF);
+                lv->setItemPainter(SettingPainter);
+                win->addChildView(lv);
+                return win;
+            });
+            s->setItemSelectListener(EditableWindow::ItemChangeListener);
+            s->setBgColor(0xFF000000);s->setFgColor(0xFFFFFFFF);
+            s->setLabelColor(0xFF000000);s->setBgColor(0xFF222222);
+            w->addChildView(s)->setId(control_id++);
+        }else if(ctrl.compare("edit")==0){
+            EditText *e=new NTVEditText(1000,40);
+            e->setPos(140,y);y+=40;
+            e->setLabelWidth(600);
+            e->setBgColor(0xFF222222).setFgColor(0xFFFFFFFF);
+            e->setLabelColor(0xFF000000);
+            e->setLabel(v["name"].GetString());
+            w->addChildView(e)->setId(control_id++);
+            e->setTextWatcher(EditableWindow::OnTextChanged);
+        }else{
+            NGLOG_DEBUG("unknown ui component:%s",ctrl.c_str());
+        } 
+    }else{
+         rapidjson::Value& array=root["items"];
+         for(int i=0;i<array.Size();i++,y+=40){
+            loadUIItems(w,array[i],y);
+         }
+    }
+}
+
+Window*SettingWindow::createEditable(rapidjson::Value& root){
+    int y=80;
+    int id=root["id"].GetInt();
+    if(id<0){
+        return NTVCreateCustomSettingWindow(id);
+    }
+    EditableWindow*w=new EditableWindow(&pref,0,0,1280,720);
+    w->setText(root["name"].GetString());
+    //NGLOG_VERBOSE("%s",root.toStyledString().c_str());
+    NGLOG_VERBOSE("settings.uiid=%d",id);
+    w->id=id;
+    w->addTipInfo("help_icon_4arrow.png","Navigation",50,160);
+    w->addTipInfo("help_icon_ok.png","Select",-1,160);
+    w->addTipInfo("help_icon_back.png","Back",-1,160);
+    w->addTipInfo("help_icon_exit.png","Exit",-1,260);
+    w->addTipInfo("help_icon_blue.png","",-1,160);
+    w->addTipInfo("help_icon_red.png","",-1,160);
+    w->addTipInfo("help_icon_yellow.png","",-1,160);
+    control_id=IDC_FIRST_EDITABLE_ID;
+    loadUIItems(w,root,y);
+    
+    NTVSettingLoadData(w,w->id);
+    w->show();
+    return w;
+}
+
+static Window*createSettingMenuFromFile(const std::string&fname){
+    SettingWindow*w=new SettingWindow(0,0,1280,720);
+    char*data;
+    size_t size=App::getInstance().loadFile(fname,(unsigned char**)&data);
+    std::istrstream sin(data,size);
+    rapidjson::MemoryStream ims((char*)data,size);
+    w->doc.ParseStream(ims);
+    NGLOG_DEBUG_IF(w->doc.HasParseError(),"Error at %d %s",w->doc.GetErrorOffset(),
+        GetParseError_En(w->doc.GetParseError()));
+    w->setText("Settings");
+    
+    w->addTipInfo("help_icon_4arrow.png","Navigation",50,160);
+    w->addTipInfo("help_icon_ok.png","Select",-1,160);
+    w->addTipInfo("help_icon_back.png","Back",-1,160);
+    w->addTipInfo("help_icon_exit.png","Exit",-1,260);
+    w->addTipInfo("help_icon_blue.png","",-1,160);
+    w->addTipInfo("help_icon_red.png","",-1,160);
+    w->addTipInfo("help_icon_yellow.png","",-1,160);
+    
+    NGLOG_DEBUG("data %p size=%d ",data,size);
+    NGLOG_DEBUG("data type=%d %s",w->doc.GetType(),data);
+
+    w->loadSettings(w->doc);//root);
+    w->show();
+    return w;
+}
+
+Window*CreateSettingWindow(){
+    return createSettingMenuFromFile("settings.json");
+}
+Window*CreateMediaWindow(){
+    return createSettingMenuFromFile("media.json");
+}
+}//namespace 

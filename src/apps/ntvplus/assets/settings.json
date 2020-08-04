@@ -1,0 +1,239 @@
+{
+   "items":[
+    {"name":"language","id":0,
+        "items":[
+            {"name":"menu","type":"selector","focused":true,"items":"languages"},
+            {"name":"audio","type":"selector","items":"languages"},            
+            {"name":"subtitle","type":"selector","items":"languages"} 
+        ],
+        "languages":[
+            {"name":"english","value":0},
+            {"name":"chinese","value":1},
+            {"name":"franch" ,"value":2},
+            {"name":"deutsch","value":3},
+            {"name":"english","value":4},
+            {"name":"english","value":5},
+            {"name":"english","value":6},
+            {"name":"english","value":7},
+            {"name":"english","value":8},
+            {"name":"english","value":9},
+            {"name":"english","value":10}
+        ]},
+    {"name":"time","id":1,"items":[
+               {"name":"timezone","type":"selector","focused":true,"items":[]},
+               {"name":"time","type":"selector","items":[{"name":"auto","value":0},{"name":"custom","value":1}]}, 
+               {"name":"hour_minute","type":"edit"}   
+            ]},
+    {"name":"picture","id":2,"items":[
+            {"name":"resolution","type":"selector","focused":true,"items":"resolutions"},
+            {"name":"screenformat","type":"selector","items":"screenformats"},
+            {"name":"aspectratio","type":"selector","items":"aspectratios"},
+            {"name":"brightness","type":"selector","items":"ranges55"},
+            {"name":"constract","type":"selector","type":"selector","items":"ranges55"},
+            {"name":"saturation","type":"selector","items":"ranges55"}
+        ],
+        "resolutions":[
+            {"name":"1080p","value":0},
+            {"name":"1080i","value":1},
+            {"name":"720p","value":2},
+            {"name":"720i","value":3},
+            {"name":"576p","value":4},
+            {"name":"576i","value":5}
+        ],
+        "screenformats":[
+            {"name":"16:9","value":0},
+            {"name":"4:3" ,"value":1}
+        ],
+        "aspectratios":[
+            {"name":"Auto","value": 0},
+            {"name":"Pillarbox","value":1},
+            {"name":"Pillarbox14:9","value":2},
+            {"name":"Letterbox","value":3},
+            {"name":"Letterbox14:9","value":4},
+            {"name":"Pan and scan","value":5},
+            {"name":"Tilt&Scan","value":6}
+        ],
+        "ranges55":[
+            {"value":-5},{"value":-4},{"value":-3},{"value":-2},{"value":-1},{"value":0},
+            {"value":1},{"value":2},{"value":3},{"value":4},{"value":5}
+        ]},
+        
+    {"name":"sound","id":3,"items":[
+            {"name":"spdif","type":"selector","focused":true,"items":[
+                                 {"name":"stero","value": 1},  {"name":"dolbydigital","value":2} ]},
+            {"name":"hdmi","type":"selector","items":[ {"name":"stero","value":1}, {"name":"dolbydigital","value":2} ]},
+            {"name":"analogue","type":"selector","items":[ {"name":"mono","value":1}, {"name":"stero","value":2} ]}
+        ]},
+    {"name":"duration","id":4,"items":[
+            {"name":"infobar","type":"selector","focused":true,"items":"durations"},
+            {"name":"warning","type":"selector","items":"durations"}
+        ],
+        "durations":[
+            {"name":"no","value":0},         {"name":"3s","value":3},
+            {"name":"4s","value":4},         {"name":"5s","value":5},
+            {"name":"6s","value":6},         {"name":"8s","value":8},
+            {"name":"10s","value":10}
+        ]},
+    {"name":"channels","items":[
+            {"name":"ntvplus_search","items":[
+                      {"name":"ntvpluschannelsearch","id":-50,"items":[
+                                {"name":"satellite","type":"selector","focused":true,"items":[]},
+                                {"name":"transponder","type":"selector","item":[]},
+                                {"name":"search","type":"selector","items":[]}
+                            ]},
+                      {"name":"ntvpluschannelautoupdate","id":51,"type":"selector","items":[
+                             {"name":"uponturnon","value":0},
+                             {"name":"duringoperation","value":1},
+                             {"name":"onschedule","value":2},
+                             {"name":"inafewseconds","value":3}
+                         ]}
+                  ]},
+            {"name":"advancesearch","items":[
+                      {"name":"channelsearch","id":-51,"items":[
+                              {"name":"satellite","type":"selector"},
+                              {"name":"transponder","type":"selector"},
+                              {"name":"channelavailability","type":"selector"},
+                              {"name":"channeltype","type":"selector"},
+                              {"name":"searchmode","type":"selector"},
+                              {"name":"search","type":"selector"}
+                          ]},
+                      {"name":"antennasystem","id":52,"items":[
+                              {"name":"satellite","type":"selector","items":[]},
+                              {"name":"transponder","type":"selector","items":[]},
+                              {"name":"convertertype","type":"selector"},
+                              {"name":"lowerfrequency","type":"edit"},
+                              {"name":"upperfrequency","type":"edit"},
+                              {"name":"switchrate","type":"edit"},
+                              {"name":"22kconvertertone","type":"selector","items":[]},
+                              {"name":"convertersupply","type":"selector","items":[]},
+                              {"name":"diseqc10port","type":"selector","items":[]}
+                          ]}
+                  ]},
+            {"name":"channellist","id":52,"items":[
+                      {"name":"deletechannels","type":"selector","focused":true,"items":[
+                              {"name":"NO","value":0},{"name":"All","value":1},
+                              {"name":"NTVPlus","value":2},{"name":"OtherTV","value":3},
+                              {"name":"OtherRadio","value":4}
+                          ]},
+                      {"name":"listview","type":"selector","items":"yesno"}
+                  ]}
+        ]},
+    {"name":"parentalcontrol","id":6,"items":[
+            {"name":"agegroup","type":"selector","focused":true,"items":"rating_ages"},
+            {"name":"channelblock","type":"selector","items":[{"name":"no","value":0},{"name":"yes","value":1}]}
+        ],
+        "rating_ages":[
+            {"name":"all(0+)","value":0},  {"name":"4+","value":4},
+            {"name":"5+","value":5},       {"name":"6+","value":6},
+            {"name":"7+","value":7},       {"name":"8+","value":8},
+            {"name":"9+","value":9},       {"name":"10+","value":10},
+            {"name":"11+","value":11},     {"name":"12+","value":12},
+            {"name":"13+","value":13},     {"name":"14+","value":14},
+            {"name":"15+","value":15},     {"name":"16+","value":16},
+            {"name":"17+","value":17},     {"name":"18+","value":18}
+        ]},
+    {"name":"indication","id":7,"items":[
+            {"name":"display","focused":true,"type":"selector","items":[{"name":"yes","value":1},{"name":"no","value":0},
+                           {"name":"activemode","value":2},{"name":"standbymode","value":4}]},
+            {"name":"button","type":"selector","items":"yesno"},
+            {"name":"tvrecord","type":"selector","items":"yesno"}
+        ],
+        "yesno":[{"name":"yes","value":1},{"name":"no","value":0}]},
+    {"name":"externaldrive","items":[
+            {"name":"safetyremoval","type":"selector","items":[{"name":"removedrive","type":"selector","items":[
+                        {"name":"no","value":0},{"name":"yes","value":1}
+                     ]}]},
+            {"name":"drivepreparation","id":8,"items":[
+                         {"name":"total partitions","type":"selector","focused":true,"items":[]},
+                         {"name":"partition1volume","type":"selector","items":"volumeformats"},
+                         {"name":"partition2volume","type":"selector","items":"volumeformats"},
+                         {"name":"partition1format","type":"selector","items":"volumeformats"},
+                         {"name":"partition1format","type":"selector","items":"volumeformats"},
+                         {"name":"format","type":"selector" ,"items":"which2format"}
+                     ],
+                "volumeformats":[
+                   {"name":"unknown","value":0},
+                   {"name":"EXT1","value":0},
+                   {"name":"NTFS","value":0}
+                 ],
+                 "which2format":[{"name":"Partition 1","value":0},{"name":"Partition 2","value":1}]
+            },
+            {"name":"aboutdrive","items":[
+                         {"name":"devicetype","type":"text"},
+                         {"name":"devicename","type":"text"},
+                         {"name":"totalvolume","type":"text"},
+                         {"name":"numpartitions","type":"text"}
+                     ]}
+        ] 
+    },
+    {"name":"schedule","id":9,"items":[
+            {"name":"broadcasttimer","type":"selector","focused":true,"items":[{"name":"add","value":0},{"name":"edit","value":1}]},
+            {"name":"sleeptimer","items":[{"name":"activatetimer","value":0},{"name":"turnoffin","value":1}]}
+        ]},
+    {"name":"multimedia","id":10,"items":[
+            {"name":"recordbefore","type":"selector","focused":true,"items":"zero_fivemins"},
+            {"name":"recordafter","items":"zero_fivemins"},
+            {"name":"quickrecord","items":[{"name":"broadcast","value":0},{"name":"30min","value":30},{"name":"60min","value":60},
+                        {"name":"90min","value":90},{"name":"120min","value":120},{"name":"150min","value":150}]},
+            {"name":"repeat","items":[{"name":"no","value":0},{"name":"repeatone","value":1},{"name":"repeatall","value":2}]},
+            {"name":"tvpause","items":[{"name":"30min","value":30},{"name":"60min","value":60},
+                        {"name":"90min","value":90},{"name":"120min","value":120},{"name":"150min","value":150}]}
+        ],
+        "zero_fivemins":[
+            {"name":"0 min","value":0},{"name":"1 min","value":1},{"name":"2 min","value":2},
+            {"name":"4 min","value":4},{"name":"5 min","value":5}
+        ]
+    },
+    {"name":"network","id":11,"items":[
+            {"name":"interface","type":"selector","focused":true},
+            {"name":"ipaddress","type":"edit"},
+            {"name":"subnetmask","type":"edit"},
+            {"name":"gateway","type":"edit"},
+            {"name":"dnsserver","type":"edit"}
+        ]},
+    {"name":"conditinalaccess","id":12,"items":[
+            {"name":"accesscard","type":"edit"},
+            {"name":"ardlessmodule","type":"edit"},
+            {"name":"ntvplusmessages","type":"edit"}
+        ]},
+    {"name":"system","items":[
+            {"name":"software","items":[
+                     {"name":"softwaresearch","id":-50,"items":[
+                               {"name":"satellite","type":"selector","focused":true,"items":[]},
+                               {"name":"transponder","type":"selector","item":[]},
+                               {"name":"search","type":"selector","items":[]}
+                          ]},
+                     {"name":"searchuponturnon","id":55,"type":"selector","items":"yesno"}
+                 ]},
+            {"name":"generalsettings","items":[
+                     {"name":"systempassword","id":13,"items":[
+                           {"name":"changepwd","type":"selector","items":"yesno"},
+                           {"name":"curpwd","type":"edit"},
+                           {"name":"newpwd1","type":"edit"},
+                           {"name":"newpwd2","type":"edit"}
+                        ]},
+                     {"name":"factorysettings","id":14,"items":[
+                           {"name":"restore","type":"selector","items":"yesno"}]},
+                     {"name":"supplymanagement","id":15,"items":[
+                             {"name":"energysave","type":"selector","items":"yesno"}
+                        ]}
+                 ]},
+            {"name":"information","items":[
+                     {"name":"aboutdevice","id":16,"items":[
+                          {"name":"model","type":"edit"},
+                          {"name":"hwver","type":"edit"},
+                          {"name":"swver","type":"edit"}
+                       ]},
+                     {"name":"aboutsignal","id":17,"items":[
+                          {"name":"channel","type":"edit"}, 
+                          {"name":"satellite","type":"edit"}, 
+                          {"name":"transponder","type":"edit"}, 
+                          {"name":"videopid","type":"edit"}, 
+                          {"name":"broadcast","type":"edit"}, 
+                          {"name":"modulation","type":"edit"}, 
+                          {"name":"fec","type":"edit"} 
+                       ]} 
+                 ]}
+        ]}
+    ]
+}

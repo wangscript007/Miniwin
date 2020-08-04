@@ -1,0 +1,601 @@
+//<MStar Software>
+//******************************************************************************
+// MStar Software
+// Copyright (c) 2010 - 2012 MStar Semiconductor, Inc. All rights reserved.
+// All software, firmware and related documentation herein ("MStar Software") are
+// intellectual property of MStar Semiconductor, Inc. ("MStar") and protected by
+// law, including, but not limited to, copyright law and international treaties.
+// Any use, modification, reproduction, retransmission, or republication of all
+// or part of MStar Software is expressly prohibited, unless prior written
+// permission has been granted by MStar.
+//
+// By accessing, browsing and/or using MStar Software, you acknowledge that you
+// have read, understood, and agree, to be bound by below terms ("Terms") and to
+// comply with all applicable laws and regulations:
+//
+// 1. MStar shall retain any and all right, ownership and interest to MStar
+//    Software and any modification/derivatives thereof.
+//    No right, ownership, or interest to MStar Software and any
+//    modification/derivatives thereof is transferred to you under Terms.
+//
+// 2. You understand that MStar Software might include, incorporate or be
+//    supplied together with third party`s software and the use of MStar
+//    Software may require additional licenses from third parties.
+//    Therefore, you hereby agree it is your sole responsibility to separately
+//    obtain any and all third party right and license necessary for your use of
+//    such third party`s software.
+//
+// 3. MStar Software and any modification/derivatives thereof shall be deemed as
+//    MStar`s confidential information and you agree to keep MStar`s
+//    confidential information in strictest confidence and not disclose to any
+//    third party.
+//
+// 4. MStar Software is provided on an "AS IS" basis without warranties of any
+//    kind. Any warranties are hereby expressly disclaimed by MStar, including
+//    without limitation, any warranties of merchantability, non-infringement of
+//    intellectual property rights, fitness for a particular purpose, error free
+//    and in conformity with any international standard.  You agree to waive any
+//    claim against MStar for any loss, damage, cost or expense that you may
+//    incur related to your use of MStar Software.
+//    In no event shall MStar be liable for any direct, indirect, incidental or
+//    consequential damages, including without limitation, lost of profit or
+//    revenues, lost or damage of data, and unauthorized system use.
+//    You agree that this Section 4 shall still apply without being affected
+//    even if MStar Software has been modified by MStar in accordance with your
+//    request or instruction for your use, except otherwise agreed by both
+//    parties in writing.
+//
+// 5. If requested, MStar may from time to time provide technical supports or
+//    services in relation with MStar Software to you for your use of
+//    MStar Software in conjunction with your or your customer`s product
+//    ("Services").
+//    You understand and agree that, except otherwise agreed by both parties in
+//    writing, Services are provided on an "AS IS" basis and the warranty
+//    disclaimer set forth in Section 4 above shall apply.
+//
+// 6. Nothing contained herein shall be construed as by implication, estoppels
+//    or otherwise:
+//    (a) conferring any license or right to use MStar name, trademark, service
+//        mark, symbol or any other identification;
+//    (b) obligating MStar or any of its affiliates to furnish any person,
+//        including without limitation, you and your customers, any assistance
+//        of any kind whatsoever, or any information; or
+//    (c) conferring any license or right under any intellectual property right.
+//
+// 7. These terms shall be governed by and construed in accordance with the laws
+//    of Taiwan, R.O.C., excluding its conflict of law rules.
+//    Any and all dispute arising out hereof or related hereto shall be finally
+//    settled by arbitration referred to the Chinese Arbitration Association,
+//    Taipei in accordance with the ROC Arbitration Law and the Arbitration
+//    Rules of the Association by three (3) arbitrators appointed in accordance
+//    with the said Rules.
+//    The place of arbitration shall be in Taipei, Taiwan and the language shall
+//    be English.
+//    The arbitration award shall be final and binding to both parties.
+//
+//******************************************************************************
+//<MStar Software>
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2006-2007 MStar Semiconductor, Inc.
+// All rights reserved.
+//
+// Unless otherwise stipulated in writing, any and all information contained
+// herein regardless in any format shall remain the sole proprietary of
+// MStar Semiconductor Inc. and be kept in strict confidence
+// (!§MStar Confidential Information!?? by the recipient.
+// Any unauthorized act including without limitation unauthorized disclosure,
+// copying, use, reproduction, sale, distribution, modification, disassembling,
+// reverse engineering and compiling of the contents of MStar Confidential
+// Information is unlawful and strictly prohibited. MStar hereby reserves the
+// rights to any and all damages, losses, costs and expenses resulting therefrom.
+//
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// file    CCA_UCSaveData.c
+/// @brief  functions to access Serial flash for CCA IRD data
+/// @author MStar Semiconductor Inc.
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+#ifndef CCA_UCSAVEDATA_C
+#define CCA_UCSAVEDATA_C
+
+/********************************************************************************/
+/*                            Header Files                                      */
+/********************************************************************************/
+// common
+
+#include <ngl_types.h>
+
+// api
+#include "appCCADecoderMsg.h"
+
+// driver
+#include "drvSERFLASH.h"
+
+#if defined (MSOS_TYPE_LINUX)
+#include <linux/string.h>
+//#include "apiFS.h"
+#endif
+
+//#define CCA_SAVEDATA_DEBUG
+
+/********************************************************************************/
+/*                                 Macro                                        */
+/********************************************************************************/
+#ifdef CCA_SAVEDATA_DEBUG
+#define CCA_SAVEDATA_DBG(fmt, arg...)   {printf("\033[0;35m[IRD Save Data]%s(%d): ", __FUNCTION__, __LINE__); printf((char *)fmt, ##arg); printf("\033[m");}
+#else
+#define CCA_SAVEDATA_DBG(fmt, arg...)
+#endif
+
+/******************************************************************************/
+/*                                 External                                   */
+/******************************************************************************/
+
+/********************************************************************************/
+/*                            Global Variables                                  */
+/********************************************************************************/
+#define MAIL_BUF_START_ADDR     BASEADDRESS_CCA_MAIL_IN_FLASH//TODO:(BASEADDRESS_VD_PS_RSC0 + 0xe000)
+#define ANNCMNT_BUF_START_ADDR  BASEADDRESS_CCA_ANNC_IN_FLASH//TODO:(BASEADDRESS_VD_PS_RSC0 + 0xe800)
+
+
+/********************************************************************************/
+/*                            Local Variables                                   */
+/********************************************************************************/
+
+/********************************************************************************/
+/*                            extern Function                                */
+/********************************************************************************/
+
+/********************************************************************************/
+/*                            Local Function                                */
+/********************************************************************************/
+
+///////////////////////////////////////////////////////////////////////////////
+///  private  UC_Erase_SerialFlash
+///  Erase the data on the serial flash
+///
+///  @param [in]    u32StartAddr
+///  @param [in]    u32EraseSize
+///
+///  @return BOOLEAN true for handled (don't dispatch continully)
+///
+///  @author MStarSemi @date 2013/5/21
+///////////////////////////////////////////////////////////////////////////////
+extern MS_S32 _s32FlashMutexId;
+
+static BOOL UC_Erase_SerialFlash(UINT32 u32StartAddr, UINT32 u32EraseSize)
+{
+    UINT32 u32Offset;
+    UINT32 u32BlockSize;
+    UINT32 u32StartBlock;
+    UINT32 u32EndBlock;
+    UINT32 u32EndblockOffset;
+    UINT8* pTmpBuf  = NULL;
+    UINT8* pTmpBuf1 = NULL;
+
+    BOOL bRet = FALSE;
+    
+    
+    
+    SERFLASH_Info* pstSerFlashInfo = (SERFLASH_Info *)MDrv_SERFLASH_GetInfo();
+
+    if (pstSerFlashInfo == NULL)
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] fail to get the system info\n");
+        return FALSE;
+    }
+
+    u32BlockSize      = pstSerFlashInfo->u32SecSize;
+    if (MDrv_SERFLASH_AddressToBlock(u32StartAddr, &u32StartBlock) == FALSE)
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] u32StartAddr[0x%lx] is wrong \n", u32StartAddr);
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] u32StartBlock[0x%lx] \n", u32StartBlock);
+    }
+
+    if (MDrv_SERFLASH_AddressToBlock(u32StartAddr + u32EraseSize - 1, &u32EndBlock) == FALSE)
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] u32StartAddr[0x%lx] + u32EraseSize[0x%lx] = [0x%lx] is error \n", u32StartAddr, u32EraseSize, u32StartAddr + u32EraseSize - 1);
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] u32EndBlock[0x%lx] \n", u32EndBlock);
+    }
+
+    bRet = MsOS_ObtainMutex(_s32FlashMutexId, MSOS_WAIT_FOREVER);
+    if(bRet == FALSE)
+    {
+        printf("[CCA SerialFlash]UC_Erase_SerialFlash get mutex Fail\n");
+        return UC_ERROR_DRIVER_FAILURE;
+    }
+    
+    u32Offset         = (u32StartAddr & (u32BlockSize - 1));
+    u32EndblockOffset = ((u32StartAddr + u32EraseSize) & (u32BlockSize - 1));
+
+    CCA_SAVEDATA_DBG("u16Offset:%x, Endblock_offset:%x\n", u32Offset, u32EndblockOffset);
+
+    if (u32Offset > 0)
+    {
+        pTmpBuf = IRD_MALLOC_NONCACHED(u32Offset);
+        if (!pTmpBuf)
+        {
+            CCA_SAVEDATA_DBG("malloc pTmpBuf(%x)\n", u32BlockSize);
+            return FALSE;
+        }
+        MDrv_SERFLASH_Read(u32StartBlock * u32BlockSize, u32Offset, pTmpBuf);
+    }
+
+    if (u32EndblockOffset > 0)
+    {
+        pTmpBuf1 = IRD_MALLOC_NONCACHED(u32BlockSize - u32EndblockOffset);
+        if (!pTmpBuf1)
+        {
+            CCA_SAVEDATA_DBG("malloc pTmpBuf(%x)\n", u32BlockSize - u32EndblockOffset);
+            return FALSE;
+        }
+        MDrv_SERFLASH_Read(u32StartAddr + u32EraseSize, u32BlockSize - u32EndblockOffset, pTmpBuf1);
+    }
+
+    MDrv_SERFLASH_WriteProtect(FALSE);
+    //MDrv_SERFLASH_SectorErase(uDest, uDest + uLength - 1);
+    MDrv_SERFLASH_BlockErase(u32StartBlock, u32EndBlock, TRUE);
+    //MDrv_SERFLASH_AddressErase(uDest, uLength, TRUE);
+    if (u32Offset > 0)
+    {
+        if (MDrv_SERFLASH_Write(u32StartBlock * u32BlockSize, u32Offset, pTmpBuf) == FALSE)
+        {
+            CCA_SAVEDATA_DBG("MDrv_SERFLASH_Write failed\n");
+            MDrv_SERFLASH_WriteProtect(TRUE);
+            return FALSE;
+        }
+    }
+
+    if (u32EndblockOffset > 0)
+    {
+        if (MDrv_SERFLASH_Write(u32StartAddr + u32EraseSize, u32BlockSize - u32EndblockOffset, pTmpBuf1) == FALSE)
+        {
+            CCA_SAVEDATA_DBG("MDrv_SERFLASH_Write failed\n");
+            MDrv_SERFLASH_WriteProtect(TRUE);
+            return FALSE;
+        }
+    }
+
+    MDrv_SERFLASH_WriteProtect(TRUE);
+
+    if (pTmpBuf)
+    {
+        IRD_FREE_NONCACHED(pTmpBuf);
+        pTmpBuf = NULL;
+    }
+    if (pTmpBuf1)
+    {
+        IRD_FREE_NONCACHED(pTmpBuf1);
+        pTmpBuf1 = NULL;
+    }
+
+    bRet = MsOS_ReleaseMutex(_s32FlashMutexId);
+    if(bRet == FALSE)
+    {
+        printf("[CCA SerialFlash]UC_Erase_SerialFlash mutex relase fail\n");
+        return UC_ERROR_DRIVER_FAILURE;
+    }
+    
+    return TRUE;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+///  private  UC_Write_SerialFlash
+///  Write the data to the serial flash
+///
+///  @param [in]    pBin
+///  @param [in]    u32StartAddr
+///  @param [in]    u32EraseSize
+///
+///  @return BOOLEAN true for handled (don't dispatch continully)
+///
+///  @author MStarSemi @date 2013/5/21
+///////////////////////////////////////////////////////////////////////////////
+
+static BOOL UC_Write_SerialFlash(UINT8* pBin, UINT32 u32StartAddr, UINT32 u32WriteSize)
+{
+    BOOL bRet = FALSE;
+    
+    bRet = MsOS_ObtainMutex(_s32FlashMutexId, MSOS_WAIT_FOREVER);
+    if(bRet == FALSE)
+    {
+        printf("[CCA SerialFlash]UC_Write_SerialFlash get mutex Fail\n");
+        return UC_ERROR_DRIVER_FAILURE;
+    }
+    
+    MDrv_SERFLASH_WriteProtect(FALSE);
+    if (MDrv_SERFLASH_Write(u32StartAddr, u32WriteSize, pBin) == FALSE)
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] Write u32StartAddr[0x%lx], Size[0x%lx] is FAIL \n", u32StartAddr, u32WriteSize);
+        MDrv_SERFLASH_WriteProtect(TRUE);
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] Write u32StartAddr[0x%lx], Size[0x%lx] success!!\n", u32StartAddr, u32WriteSize);
+    }
+
+    MDrv_SERFLASH_WriteProtect(TRUE);
+
+    bRet = MsOS_ReleaseMutex(_s32FlashMutexId);
+    if(bRet == FALSE)
+    {
+        printf("[CCA SerialFlash]UC_Write_SerialFlash mutex relase fail\n");
+        return UC_ERROR_DRIVER_FAILURE;
+    }
+    
+    return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///  private  UC_Read_SerialFlash
+///  Read the data from the serial flash
+///
+///  @param [in]    pRead_Bin
+///  @param [in]    u32StartAddr
+///  @param [in]    u32ReadSize
+///
+///  @return BOOLEAN true for handled (don't dispatch continully)
+///
+///  @author MStarSemi @date 2013/5/21
+///////////////////////////////////////////////////////////////////////////////
+
+static BOOL UC_Read_SerialFlash(UINT8* pRead_Bin, UINT32 u32StartAddr, UINT32 u32ReadSize)
+{   
+    BOOL bRet = FALSE;
+    
+    bRet = MsOS_ObtainMutex(_s32FlashMutexId, MSOS_WAIT_FOREVER);
+    if(bRet == FALSE)
+    {
+        printf("[CCA SerialFlash]UC_Read_SerialFlash get mutex Fail\n");
+        return UC_ERROR_DRIVER_FAILURE;
+    }
+    
+    if (MDrv_SERFLASH_Read(u32StartAddr, u32ReadSize, pRead_Bin) == FALSE)
+    //if(FALSE == MDrv_SERFLASH_DMA(*u32StartAddr,(UINT32)pRead_Bin,u32EraseSize))
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] Read u32StartAddr[0x%lx], Size[0x%lx] is FAIL \n", u32StartAddr, u32ReadSize);
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] Read u32StartAddr[0x%lx], Size[0x%lx] success!!\n", u32StartAddr, u32ReadSize);
+    }
+
+#if 0  // Debug only
+    {
+         int i;
+         for (i = 0; i < u32ReadSize; i++)
+         {
+             CCA_SAVEDATA_DBG("[CCA SerialFlash] read[0x%lx] = 0x%x\n", i, pRead_Bin[i]);
+         }
+    }
+#endif
+
+    bRet = MsOS_ReleaseMutex(_s32FlashMutexId);
+
+    if(bRet == FALSE)
+    {
+        printf("[CCA SerialFlash]UC_Read_SerialFlash mutex relase fail\n");
+        return UC_ERROR_DRIVER_FAILURE;
+    }
+    
+    return TRUE;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///  global UC_Erase_DataOnSerialFlash
+///  Erase the mails/announcements in the buffer to the serial flash
+///
+///  @param [in]    u32StartAddr
+///  @param [in]    u32ReadSize
+///
+///  @return BOOLEAN true for handled (don't dispatch continully)
+///
+///  @author MStarSemi @date 2013/5/21
+///////////////////////////////////////////////////////////////////////////////
+
+BOOL UC_Erase_DataOnSerialFlash(EN_CCA_IRD_DEST_BUFFER_ID eDestBufId, UINT32 u32Size, MS_U16 u16Offset)
+{
+    UINT32  u32StartAddr = 0;
+    BOOL bResult      = FALSE;
+
+    CCA_SAVEDATA_DBG("[CCA SerialFlash] EraseDataOnSerialFlash : u32Size = %ld, u16Offset = %d\n", u32Size, u16Offset);
+
+    if (eDestBufId == E_CCA_IRD_DEST_BUFFER_MAIL)
+    {
+        u32StartAddr = MAIL_BUF_START_ADDR; // FIXME
+    }
+    else if (eDestBufId == E_CCA_IRD_DEST_BUFFER_ANNCMNT)
+    {
+        u32StartAddr = ANNCMNT_BUF_START_ADDR; // FIXME
+    }
+
+    u32StartAddr = u32StartAddr + u16Offset; // FIXME
+
+    bResult = UC_Erase_SerialFlash(u32StartAddr, u32Size);
+
+    return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///  global UC_Save_DataToSerialFlash
+///  Save the mails/announcements in the buffer to the serial flash
+///
+///  @param [in]    eDestBufId
+///  @param [in]    pBuf
+///  @param [in]    u32Size
+///  @param [in]    u16Offset
+///
+///  @return BOOLEAN true for handled (don't dispatch continully)
+///
+///  @author MStarSemi @date 2013/5/21
+///////////////////////////////////////////////////////////////////////////////
+
+BOOL UC_Save_DataToSerialFlash(EN_CCA_IRD_DEST_BUFFER_ID eDestBufId, void* pBuf, UINT32 u32Size, MS_U16 u16Offset)
+{
+    UINT8*  pWriteBin    = NULL;
+    UINT32  u32StartAddr = 0;
+    BOOL bResult      = FALSE;
+
+    pWriteBin = (UINT8 *) pBuf;
+
+    if (pBuf == NULL)
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] Buffer point is NULL\n");
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] pBuf = 0x%x, u32Size = %ld, u16Offset = %d\n", pBuf, u32Size, u16Offset);
+
+        if (eDestBufId == E_CCA_IRD_DEST_BUFFER_MAIL)
+        {
+            u32StartAddr = MAIL_BUF_START_ADDR; // FIXME
+        }
+        else if (eDestBufId == E_CCA_IRD_DEST_BUFFER_ANNCMNT)
+        {
+            u32StartAddr = ANNCMNT_BUF_START_ADDR; // FIXME
+        }
+
+        u32StartAddr = u32StartAddr + u16Offset; // FIXME
+
+        bResult = UC_Erase_DataOnSerialFlash(eDestBufId, u32Size, u16Offset);
+        if (bResult == TRUE)
+        {
+            CCA_SAVEDATA_DBG("[CCA SerialFlash] The sectors are ready for subsequent write\n");
+            bResult = UC_Write_SerialFlash(pWriteBin, u32StartAddr, u32Size);
+        }
+        else
+        {
+            CCA_SAVEDATA_DBG("[CCA SerialFlash] Fail to erase the sectors for subsequent write\n");
+        }
+
+        pWriteBin = NULL;
+    }
+
+    return bResult;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///  global UC_Load_DataFromSerialFlash
+///  Load the mails/announcements from the serial flash into the buffer
+///
+///  @param [in]    pRead_Bin
+///  @param [in]    u32StartAddr
+///  @param [in]    u32ReadSize
+///
+///  @return BOOLEAN true for handled (don't dispatch continully)
+///
+///  @author MStarSemi @date 2013/5/21
+///////////////////////////////////////////////////////////////////////////////
+BOOL UC_Load_DataFromSerialFlash(EN_CCA_IRD_DEST_BUFFER_ID eDestBufId, void* pBuf, UINT32 u32Size, MS_U16 u16Offset)
+{
+    UINT8*  pReadBin     = NULL;
+    UINT32  u32StartAddr = 0;
+    BOOL bResult      = FALSE;
+
+    if (pBuf == NULL)
+    {
+        CCA_SAVEDATA_DBG("[CCA SerialFlash] Buffer point is NULL\n");
+        return FALSE;
+    }
+    else
+    {
+        if (eDestBufId == E_CCA_IRD_DEST_BUFFER_MAIL)
+        {
+            u32StartAddr = MAIL_BUF_START_ADDR; // FIXME
+        }
+        else if (eDestBufId == E_CCA_IRD_DEST_BUFFER_ANNCMNT)
+        {
+            u32StartAddr = ANNCMNT_BUF_START_ADDR; // FIXME
+        }
+
+        pReadBin = (UINT8 *) pBuf;
+
+        u32StartAddr = u32StartAddr + u16Offset; // FIXME
+
+        bResult  = UC_Read_SerialFlash(pReadBin, u32StartAddr, u32Size);
+
+        pReadBin = NULL;
+    }
+
+    return bResult;
+}
+
+
+
+
+#ifdef CCA_SAVEDATA_DEBUG
+BOOL MApp_CCA_SaveData_Test(void)
+{
+    UINT8  au8Data[]  = "Copyright (c) 2010 - 2012 MStar Semiconductor, Inc. All rights reserved.";
+    UINT8  au8Data1[] = "The arbitration award shall be final and binding to both parties.";
+    UINT8* pu8Load    = NULL;
+    UINT8* pu8Load1   = NULL;
+    UINT32 u32Size    = sizeof(au8Data);
+    UINT32 u32Size1   = sizeof(au8Data1);
+    MS_U16 u16Offset  = 0;
+
+    UC_Save_DataToSerialFlash(E_CCA_IRD_DEST_BUFFER_MAIL, (void *)au8Data, u32Size, u16Offset);
+    u16Offset = u16Offset + u32Size;
+
+    UC_Save_DataToSerialFlash(E_CCA_IRD_DEST_BUFFER_MAIL, (void *)au8Data1, u32Size1, u16Offset);
+
+    pu8Load = (UINT8 *)IRD_MALLOC(u32Size);
+    if (pu8Load == NULL)
+    {
+        CCA_SAVEDATA_DBG("SaveData: fail to allocate memory\n");
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("SaveData: successfully allocates memory. Size = %d\n", u32Size);
+    }
+
+    pu8Load[u32Size] = '\n';
+    UC_Load_DataFromSerialFlash(E_CCA_IRD_DEST_BUFFER_MAIL, (void *)pu8Load, u32Size, 0);
+
+    CCA_SAVEDATA_DBG("SaveData: save data = %s\n", au8Data);
+    CCA_SAVEDATA_DBG("SaveData: load data = %s\n", pu8Load);
+
+    pu8Load1 = (UINT8 *)IRD_MALLOC(u32Size1);
+
+    if (pu8Load1 == NULL)
+    {
+        CCA_SAVEDATA_DBG("SaveData: fail to allocate memory\n");
+        return FALSE;
+    }
+    else
+    {
+        CCA_SAVEDATA_DBG("SaveData: successfully allocates memory. Size = %d\n", u32Size1);
+    }
+
+    UC_Load_DataFromSerialFlash(E_CCA_IRD_DEST_BUFFER_MAIL, (void *)pu8Load1, u32Size1, u16Offset);
+
+    pu8Load1[u32Size1] = '\n';
+    CCA_SAVEDATA_DBG("SaveData: save data1 = %s\n", au8Data1);
+    CCA_SAVEDATA_DBG("SaveData: load data1 = %s\n", pu8Load1);
+
+    IRD_FREE(pu8Load);
+    IRD_FREE(pu8Load1);
+
+    return TRUE;
+}
+
+#endif
+#undef CCA_UCSAVEDATA_C
+#endif
+

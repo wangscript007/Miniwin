@@ -1,0 +1,27 @@
+{
+	"duration" : 
+	{
+		"infobar" : 8
+	},
+	"indication" : 
+	{
+		"display" : 2
+	},
+	"language" : 
+	{
+		"menu" : 9
+	},
+	"multimedia" : 
+	{
+		"recordbefore" : 1
+	},
+	"schedule" : 
+	{
+		"broadcasttimer" : 1
+	},
+	"sound" : 
+	{
+		"analogue" : 2,
+		"spdif" : 1
+	}
+}
