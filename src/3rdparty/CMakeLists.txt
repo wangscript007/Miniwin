@@ -25,6 +25,7 @@ add_subdirectory(libUPnP)
 add_subdirectory(uuid)
 add_subdirectory(fontconfig)
 add_subdirectory(grt/build)
+add_subdirectory(mbedtls)
 #add_subdirectory(breakpad)
 
 add_subdirectory(libvncserver)

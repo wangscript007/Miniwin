@@ -1,4 +1,4 @@
-set(LIB_NAME curl)
+set(LIB_NAME libcurl)
 
 if(BUILD_SHARED_LIBS)
   set(CURL_STATICLIB NO)

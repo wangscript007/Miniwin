@@ -304,7 +304,8 @@ if(WIN32)
   cmake_dependent_option(CURL_WINDOWS_SSPI "Use windows libraries to allow NTLM authentication without openssl" ON
     CMAKE_USE_WINSSL OFF)
 endif()
-option(CMAKE_USE_MBEDTLS "Enable mbedTLS for SSL/TLS" OFF)
+option(CMAKE_USE_MBEDTLS "Enable mbedTLS for SSL/TLS" ON)
+set(CMAKE_USE_MBEDTLS ON)
 
 set(openssl_default OFF) 
 if(WIN32 OR CMAKE_USE_SECTRANSP OR CMAKE_USE_WINSSL OR CMAKE_USE_MBEDTLS)
@@ -382,15 +383,22 @@ if(CMAKE_USE_OPENSSL)
   check_symbol_exists(RAND_screen "${CURL_INCLUDES}" HAVE_RAND_SCREEN)
   check_symbol_exists(RAND_egd    "${CURL_INCLUDES}" HAVE_RAND_EGD)
 endif()
-message("USE_OPENSSL=${USE_OPENSSL}")
 
 if(CMAKE_USE_MBEDTLS)
   find_package(MbedTLS REQUIRED)
   set(SSL_ENABLED ON)
   set(USE_MBEDTLS ON)
+  if(NOT MBEDTLS_LIBRARIES)
+    set(MBEDTLS_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/3rdparty/mbedtls/include)
+    set(MBEDCRYPTO_LIBRARY mbedcrypto)
+    set(MBEDX509_LIBRARY mbedx509)
+    set(MBEDTLS_LIBRARY mbedtls)
+    set(MBEDTLS_LIBRARIES ${MBEDCRYPTO_LIBRARY} ${MBEDX509_LIBRARY} ${MBEDTLS_LIBRARY})
+  endif()
   list(APPEND CURL_LIBS ${MBEDTLS_LIBRARIES})
   include_directories(${MBEDTLS_INCLUDE_DIRS})
 endif()
+message("USE_MBEDTLS=${USE_MBEDTLS} CMAKE_USE_MBEDTLS=${CMAKE_USE_MBEDTLS} CURL_LIBS=${CURL_LIBS}")
 
 option(USE_NGHTTP2 "Use Nghttp2 library" OFF)
 if(USE_NGHTTP2)
@@ -1348,12 +1356,6 @@ write_basic_package_version_file(
 configure_package_config_file(CMake/curl-config.cmake.in
         "${project_config}"
         INSTALL_DESTINATION ${CURL_INSTALL_CMAKE_DIR}
-)
-
-install(
-        EXPORT "${TARGETS_EXPORT_NAME}"
-        NAMESPACE "${PROJECT_NAME}::"
-        DESTINATION ${CURL_INSTALL_CMAKE_DIR}
 )
 
 install(
