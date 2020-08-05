@@ -20,7 +20,6 @@ if(BUILD_STATIC)
     option(BUILD_TESTS "build tests" OFF)
 endif()
 
-set(CMAKE_DEBUG_POSTFIX "d")
 
 #dependencies
 find_package(Threads)

@@ -58,7 +58,6 @@ include (DetermineGflagsNamespace)
 include (GetCacheVariables)
 include (GNUInstallDirs)
 
-set (CMAKE_DEBUG_POSTFIX d)
 set (CMAKE_THREAD_PREFER_PTHREAD 1)
 
 if (WITH_GFLAGS)
