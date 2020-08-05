@@ -24,8 +24,8 @@ endif()
 add_executable(ntvplus ${SRCS_NTV_PLUS} )
 add_executable(ntvplusd ${SRCS_NTV_PLUS} )
 
-target_link_libraries(ntvplus jsoncpp_lib gui_static dvbepg_static dlna id3 ${NGL_CA})
-target_link_libraries(ntvplusd pthread jsoncpp_lib gui dvbepg dlna id3 ${NGL_CA})
+target_link_libraries(ntvplus jsoncpp_lib gui_static dvbepg_static ${APP_EXTLIBS} ${NGL_CA})
+target_link_libraries(ntvplusd pthread jsoncpp_lib gui dvbepg ${APP_EXTLIBS}  ${NGL_CA})
 
 add_custom_command (TARGET ntvplus PRE_BUILD
   COMMAND zip -r  ${CMAKE_CURRENT_BINARY_DIR}/ntvplus.pak *

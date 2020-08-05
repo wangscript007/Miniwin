@@ -3,10 +3,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#ifdef ENABLE_MP3ID3
 #include <id3/getid3.h>
 #include <id3/id3v2.h>
 #include <id3/getid3v2.h>
 #include <id3/getlyr3.h>
+using namespace tag;
+#endif
+
 #include <ngl_types.h>
 #include <ngl_log.h>
 #include <istream>
@@ -18,7 +23,6 @@
 
 NGL_MODULE(Lyrics);
 
-using namespace tag;
 namespace priv{
 
 struct MemoryBuf: std::streambuf {
@@ -59,7 +63,7 @@ inline static const char* UCS(){
     else
         return "ASCII";
 }
-
+#ifdef ENABLE_MP3ID3
 const std::string W2S(const stredit::function::result&w){
 #ifdef HAVE_CODECVT
     std::wstring_convert<std::codecvt_utf8<wchar_t> > strCnv;
@@ -70,8 +74,8 @@ const std::string W2S(const stredit::function::result&w){
     return u8bytes;
 #endif
 //  return charset::conv<char>::encode(w.data(),w.length()*sizeof(wchar_t));
-
 }
+#endif
 
 const char *membrk0(const char *buf, size_t size, int wide){
     const char* const end = buf + size - wide;
@@ -108,9 +112,10 @@ static const char* picture_types[] = {
 };
 
 int Lyrics::loadImages(){
+    int counter=0;
+#ifdef ENABLE_MP3ID3
     void *tag = ID3_readf(url.c_str(), 0);
     ID3FRAME f;
-    int counter=0;
     NGLOG_DEBUG("%s",url.c_str());
     if(tag==nullptr)return 0;
     if(ID3_start(f,tag) >= 2) {
@@ -143,7 +148,8 @@ int Lyrics::loadImages(){
            }
        }//while
        ID3_free(tag);
-   }//if
+   }
+#endif
    return counter;
 }
 
@@ -160,7 +166,7 @@ Lyrics::operator bool()const{
 int Lyrics::parseID3(const std::string&txt){
     struct stat stbuf;
     if(stat(txt.c_str(),&stbuf)!=0)return 0;
-
+#ifdef ENABLE_MP3ID3
     tag::read::ID3v2 v2(txt.c_str());
     tag::read::ID3 v1(txt.c_str());
 
@@ -180,6 +186,7 @@ int Lyrics::parseID3(const std::string&txt){
        id3track=priv::W2S((*id3tag)[tag::track]); 
        id3genre=priv::W2S((*id3tag)[tag::genre]); 
     }
+#endif
     NGLOG_DEBUG("title:%s\r\nartist:%s\r\nalbum:%s\r\nyear:%s\r\ngenre:%s",id3title.c_str(),
         id3artist.c_str(),id3album.c_str(),id3year.c_str(),id3genre.c_str());
     NGLOG_DUMP("TITLE:",(const BYTE*)id3title.c_str(),id3title.size());
@@ -216,6 +223,7 @@ const std::string& Lyrics::getGenre()const{
 int Lyrics::parseLyrics(const std::string&txt){
     struct stat stbuf;
     std::string lyricstxt=txt;
+#ifdef ENABLE_MP3ID3
     if(stat(txt.c_str(),&stbuf)==0){
         tag::read::Lyrics3 ly(txt.c_str());
         NGLOG_DEBUG("getlyrics from %s %d",txt.c_str(),(bool)ly);
@@ -237,6 +245,7 @@ int Lyrics::parseLyrics(const std::string&txt){
         }//while
     }
     ID3_free(tag);
+#endif
     return 0;
 }
 

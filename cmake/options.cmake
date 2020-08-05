@@ -9,6 +9,7 @@ option(ENABLE_MBEDTLS "enable mbedtls" OFF)
 option(ENABLE_UPNP "enable upnp/dlna" OFF)
 option(ENABLE_GESTURE "enable gestrure" OFF)
 option(ENABLE_TURBOJPEG "enable turbo jpeg" ON)
+option(ENABLE_MP3ID3 "enable mp3 ids" ON)
 
 if(ENABLE_GIF)
   list(APPEND OPTIONAL_LIBS gif)
@@ -22,7 +23,7 @@ if(ENABLE_MBEDTLS)
 endif()
 
 if(ENABLE_UPNP)
-  list(APPEND OPTIONAL_LIBS upnp)
+  list(APPEND APP_EXTLIBS upnp)
 endif()
 
 if(ENABLE_GESTURE)
@@ -31,6 +32,10 @@ endif()
 
 if(ENABLE_TURBOJPEG)
   list(APPEND OPTIONAL_LIBS turbojpeg)
+endif()
+
+if(ENABLE_MP3ID3)
+  list(APPEND APP_EXTLIBS id3)
 endif()
 
 configure_file(src/gui/gui_features.h.cmake  ${CMAKE_BINARY_DIR}/include/gui/gui_features.h)

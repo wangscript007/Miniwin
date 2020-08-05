@@ -6,4 +6,4 @@
 #cmakedefine ENABLE_UPNP      
 #cmakedefine ENABLE_GESTURE   
 #cmakedefine ENABLE_TURBOJPEG 
-
+#cmakedefine ENABLE_MP3ID3
