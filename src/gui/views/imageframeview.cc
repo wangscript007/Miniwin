@@ -1,6 +1,8 @@
 #include<imageframeview.h>
 #include<app.h>
 #include<ngl_log.h>
+
+#ifdef ENABLE_GIF
 extern "C"{
  int gifDrawFrame(void*gifhandle,size_t pxstride, void *pixels,
               bool force_dispose_1);
@@ -9,6 +11,7 @@ extern "C"{
  void gifgetinfo(void*handle,int*w,int*h,int*frames,int*delays);
  void gifgetnextframe(void*handle,int*idx);
 }
+#endif
 
 NGL_MODULE(ImageFrame);
 
@@ -85,8 +88,9 @@ bool ImageFrameView::onMessage(DWORD msg,DWORD wp,ULONG lp){
 }
 
 int ImageFrameView::loadgif(const std::string&path){
-    int w,h,frames;
+    int w,h,frames=0;
     int*delays;
+#ifdef ENABLE_GIF
     gifhandle=gifload(path.c_str());
     if(nullptr==gifhandle)
        return 0;
@@ -101,6 +105,7 @@ int ImageFrameView::loadgif(const std::string&path){
         NGLOG_VERBOSE("frame %d delay=%d",i,frm->delay);
         imageframes.push_back(frm);
     }
+#endif
     NGLOG_VERBOSE("%d frames loaded imagesize=%dx%d",frames,w,h);
     return frames;
 }

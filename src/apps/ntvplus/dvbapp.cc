@@ -33,8 +33,10 @@ DVBApp::DVBApp(int argc,const char**argv)
     NGLOG_DEBUG("DVBApp::DVBApp resolution=%d",res);
     setOpacity(200);//getArgAsInt("alpha",255));    
     nglDispSetResolution(res);
+#ifdef ENABLE_UPNP
     MediaRenderer::getInstance().setName("NGL MediaRenderer");
     MediaRenderer::getInstance().start();
+#endif
 #ifdef HAVE_ACS
     StartACS();
 #endif    

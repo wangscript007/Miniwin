@@ -27,6 +27,7 @@
 #include <ngl_log.h>
 #include <chrono>
 #include <fstream>
+#include <gui/gui_features.h>
 
 NGL_MODULE(Surface);
 
@@ -353,6 +354,7 @@ RefPtr<ImageSurface>ImageSurface:: create_from_stream(std::istream& stream){
         bmp.ReadFromStream(stream);
         img=(RefPtr<ImageSurface>)bmp;
     }else if(memcmp("svg",ftype,3)==0){
+#ifdef ENABLE_CAIROSVG
          svg_cairo_t *svg;
          unsigned int width,height;
          svg_cairo_create(&svg);
@@ -371,6 +373,7 @@ RefPtr<ImageSurface>ImageSurface:: create_from_stream(std::istream& stream){
              svg_cairo_render(svg,(cairo_t*)ctx->cobj());
          }
          svg_cairo_destroy(svg);
+#endif
     }
     t2=steady_clock::now();
     NGLOG_VERBOSE("used %.5f stype=%s",duration_cast<duration<double>>(t2 - t1),ftype);

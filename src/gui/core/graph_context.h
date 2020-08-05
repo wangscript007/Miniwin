@@ -5,6 +5,7 @@
 #include <cairomm/context.h>
 #include <cairomm/region.h>
 #include <graph_device.h>
+#include <gui/gui_features.h>
 
 using namespace Cairo;
 

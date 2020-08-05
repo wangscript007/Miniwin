@@ -384,7 +384,7 @@ if(CMAKE_USE_OPENSSL)
   check_symbol_exists(RAND_egd    "${CURL_INCLUDES}" HAVE_RAND_EGD)
 endif()
 
-if(CMAKE_USE_MBEDTLS)
+if(CMAKE_USE_MBEDTLS AND ENABLE_MBEDTLS)
   find_package(MbedTLS REQUIRED)
   set(SSL_ENABLED ON)
   set(USE_MBEDTLS ON)
