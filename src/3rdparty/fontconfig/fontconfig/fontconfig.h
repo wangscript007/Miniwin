@@ -257,7 +257,6 @@ typedef struct _FcLangSet   FcLangSet;
 
 typedef struct _FcRange	    FcRange;
 
-#pragma pack(8)
 typedef struct _FcValue {
     FcType	type;
     union {
@@ -272,7 +271,6 @@ typedef struct _FcValue {
 	const FcRange	*r;
     } __attribute__((aligned(8))) u;/*aligned(8) added by zhhou to make fcarch.c line 47 happy*/
 } FcValue;
-#pragma pack()
 
 typedef struct _FcFontSet {
     int		nfont;
