@@ -41,4 +41,12 @@ link_directories($ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/lib
 add_library(irdetocca STATIC ${SRCS_IRDETO} ${SRCS_IRDETOGUI})
 message("======HAL_EXTRA_LIBS=${HAL_EXTRA_LIBS}")
 set(NGL_CALIBDIR $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/lib ${PROJECT_SOURCE_DIR}/cca_drv/lib PARENT_SCOPE)
-set(NGL_CALIBS tvhal_static -Wl,--start-group irdetocca CloakedCAAgent -Wl,--end-group downloader ${HAL_EXTRA_LIBS} PARENT_SCOPE)
+set(NGL_CALIBS 
+   tvhal_static 
+   -Wl,--start-group 
+      irdetocca 
+      CloakedCAAgent 
+   -Wl,--end-group 
+   downloader 
+   ${HAL_EXTRA_LIBS} PARENT_SCOPE
+)
