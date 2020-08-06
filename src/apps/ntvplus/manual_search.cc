@@ -20,6 +20,7 @@ protected:
    EditText*freq;
    EditText*symbol;
    Selector*modulation;
+   Selector*searchmode;
    TRANSPONDER transponder;
    UpdateTransponderListener listener;
    void*userdata;
@@ -37,6 +38,7 @@ ManualSearchWindow::ManualSearchWindow(int x,int y,int w,int h):Window(x,y,w,h){
 	setLayout(new LinearLayout())->setMargins(2);
 	//setVisible(FALSE);
 	//listener=nullptr;
+        w-=4;
 	NGLOG_DEBUG(" onCreate ");
 	title=new TextView("ManualSearch",w,56);
 	addChildView(title)->setBgColor(0xFF222222).setFgColor(0xFFFFFFFF).setFontSize(40);
@@ -44,6 +46,7 @@ ManualSearchWindow::ManualSearchWindow(int x,int y,int w,int h):Window(x,y,w,h){
 	freq=new NTVEditText(w,40);
 	freq->setLabelWidth(200);
 	freq->setLabel("Frequency");
+        freq->setHint("Enter Freqency(K)");
 	freq->setBgColor(0xFF000000).setFgColor(0xFFFFFFFF);
 	addChildView(freq);
 	freq->setFlag(View::FOCUSED);
@@ -51,6 +54,7 @@ ManualSearchWindow::ManualSearchWindow(int x,int y,int w,int h):Window(x,y,w,h){
 	symbol=new NTVEditText(w,40);
 	symbol->setLabelWidth(200);
 	symbol->setLabel("SymbolRate");
+        symbol->setHint("Enter SymbolRate(K)");
 	symbol->setBgColor(0xFF000000).setFgColor(0xFFFFFFFF);
 	addChildView(symbol);
 
@@ -61,7 +65,10 @@ ManualSearchWindow::ManualSearchWindow(int x,int y,int w,int h):Window(x,y,w,h){
 	modulation->addItem(new Selector::ListItem("QAM128",4));
 	modulation->addItem(new Selector::ListItem("QAM256",5));
 	modulation->setIndex(2);
-	
+        NEWCTRL("SearchMode",w,searchmode);
+        searchmode->addItem(new Selector::ListItem("SingleTP",1));
+	searchmode->addItem(new Selector::ListItem("Network",0));
+        searchmode->setIndex(0);
 }
 
 int ManualSearchWindow::getManualSearchTransponders(std::vector<TRANSPONDER>&tps){
@@ -79,7 +86,7 @@ bool ManualSearchWindow::onKeyUp(KeyEvent&k){
      if(  (k.getKeyCode()==KEY_ENTER) ){
          std::vector<TRANSPONDER>tps;
          getManualSearchTransponders(tps);
-         int mode=tps.size();//(sch_mode&&sch_mode->getIndex()==1)?0:transponders.size();
+         int mode=searchmode->getIndex()==1?0:tps.size();
          CreateSearchResultWindow(tps,mode);
          return true;
      }
@@ -89,7 +96,7 @@ bool ManualSearchWindow::onKeyUp(KeyEvent&k){
 	
 Window*CreateManualChannelSearch(){
       NGLOG_DEBUG("CreateManualChannelSearch");
-	ManualSearchWindow*w=new ManualSearchWindow(400,200,480,200);
+	ManualSearchWindow*w=new ManualSearchWindow(400,200,480,240);
 	    //if(transponder)w->setTransponder(*transponder);
 	    //w->setListener(ls,userdata);
 	    w->show();
