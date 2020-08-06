@@ -11,7 +11,7 @@ set(MBEDTLS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 option(USE_PKCS11_HELPER_LIBRARY "Build mbed TLS with the pkcs11-helper library." OFF)
 option(ENABLE_ZLIB_SUPPORT "Build mbed TLS with zlib library." OFF)
 
-option(ENABLE_PROGRAMS "Build mbed TLS programs." ON)
+option(ENABLE_PROGRAMS "Build mbed TLS programs." OFF)
 
 option(UNSAFE_BUILD "Allow unsafe builds. These builds ARE NOT SECURE." OFF)
 
@@ -207,7 +207,7 @@ ADD_CUSTOM_TARGET(apidoc
     COMMAND doxygen mbedtls.doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doxygen)
 
-if(ENABLE_TESTING)
+if(ENABLE_TESTING AND BUILD_TESTS)
     enable_testing()
 
     add_subdirectory(tests)
