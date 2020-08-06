@@ -10,7 +10,7 @@ extern "C" {
 
 #include "UniversalClient_Types.h"
 #include "UniversalClient_Common_API.h"
-#include "gxav_demux_propertytypes.h"
+//#include <gxav_demux_propertytypes.h>
 
 #define CCA_SECTOR_NUMBER					(8)
 #define CCA_BLOCK_SIZE						(0x10000)
@@ -247,7 +247,8 @@ extern spi_uc_system_st    s_spi_ucSystem;
 extern uc_buffer_st		g_ucCatBuff;
 extern uc_buffer_st		g_ucPmtBuff;
 
-
+extern	void UniversalClient_Init(void);
+extern 	void User_init_playq(void);
 
 #ifdef __cplusplus
 }

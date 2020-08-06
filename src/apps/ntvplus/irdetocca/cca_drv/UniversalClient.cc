@@ -1004,16 +1004,6 @@ void MyServiceMessageProc(void *pMessageProcData, uc_service_message_type messag
 
 void UserPowersOnDevice(void)
 {
-
-
-
-#if(CA_CCA_ALIGN_64K == 1)
-
-#endif
-
-
-#if 1
-
     uc_result result = UC_ERROR_SUCCESS;
     uc_unified_client_config convergentClientConfig;
     uc_ca_client_config clientConfig;
@@ -1033,8 +1023,6 @@ void UserPowersOnDevice(void)
     // 1. Initialize the client, passing our implementation of uc_global_message_proc above
     result = UniversalClient_StartCaClient(MyGlobalMessageProc);//MyGlobalMessageProc);
 
-
-#if 1
     // 2. Regional filtering enable, default is false
     if (UC_ERROR_SUCCESS == result)
     {
@@ -1045,7 +1033,6 @@ void UserPowersOnDevice(void)
     }
 	else
 		NGLOG_DEBUG("[%s %d] UniversalClient_StartCaClient return  is 0x%08X\n", __FUNCTION__, __LINE__, result);
-#endif
 
     // 2-1. Macrovision enable, default is false
 #if 0
@@ -1161,14 +1148,12 @@ void UserPowersOnDevice(void)
     // 6. Display a status message indicating success or failure:
     NGLOG_DEBUG("Power On Status: 0x%08X\n", result);
 
-#endif
 
 }
 
 
 void UserPowersOffDevice(void)
 {
-#if 1
     uc_result       result = UC_ERROR_SUCCESS;
 
     // 1. Close the service we opened in the 'UserPowersOnDevice.cpp' sample.
@@ -1182,8 +1167,7 @@ void UserPowersOffDevice(void)
     }
 
     // 3. Display a status message indicating success or failure:
-    //NGLOG_DEBUG("Power Off Status: 0x%08X\n", result);
-#endif
+    NGLOG_DEBUG("Power Off Status: 0x%08X\n", result);
 }
 
 void UniversalClient_Init(void)
@@ -1457,20 +1441,7 @@ static void play_service(void*channel,int *pids,int pmtpid){
 		filter_cat=CreateCAFilter(1,1,1);//cat
 		}
 	
-	filter_pmt=CreateCAFilter(pmtpid,3,0x02,(service_id>>8),(service_id&0xFF));
-/*	BYTE buffer[1024];
-	DtvGetServicePmt(ploc,buffer);
-	PMT pmt(buffer);
-	int pos=0,seclen=0;
-
-	for(pos=0;pos<pmt.sectionLength();){
-		seclen=SECLEN(buffer+pos)+3;
-		//if(flt->CallBack) flt->CallBack(flt,buffer+pos,seclen,flt->userdata);
-		SectionCBK(0,buffer+pos,seclen,NULL);
-		pos+=seclen;
-	}
-	*/
-	
+	filter_pmt=CreateCAFilter(pmtpid,3,0x02,(service_id>>8),(service_id&0xFF));	
 	lastplayed.sid=service_id;
 	lastplayed.netid=netid;
 	lastplayed.tpid=tpid;
@@ -1501,4 +1472,8 @@ void  User_init_playq(void){
     nglCreateThread((HANDLE *)&tid,0,0,PlayProc,NULL);
 	DtvRegisterNotify(CANOTIFY,NULL);
 }
-
+void StartCA(){
+  NGLOG_DEBUG("irdeto ca init enter !");
+  UniversalClient_Init();
+  User_init_playq();
+}

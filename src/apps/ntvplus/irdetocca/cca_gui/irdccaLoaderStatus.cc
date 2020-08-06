@@ -72,7 +72,7 @@ bool IrdccaLoaderStatusWindow::updateIrdccaLoaderStatus(){
 
 bool IrdccaLoaderStatusWindow::onMessage(DWORD msgid, DWORD wParam, ULONG lParam){
 	NGLOG_DEBUG("msgid(%d) wParam (%d) )",msgid,wParam);
-	if((View::WM_CCAMSG==msgid)&&(wParam==E_APP_CMD_CCA_CA_LOADER_STATUS)){
+	if((WM_CCAMSG==msgid)&&(wParam==E_APP_CMD_CCA_CA_LOADER_STATUS)){
 		this->updateIrdccaLoaderStatus();
 		this->show();
 	   return true;
@@ -88,10 +88,7 @@ IrdccaLoaderStatusWindow::IrdccaLoaderStatusWindow(int x,int y,int w,int h):Wind
 	testxt1->setFontSize(40);
 	testxt1->setFgColor(0xFFFFFFFF);
 	addChildView(testxt1)->setPos(20, 5).setBgColor(0x80000000);
-	if(parent_!=nullptr){
-        setBgColor(parent_->getBgColor());
-        setFgColor(parent_->getFgColor());
-    }
+
 	//init loader data.
 	LoaderStauts_result = CCA_Status_Get_Device_Status();
 	if(LoaderStauts_result == true){ 

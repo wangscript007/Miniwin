@@ -17,6 +17,7 @@ set(SRCS_IRDETOGUI
         cca_gui/irdccamenu.cc
         cca_gui/irdccaLoaderStatus.cc
         cca_gui/Irdccaserviceliststatus.cc
+	cca_gui/irdccastatuscom.cc
 )
 add_definitions(-DDVB_CLIENT)
 include_directories(
@@ -36,7 +37,8 @@ include_directories(
    $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/include/frontend
    $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/include/bus/module/frontend
 )
-link_directories(./)
+link_directories($ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/lib cca_drv/lib)
 add_library(irdetocca STATIC ${SRCS_IRDETO} ${SRCS_IRDETOGUI})
-target_link_libraries(irdetocca CloakedCAAgent)
-
+message("======HAL_EXTRA_LIBS=${HAL_EXTRA_LIBS}")
+set(NGL_CALIBDIR $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/lib ${PROJECT_SOURCE_DIR}/cca_drv/lib PARENT_SCOPE)
+set(NGL_CALIBS tvhal_static -Wl,--start-group irdetocca CloakedCAAgent -Wl,--end-group downloader ${HAL_EXTRA_LIBS} PARENT_SCOPE)

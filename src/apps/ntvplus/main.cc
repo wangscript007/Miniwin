@@ -8,7 +8,7 @@
 #include <string>
 #include <ngl_log.h>
 
-NGL_MODULE(MAIN)
+NGL_MODULE(MAIN);
 
 using namespace ntvplus;
 
@@ -34,6 +34,9 @@ static bool onKey(int key){
           break;
      case KEY_SUBTITLE:
           break;
+     case KEY_RED:
+          CreateManualChannelSearch();
+	  return true;
      default:return false;
      }
 }

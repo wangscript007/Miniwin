@@ -22,7 +22,7 @@ public:
 	bool updateStatus();
 	bool virtual onMessage(DWORD msgid, DWORD wParam, ULONG lParam) override{
 		NGLOG_DEBUG("msgid(%d) wParam (%d) ",msgid,wParam);
-		if(View::WM_CCAMSG==msgid&&E_APP_CMD_CCA_CA_SERVICE_LIST_STATUS==wParam){
+		if(WM_CCAMSG==msgid&&E_APP_CMD_CCA_CA_SERVICE_LIST_STATUS==wParam){
 			updateStatus();
 			show();
 			return true;

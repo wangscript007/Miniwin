@@ -9,14 +9,14 @@
 #include <mutex>
 #include <thread>
 #include <renderimpl.h>
-#ifdef HAVE_ACS
-extern void StartACS();
+
+#ifdef HAVE_CA
+void StartCA();
 #endif
 
 NGL_MODULE(DVBAPP)
 
 namespace nglui{
-
 DVBApp::DVBApp(int argc,const char**argv)
   :App(argc,argv){
     Preferences pref;
@@ -37,8 +37,8 @@ DVBApp::DVBApp(int argc,const char**argv)
     MediaRenderer::getInstance().setName("NGL MediaRenderer");
     MediaRenderer::getInstance().start();
 #endif
-#ifdef HAVE_ACS
-    StartACS();
+#ifdef HAVE_CA
+    StartCA();
 #endif    
 }
 

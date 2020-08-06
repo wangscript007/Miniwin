@@ -4,8 +4,8 @@
 #include<dvbepg.h>
 #include<windows.h>
 
+#define WM_CCAMSG (View::WM_USER+1)
 namespace ntvplus{
-
 class NTVTitleBar:public View{
 protected:
    unsigned long time_now;

@@ -3,6 +3,9 @@
 #include<clockview.h>
 #include<ngl_log.h>
 
+#ifdef HAVE_IRDETOCCA
+#include<ccairdevent.h>
+#endif
 NGL_MODULE(CHANNELBAR)
 
 namespace ntvplus{

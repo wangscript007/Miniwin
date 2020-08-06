@@ -16,6 +16,8 @@ Window*CreateTVGuide();
 Window*CreateChannelPF();
 Window*CreateChannelSearch(bool advance=false);
 Window*CreateMultiMedia();
+Window*CreateIrdCcaCaStatus();
+Window*CreateIrdCcaServiceStatus();
 Window*CreatePVRWindow();
 Window*CreateSearchResultWindow(std::vector<TRANSPONDER>tps,INT searchmode=0);//0 for NIT search others TP search
 
@@ -30,6 +32,7 @@ Window*CreateSatEditorWindow(const SATELLITE*sat=nullptr,const UpdateSatelliteLi
 Window*CreateTPEditorWindow (const TRANSPONDER*tp=nullptr,const UpdateTransponderListener ls=nullptr,void*userdata=nullptr);
 
 Window*CreateChannelEditWindow();
+Window*CreateManualChannelSearch();
 
 }//namespace
 

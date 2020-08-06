@@ -15,7 +15,7 @@
 #include <ngl_log.h>
 #include <ngl_dmx.h>
 #include <ngl_os.h>
-
+#include <errno.h>
 NGL_MODULE(SPI);
 
 #define LOADER_V3_2 0
@@ -2328,6 +2328,7 @@ uc_result UniversalClientSPI_PS_Initialize(void)
 	FILE *file;
 	
 	file=fopen(CONFIG_FOR_NGL_CCA_PATH,"ab+");
+	NGLOG_DEBUG("file:(%p) errno:(%d)",file,errno);
 	#if 0
 	if(file==0)
 	{	file=fopen(CONFIG_FOR_NGL_CCA_PATH,"wb+");
@@ -2343,8 +2344,11 @@ uc_result UniversalClientSPI_PS_Initialize(void)
 		GxCore_Free(p);
 	}
 	#endif
-	fclose(file);
-    return UC_ERROR_SUCCESS;
+	if(file){
+		fclose(file);
+    	return UC_ERROR_SUCCESS;
+	}
+	return UC_ERROR_OS_FAILURE;
 }
 /**
  * Performs any termination of the persistent storage layer

@@ -32,7 +32,7 @@ public:
 	UINT16 GetServiceStatus(INT8 *pu8Text, UINT8 u8LineCount, UINT16 u16LineLength,UINT8 index);
 	virtual bool onMessage(DWORD msgid, DWORD wParam, ULONG lParam) override{
 		NGLOG_DEBUG("msgid(%d) wParam (%d) osdId(%d)",msgid,wParam,osdId);
-		if(View::WM_CCAMSG==msgid&&wParam==osdId){//osdid need define first
+		if(WM_CCAMSG==msgid&&wParam==osdId){//osdid need define first
 			this->updateStatusCom(wParam,serIndex);
 			this->show();
 		   return true;

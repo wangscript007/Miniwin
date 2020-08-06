@@ -542,14 +542,14 @@ BOOL CCA_Status_Get_Device_Status(void)
 {
     if(UC_Status_Get_Device_Status(&stDeviceId) == TRUE)
     {    
-        NGLOG_DEBUG("stDeviceId.systmeid %x ",__FUNCTION__,__LINE__,stDeviceId.systemId);
-        NGLOG_DEBUG("stDeviceId.hardwareVersion %x ",__FUNCTION__,__LINE__,stDeviceId.hardwareVersion);
-        NGLOG_DEBUG("stDeviceId.keyVersion %x ",__FUNCTION__,__LINE__,stDeviceId.keyVersion);
-        NGLOG_DEBUG("stDeviceId.variant %x \n\033[m",__FUNCTION__,__LINE__,stDeviceId.variant);
-        NGLOG_DEBUG("stDeviceId.manufacturerId %x ",__FUNCTION__,__LINE__,stDeviceId.manufacturerId);
+        NGLOG_DEBUG("stDeviceId.systmeid %x ",stDeviceId.systemId);
+        NGLOG_DEBUG("stDeviceId.hardwareVersion %x ",stDeviceId.hardwareVersion);
+        NGLOG_DEBUG("stDeviceId.keyVersion %x ",stDeviceId.keyVersion);
+        NGLOG_DEBUG("stDeviceId.variant %x \n\033[m",stDeviceId.variant);
+        NGLOG_DEBUG("stDeviceId.manufacturerId %x ",stDeviceId.manufacturerId);
         return TRUE;
     }
-    NGLOG_DEBUG("Get Status Fail!!",__FUNCTION__,__LINE__);
+    NGLOG_DEBUG("Get Status Fail!!");
     return FALSE;
 }
 
@@ -557,20 +557,21 @@ BOOL UC_Status_Get_Device_Status(uc_device_platform_identifiers *pDevicePlatform
 {
     if(UniversalClientSPI_Device_GetPlatformIdentifiers(pDevicePlatformIdentifiers) == UC_ERROR_SUCCESS)
     {
-        NGLOG_DEBUG("\033[1;34m[%s:%d]  \n\033[m",__FUNCTION__,__LINE__);
+        NGLOG_DEBUG("success! ");
         return TRUE;
     }
-    NGLOG_ERROR("\033[1;34m[%s:%d]  \n\033[m",__FUNCTION__,__LINE__);
     return FALSE;
 }
 
 BOOL UC_Status_Get_CSSN(uc_buffer_st *pbuf)
 {
-    if(UniversalClient_GetCSSN(pbuf) == UC_ERROR_SUCCESS)
+	uc_result ret=UniversalClient_GetCSSN(pbuf);
+    if(UC_ERROR_SUCCESS==ret)
     {
         return TRUE;
     }
-
+	else
+		NGLOG_DEBUG("ret:(%d)",ret);
     return FALSE;
 }
 
@@ -790,7 +791,7 @@ BOOL UC_Ird_Process_Command(UINT8* pu8CmdData)
         }
         case E_APP_CMD_CCAIRD_STATUS:
         {
-           Window::broadcast(View::WM_CCAMSG, (DWORD)pu8CmdData[1], 0);
+           Window::broadcast(WM_CCAMSG, (DWORD)pu8CmdData[1], 0);
            break;
         }
         case E_APP_CMD_CCAIRD_FINGERPRINTING_OPTION:

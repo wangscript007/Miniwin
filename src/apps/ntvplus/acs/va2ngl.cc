@@ -196,7 +196,7 @@ static void CANOTIFY(UINT msg,const SERVICELOCATOR*svc,DWORD wp,ULONG lp,void*us
     }
 }
 
-void  StartACS(){
+void  StartCA(){
     pthread_t tid;
     pthread_create(&tid,NULL,ACSProc,NULL);
     DtvRegisterNotify(CANOTIFY,NULL);

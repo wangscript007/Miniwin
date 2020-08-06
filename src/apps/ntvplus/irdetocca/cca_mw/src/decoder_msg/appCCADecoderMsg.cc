@@ -408,10 +408,14 @@ static void _MApp_DecoderMsg_SetSysSetting(void)
 #define CONFIG_FOR_NGL_CCA_MSGPATH  "/home/gx/msgdata.bin"
 BOOL UcMsgPs_Initialize(void)
 {
-	FILE *file;	
+	FILE *file=nullptr;	
 	file=fopen(CONFIG_FOR_NGL_CCA_MSGPATH,"ab+");
-	fclose(file);
-    return UC_ERROR_SUCCESS;
+	NGLOG_DEBUG("file:(%p) errno:(%d)",file,errno);
+	if(file){
+		fclose(file);
+    	return UC_ERROR_SUCCESS;
+	}
+	return UC_ERROR_OS_FAILURE;
 }
 
 BOOL UC_Load_DataFromSerialFlash(EN_CCA_IRD_DEST_BUFFER_ID eDestBufId, void* pBuf, UINT32 u32Size, UINT16 u16Offset)

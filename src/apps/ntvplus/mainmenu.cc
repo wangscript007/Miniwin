@@ -7,6 +7,11 @@
 #include <clockview.h>
 #include <fstream>
 
+#ifdef HAVE_IRDETOCCA
+#include <irdccaui.h>
+using namespace cca;
+#endif
+
 NGL_MODULE(MAINMENU)
 
 namespace ntvplus{
@@ -18,8 +23,9 @@ static void onButtonClick(View&v){
     case 1:CreateTVGuide();break;
     case 2:CreateChannelList();break;
     case 3:CreateMultiMedia()/*CreateMediaWindow()*/;break;
-    case 4:
-           break;
+#ifdef HAVE_IRDETOCCA
+    case 4:CreateIrdCcaMenuWindow();break;
+#endif
     default:break;
     }
 }
