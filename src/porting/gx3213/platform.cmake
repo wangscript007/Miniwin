@@ -17,9 +17,10 @@ set(HAL_EXTRA_LIBS
      -Wl,--start-group
      -L${GX_ROOT}/lib 
        -lc_sec  -lcyassl  -ldb  -ldash -lenca -lgxbuscore -lgxcore -lgxdvb -lgxplayer 
-       -lgxcaption -liconv 
-       #-ljpeg -lpng -lfreetype -lcurl libs of this line comefrom 3rdparty 
-       -llz4 -lmpeg2 -ltiff -lui -lwebp -lxml -lxml2 -lz -lzvbi
+       -lgxcaption -lzvbi 
+       #-lz -liconv  
+       #-ljpeg -lpng -lfreetype -lcurl #libs of this line comefrom 3rdparty 
+       -llz4 -lmpeg2 -ltiff -lui -lwebp -lxml -lxml2
      -Wl,--end-group
      CACHE INTERNAL "platform dependence libs")
 
