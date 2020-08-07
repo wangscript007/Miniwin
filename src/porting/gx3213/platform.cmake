@@ -15,10 +15,23 @@ set(HAL_EXTRA_LIBS1
 
 set(HAL_EXTRA_LIBS 
      -Wl,--start-group
-     -L${GX_ROOT}/lib 
-       -lcyassl  -ldash -lenca -lgxbuscore -lgxcore -lgxdvb -lgxplayer 
-       -llz4 -lmpeg2 -ltiff -lui -lwebp -lxml -lxml2
-       -lgxcaption -lzvbi 
+       ${GX_ROOT}/lib/libcyassl.a  
+       ${GX_ROOT}/lib/libdash.a 
+       ${GX_ROOT}/lib/libenca.a 
+       ${GX_ROOT}/lib/libgxbuscore.a 
+       ${GX_ROOT}/lib/libgxcore.a 
+       ${GX_ROOT}/lib/libgxdvb.a 
+       ${GX_ROOT}/lib/libgxplayer.a 
+       ${GX_ROOT}/lib/liblz4.a 
+       ${GX_ROOT}/lib/libmpeg2.a 
+       ${GX_ROOT}/lib/libtiff.a 
+       ${GX_ROOT}/lib/libui.a 
+       ${GX_ROOT}/lib/libwebp.a 
+       ${GX_ROOT}/lib/libxml.a
+       ${GX_ROOT}/lib/libxml2.a
+       ${GX_ROOT}/lib/libgxcaption.a
+       ${GX_ROOT}/lib/libzvbi.a
+       zlib iconv freetype curl jpeg png curl
        #-lz -liconv -ldb -lc_sec -ljpeg -lpng -lfreetype -lcurl 
        #libs of this line comefrom 3rdparty 
      -Wl,--end-group
