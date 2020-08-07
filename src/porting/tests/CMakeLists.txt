@@ -21,5 +21,6 @@ add_executable(hal_testsd ${SRCS_HAL_TESTS})
 
 target_link_libraries(hal_tests tvhal_static gtest)
 target_link_libraries(hal_testsd tvhal gtest)
+#set_target_properties(hal_tests PROPERTIES LINK_FLAGS "-Wl,--gc-section -static")
 
 install (TARGETS hal_tests  DESTINATION bin)

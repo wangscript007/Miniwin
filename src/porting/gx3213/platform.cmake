@@ -13,6 +13,14 @@ set(HAL_EXTRA_LIBS1
      -Wl,--end-group
      CACHE INTERNAL "platform dependence libs")
 
+set(GXCOMMON_LIBS    
+       ${GX_ROOT}/lib/libz.a        
+       ${GX_ROOT}/lib/libiconv.a
+       ${GX_ROOT}/lib/libfreetype.a 
+       ${GX_ROOT}/lib/libcurl.a
+       ${GX_ROOT}/lib/libjpeg.a      
+       ${GX_ROOT}/lib/libpng.a
+    )
 set(HAL_EXTRA_LIBS 
      -Wl,--start-group
        ${GX_ROOT}/lib/libcyassl.a  
@@ -31,7 +39,8 @@ set(HAL_EXTRA_LIBS
        ${GX_ROOT}/lib/libxml2.a
        ${GX_ROOT}/lib/libgxcaption.a
        ${GX_ROOT}/lib/libzvbi.a
-       zlib iconv freetype curl jpeg png curl
+
+       zlib iconv freetype curl jpeg png
        #-lz -liconv -ldb -lc_sec -ljpeg -lpng -lfreetype -lcurl 
        #libs of this line comefrom 3rdparty 
      -Wl,--end-group

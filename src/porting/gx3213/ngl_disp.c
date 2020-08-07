@@ -23,20 +23,36 @@ DWORD nglDispInit(){
     VideoColor color;
     GxMsgProperty_PlayerVideoAutoAdapt adapt={0};
     if(inited++>0)return NGL_OK;
-    /*GxPlayer_ModuleRegisterStreamDVB();
-    GxPlayer_ModuleRegisterStreamFILE();
-    GxPlayer_ModuleRegisterStreamHTTP();
-    GxPlayer_ModuleRegisterStreamM3U8();
-    GxPlayer_ModuleRegisterDemuxerMKV();
-    GxPlayer_ModuleRegisterDemuxerAVI();
-    GxPlayer_ModuleRegisterDemuxerSWTS();
-    GxPlayer_ModuleRegisterDemuxerHWTS();
-    GxPlayer_ModuleRegisterDemuxerPS();
-    GxPlayer_ModuleRegisterDemuxerMP3();
-    GxPlayer_ModuleRegisterDemuxerMP4();
-    GxPlayer_ModuleRegisterDemuxerLOGO();
-    */
+ #if 0
+    GxPlayer_ModuleRegisterDVB();
+    GxPlayer_ModuleRegisterFILE();
+    GxPlayer_ModuleRegisterMP3();
+    GxPlayer_ModuleRegisterMP4();
+    GxPlayer_ModuleRegisterAVI();
+    GxPlayer_ModuleRegisterES();
+    GxPlayer_ModuleRegisterMKV();
+    GxPlayer_ModuleRegisterFLV();
+    GxPlayer_ModuleRegisterAAC();
+    GxPlayer_ModuleRegisterTS ();
+    GxPlayer_ModuleRegisterPS ();
+    GxPlayer_ModuleRegisterLOGO();
+    GxPlayer_ModuleRegisterRMVB();
+
+    GxPlayer_ModuleRegisterVOD();
+    GxPlayer_ModuleRegisterHTTP();
+    GxPlayer_ModuleRegisterM3U8();
+    GxPlayer_ModuleRegisterRTMP();
+    GxPlayer_ModuleRegisterHTTPS();
+    GxPlayer_ModuleRegisterUDP();
+    GxPlayer_ModuleRegisterRTP();
+    GxPlayer_ModuleRegisterRTSP();
+    GxPlayer_ModuleRegisterWFD();
+    GxPlayer_ModuleRegisterCRYPTO();
+    GxPlayer_ModuleRegisterFIFO();//ONLY FOR LINUX
+    GxPlayer_ModuleRegisterRINGMEM();
+#else
     GxPlayer_ModuleRegisterALL();    
+#endif 
     GxPlayer_ModuleInit();
 
     GxPlayer_SetEventCallback(EventCBK);

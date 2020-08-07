@@ -409,6 +409,24 @@ cairo_surface_t *cairo_image_surface_create_from_jpeg_stdstream(std::istream&is)
 
     return sfc;
 }
+
+cairo_surface_t *cairo_image_surface_create_from_turbojpeg_stdstream(std::istream&is){
+    int width,height,subsamp,colorspace;
+    const unsigned char*buffer;
+    unsigned long buffersize;
+    cairo_surface_t*sfc;
+    tjhandle handle=tjInitDecompress();
+    tjDecompressHeader3(handle,buffer,buffersize,&width,&height,&subsamp,&colorspace);
+    sfc = cairo_image_surface_create(CAIRO_FORMAT_RGB24,width,height);
+    tjDecompress2(handle,buffer,buffersize,
+          cairo_image_surface_get_data(sfc),
+          cairo_image_surface_get_width(sfc),
+          cairo_image_surface_get_stride(sfc),
+          cairo_image_surface_get_height(sfc),
+          TJPF_RGB,TJFLAG_FASTDCT);
+    tjDestroy(handle);
+}
+
 /*! This function decompresses a JPEG image from a memory buffer and creates a
  * Cairo image surface.
  * @param data Pointer to JPEG data (i.e. the full contents of a JPEG file read
