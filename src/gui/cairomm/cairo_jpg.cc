@@ -410,22 +410,41 @@ cairo_surface_t *cairo_image_surface_create_from_jpeg_stdstream(std::istream&is)
     return sfc;
 }
 
+#ifdef ENABLE_TURBOJPEG
 cairo_surface_t *cairo_image_surface_create_from_turbojpeg_stdstream(std::istream&is){
     int width,height,subsamp,colorspace;
-    const unsigned char*buffer;
-    unsigned long buffersize;
-    cairo_surface_t*sfc;
-    tjhandle handle=tjInitDecompress();
+    unsigned char*buffer=NULL;
+    unsigned long buffersize=0;
+    cairo_surface_t*sfc=NULL;
+    tjhandle handle=NULL;
+    printf("===========%s==srteam.goot=%d fail=%d\r\n",__FUNCTION__,is.good(),is.fail());
+    if(!is.good())goto decend;
+    is.seekg(0,std::ios::end);printf("seekg.state=%d %d,%d,%d,%d\r\n",is.rdstate(),is.good(),is.bad(),is.fail(),is.eof());
+    buffersize=is.tellg();   printf("buffersize=%d state=%d \r\n",buffersize,is.rdstate());
+    if(buffersize==0||is.fail())goto decend;
+    buffer=(unsigned char*)malloc(buffersize);
+    if(NULL==buffer)goto decend;
+
+    is.seekg(0,std::ios::beg);
+    is.read((char*)buffer,buffersize);
+
+    handle=tjInitDecompress();
     tjDecompressHeader3(handle,buffer,buffersize,&width,&height,&subsamp,&colorspace);
+
     sfc = cairo_image_surface_create(CAIRO_FORMAT_RGB24,width,height);
+
     tjDecompress2(handle,buffer,buffersize,
           cairo_image_surface_get_data(sfc),
           cairo_image_surface_get_width(sfc),
           cairo_image_surface_get_stride(sfc),
           cairo_image_surface_get_height(sfc),
           TJPF_RGB,TJFLAG_FASTDCT);
-    tjDestroy(handle);
+decend:
+    if(handle)tjDestroy(handle);
+    if(buffer)free(buffer);
+    return sfc;
 }
+#endif
 
 /*! This function decompresses a JPEG image from a memory buffer and creates a
  * Cairo image surface.
