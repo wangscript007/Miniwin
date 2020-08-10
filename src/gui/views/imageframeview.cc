@@ -29,8 +29,10 @@ ImageFrameView::ImageFrameView(int w,int h):ImageView(w,h){
 }
 
 ImageFrameView::~ImageFrameView(){
+#ifdef ENABLE_GIF
     if(gifhandle)
        gifunload(gifhandle);
+#endif
 }
 
 void ImageFrameView::onAttached(){
@@ -57,11 +59,13 @@ void ImageFrameView::onDraw(GraphContext& canvas) {
     if(imageframes.size()==0)return;
     NGLOG_VERBOSE("draw frame %d delay=%d",index,imageframes[index]->delay);
     if(curframe){
+#ifdef ENABLE_GIF
         gifDrawFrame(gifhandle,curframe->get_stride(),curframe->get_data(),false);
         RefPtr<ImageSurface>img=ImageSurface::create(curframe->get_data(),curframe->get_format(),
                curframe->get_width(),curframe->get_height(),curframe->get_stride());
         gifgetnextframe(gifhandle,&index);
         canvas.draw_image(img,&rect,nullptr,(SCALETYPE)scale_type_);
+#endif
     }else{
         canvas.draw_image(imageframes[index]->image,&rect,nullptr,(SCALETYPE)scale_type_);
         index=(index+1)%imageframes.size();
