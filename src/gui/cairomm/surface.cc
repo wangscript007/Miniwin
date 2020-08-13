@@ -345,7 +345,8 @@ RefPtr<ImageSurface>ImageSurface:: create_from_stream(std::istream& stream){
     const unsigned char*ftype=(const unsigned char*)pakGetFileType((const char*)head);
     for(int i=0;i<sizeof(head);i++)stream.unget();
     if(memcmp("jpg",ftype,3)==0){
-       auto cobject=cairo_image_surface_create_from_jpeg_stdstream(stream);
+       cairo_surface_t* cobject=cairo_image_surface_create_from_turbojpeg_stdstream(stream);
+       if(nullptr==cobject )cairo_image_surface_create_from_jpeg_stdstream(stream)
        img=RefPtr<ImageSurface>(new ImageSurface(cobject, true /* has reference */));
     }else if(memcmp("png",ftype,3)==0)
         img=create_from_png(stream_read,&stream);
@@ -376,7 +377,7 @@ RefPtr<ImageSurface>ImageSurface:: create_from_stream(std::istream& stream){
 #endif
     }
     t2=steady_clock::now();
-    NGLOG_VERBOSE("used %.5f stype=%s",duration_cast<duration<double>>(t2 - t1),ftype);
+    NGLOG_VERBOSE_IF(img,"img.size=%dx%d used %.5f stype=%s",img->get_width(),img->get_height(),duration_cast<duration<double>>(t2 - t1),ftype);
     return img;
 }
 

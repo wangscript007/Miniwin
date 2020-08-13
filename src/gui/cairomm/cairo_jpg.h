@@ -60,6 +60,7 @@ cairo_status_t cairo_image_surface_write_to_jpeg_stream(cairo_surface_t *sfc, ca
 cairo_status_t cairo_image_surface_write_to_jpeg(cairo_surface_t *sfc, const char *filename, int quality);
 cairo_surface_t *cairo_image_surface_create_from_jpeg_mem(void *data, size_t len);
 cairo_surface_t *cairo_image_surface_create_from_jpeg_stdstream(std::istream&is);
+cairo_surface_t *cairo_image_surface_create_from_turbojpeg_stdstream(std::istream&is);
 #ifdef USE_CAIRO_READ_FUNC_LEN_T
 cairo_surface_t *cairo_image_surface_create_from_jpeg_stream(cairo_read_func_len_t read_func, void *closure);
 #else

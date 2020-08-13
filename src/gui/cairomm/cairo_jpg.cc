@@ -53,7 +53,12 @@
 #include <jpeglib.h>
 #include <turbojpeg.h>
 #include "cairo_jpg.h"
+#include <gui/gui_features.h>
 #include <istream>
+#include <ngl_types.h>
+#include <ngl_log.h>
+
+NGL_MODULE(CAIRO_JPEG);
 
 /*! Macro to activate main() function. This is only used for testing. Comment
  * it out (#undef) if you link this file to your own program. */
@@ -411,17 +416,23 @@ cairo_surface_t *cairo_image_surface_create_from_jpeg_stdstream(std::istream&is)
 }
 
 #ifdef ENABLE_TURBOJPEG
+
 cairo_surface_t *cairo_image_surface_create_from_turbojpeg_stdstream(std::istream&is){
     int width,height,subsamp,colorspace;
     unsigned char*buffer=NULL;
-    unsigned long buffersize=0;
+    std::streambuf::pos_type buffersize=0;
     cairo_surface_t*sfc=NULL;
     tjhandle handle=NULL;
-    printf("===========%s==srteam.goot=%d fail=%d\r\n",__FUNCTION__,is.good(),is.fail());
+
+    NGLOG_VERBOSE("srteam.good=%d fail=%d",is.good(),is.fail());
     if(!is.good())goto decend;
-    is.seekg(0,std::ios::end);printf("seekg.state=%d %d,%d,%d,%d\r\n",is.rdstate(),is.good(),is.bad(),is.fail(),is.eof());
-    buffersize=is.tellg();   printf("buffersize=%d state=%d \r\n",buffersize,is.rdstate());
-    if(buffersize==0||is.fail())goto decend;
+
+    is.seekg(0,std::ios::end);
+    NGLOG_VERBOSE("seekg.state=%d %d,%d,%d,%d",is.rdstate(),is.good(),is.bad(),is.fail(),is.eof());
+    buffersize=is.tellg(); 
+    NGLOG_VERBOSE("buffersize=%d",buffersize);
+    if((buffersize<=0)||is.fail())goto decend;
+
     buffer=(unsigned char*)malloc(buffersize);
     if(NULL==buffer)goto decend;
 
@@ -430,15 +441,19 @@ cairo_surface_t *cairo_image_surface_create_from_turbojpeg_stdstream(std::istrea
 
     handle=tjInitDecompress();
     tjDecompressHeader3(handle,buffer,buffersize,&width,&height,&subsamp,&colorspace);
-
     sfc = cairo_image_surface_create(CAIRO_FORMAT_RGB24,width,height);
+    NGLOG_VERBOSE("jpeg.size=%dx%d colorspace=%d pitch=%d",width,height,colorspace,cairo_image_surface_get_stride(sfc));
 
     tjDecompress2(handle,buffer,buffersize,
           cairo_image_surface_get_data(sfc),
           cairo_image_surface_get_width(sfc),
           cairo_image_surface_get_stride(sfc),
           cairo_image_surface_get_height(sfc),
-          TJPF_RGB,TJFLAG_FASTDCT);
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+          TJPF_BGRX,TJFLAG_FASTDCT);
+#else
+          TJPF_RGBX,TJFLAG_FASTDCT);
+#endif
 decend:
     if(handle)tjDestroy(handle);
     if(buffer)free(buffer);

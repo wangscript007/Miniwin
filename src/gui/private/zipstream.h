@@ -14,16 +14,20 @@ public:
   ZipStreamBuf* select(void* zfile);
   ZipStreamBuf* close();
   void seekg(std::streamoff off,int whence);
+  virtual std::streamsize showmanyc()override;
+  virtual pos_type  seekoff(off_type,std::ios_base::seekdir,std::ios_base::openmode /*__mode*/ = std::ios_base::in | std::ios_base::out)override;
+  virtual pos_type  seekpos(pos_type,std::ios_base::openmode /*__mode*/ = std::ios_base::in | std::ios_base::out)override;
 protected:
-  virtual int_type underflow();
-
+   int_type underflow()override;
+   //int_type uflow() override;
 private:
   static const unsigned BUFFER_SIZE = BUFSIZ;
   ZipStreamBuf(const ZipStreamBuf&);
   ZipStreamBuf& operator=(const ZipStreamBuf&);
-
+  std::ios_base::openmode io_mode;
   bool _select;
   void* _zipfile;
+  bool own_file;
   char_type* _buffer;
 };
 
@@ -34,7 +38,6 @@ public:
   bool is_open() { return _sb.is_open(); }
   void close();
   void select(void*zfile);
-  std::istream& seekg (std::streamoff off,std::ios_base::seekdir way);
 private:
   ZipStreamBuf _sb;
 };

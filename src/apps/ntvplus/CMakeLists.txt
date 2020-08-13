@@ -35,7 +35,7 @@ target_link_libraries(ntvplus jsoncpp_lib gui_static dvbepg_static ${APP_EXTLIBS
 target_link_libraries(ntvplusd pthread jsoncpp_lib gui dvbepg ${APP_EXTLIBS}  ${NGL_CALIBS})
 
 add_custom_command (TARGET ntvplus PRE_BUILD
-  COMMAND zip -r  ${CMAKE_CURRENT_BINARY_DIR}/ntvplus.pak *
+  COMMAND zip -r -0  ${CMAKE_CURRENT_BINARY_DIR}/ntvplus.pak *
   BYPRODUCTS ntvplus
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/assets
   DEPENDS zip
