@@ -441,6 +441,16 @@ cairo_surface_t *cairo_image_surface_create_from_turbojpeg_stdstream(std::istrea
 
     handle=tjInitDecompress();
     tjDecompressHeader3(handle,buffer,buffersize,&width,&height,&subsamp,&colorspace);
+    if(width>1920&&height>1080){
+        int numScalingFactors;
+        tjscalingfactor *factors=tjGetScalingFactors(&numScalingFactors);
+        for(int i=0;i<numScalingFactors;i++){
+            if( (width*factors[i].num/factors[i].denom<=1920)||(height*factors[i].num/factors[i].denom<=1080)){
+                width=width*factors[i].num/factors[i].denom;
+                height=height*factors[i].num/factors[i].denom;
+            }
+        }
+    }
     sfc = cairo_image_surface_create(CAIRO_FORMAT_RGB24,width,height);
     NGLOG_VERBOSE("jpeg.size=%dx%d colorspace=%d pitch=%d",width,height,colorspace,cairo_image_surface_get_stride(sfc));
 
