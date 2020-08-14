@@ -250,10 +250,7 @@ bool GroupView::onKeyUp(KeyEvent& evt) {
 }
 
 bool GroupView::hasActiveAnimations(){
-    for(int i=0;i<timeline.size();i++){
-        if(timeline[i]->time()<timeline.getDuration())return true;
-    } 
-    return false;
+    return (timeline.size()>1)&&(timeline[1]&&timeline[1]->time()<timeline.getDuration());
 }
 
 bool GroupView::onMessage(DWORD msgid,DWORD wParam,ULONG lParam){
