@@ -127,7 +127,9 @@ bool Window::onKeyUp(KeyEvent& evt){
     case KEY_ESC:
     case KEY_EXIT:
          NGLOG_DEBUG("recv %s",KeyEvent::getLabel(evt.getKeyCode()));
-         startAnimation(-getWidth(),getY(),false,[this](){sendMessage((DWORD)WM_DESTROY,0,0,0);});
+         if(hasActiveAnimations())return false;
+         startAnimation(MAKEPOINT(getX(),getY()),MAKEPOINT(-getWidth(),getY()),
+             choreograph::EaseInOutQuad(),[this](){sendMessage((DWORD)WM_DESTROY,0,0,0);});
          return true;
     } 
     return false;

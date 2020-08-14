@@ -30,7 +30,7 @@ NTVWindow::NTVWindow(int x,int y,int w,int h):Window(x,y,w,h){
 
     toolbar=nullptr;
     handle_notify=DtvRegisterNotify(EPG_CBK,this);
-    startAnimation(x+w,y);
+    startAnimation(MAKEPOINT(x+w,y),MAKEPOINT(x,y));
 }
 void NTVWindow::initContent(int styles){
     if(styles&NWS_TITLE){

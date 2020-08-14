@@ -43,13 +43,14 @@ class GroupView : public View {
   virtual const SIZE&getPreferSize()override;
   virtual void onDrawFocusRect(GraphContext&,const RECT&);
   virtual bool onMessage(DWORD msgid,DWORD wParam,ULONG lParam)override;
-  virtual void startAnimation(int x,int y,bool flyin=true,OnAnimationFinished fn=nullptr);
+  virtual void startAnimation(const POINT&ftom,const POINT&to,const choreograph::EaseFn &ease_fn = &choreograph::easeNone,OnAnimationFinished fn=nullptr);
 protected:
   choreograph::Timeline timeline;
   choreograph::Output<float>focus_target;
   choreograph::Output<float>view_target;
   std::chrono::steady_clock::time_point time_lastframe;
   View*getFocused();
+  bool hasActiveAnimations();
   virtual View* getNextFocus(View*cv,int key);
   void transformPointToViewLocal(View&child,POINT&point);
   bool isTransformedTouchPointInView(int x,int y,View& child,Point*outLocalPoint);
@@ -57,8 +58,8 @@ private:
   RECT focusRectSrc;
   RECT focusRectDest;
   RECT focusRect;
-  RECT winRect;//save window boundray  while animating
-  RECT winFrom;//window animate from boundary
+  POINT animateTo;//save window boundray  while animating
+  POINT animateFrom;//window animate from boundary
   void moveFocusTo(const RECT&r);
   void invalidateChildrenInFocusRect();
   typedef View INHERITED;

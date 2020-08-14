@@ -249,6 +249,13 @@ bool GroupView::onKeyUp(KeyEvent& evt) {
     return false;
 }
 
+bool GroupView::hasActiveAnimations(){
+    for(int i=0;i<timeline.size();i++){
+        if(timeline[i]->time()<timeline.getDuration())return true;
+    } 
+    return false;
+}
+
 bool GroupView::onMessage(DWORD msgid,DWORD wParam,ULONG lParam){
     RECT rect;
     bool needmoretimer=0;
@@ -288,20 +295,15 @@ bool GroupView::onMessage(DWORD msgid,DWORD wParam,ULONG lParam){
     return View::onMessage(msgid,wParam,lParam);
 }
 
-void GroupView::startAnimation(int x,int y,bool flyin,OnAnimationFinished fn){
+void GroupView::startAnimation(const POINT&from,const POINT&to,const choreograph::EaseFn &ease_fn,OnAnimationFinished fn){
     view_target=.0f;
-    if(flyin){
-        winRect=getBound();
-        winFrom.set(x,y,getWidth(),getHeight());
-    }else{
-        winFrom=getBound();
-        winRect.set(x,y,getWidth(),getHeight());
-    }
+    animateFrom=from;
+    animateTo=to;
     time_lastframe=steady_clock::now();
-    PhraseRef<float> mv=makeRamp(.0f,1.f,2.f,EaseInOutQuad());
+    PhraseRef<float> mv=makeRamp(.0f,1.f,2.f,ease_fn);//EaseInOutQuad());
     timeline.apply<float>(&view_target,mv).updateFn([this](){
-        int wx=winFrom.x+(winRect.x-winFrom.x)*view_target.value();
-        int wy=winFrom.y+(winRect.y-winFrom.y)*view_target.value();
+        int wx=animateFrom.x+(animateTo.x-animateFrom.x)*view_target.value();
+        int wy=animateFrom.y+(animateTo.y-animateFrom.y)*view_target.value();
         setPos(wx,wy);
     }).finishFn(fn);
     sendMessage(WM_TIMER,0,0,0);

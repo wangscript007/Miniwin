@@ -5,14 +5,6 @@ void Point::set(int x_,int y_){
     y=y_;
 }
 
-Rectangle::Rectangle(){
-   set(0,0,0,0);
-}
-
-Rectangle::Rectangle(int x_,int y_,int w_,int h_){
-   set(x_,y_,w_,h_);
-}
-
 void Rectangle::set(int x_,int y_,int w,int h){
    x=x_;y=y_;width=w;height=h;
 }
