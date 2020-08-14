@@ -153,7 +153,7 @@ public:
   std::vector<TimelineItemUniqueRef>::iterator end( ) { return _items.end( ); }
   std::vector<TimelineItemUniqueRef>::const_iterator begin( ) const { return _items.cbegin( ); }
   std::vector<TimelineItemUniqueRef>::const_iterator end( ) const { return _items.cend( ); }
-  TimelineItemUniqueRef& operator[](int i){return _items[i];}/*added by zhhou*/
+  TimelineItemUniqueRef& operator[](int i){return _items.at(i);}/*added by zhhou*/
 protected:
   void customSetTime( Time time ) override;
 

@@ -146,7 +146,7 @@ bool EditText::onMessage(DWORD msg,DWORD wp,ULONG lp){
             return Widget::onMessage(msg,wp,lp);
         std::string txt;
         Unicode2UTF8(wp,txt);
-        NGLOG_DEBUG("mCaretPos=%d text:[%s]",mCaretPos,txt.c_str());
+        NGLOG_VERBOSE("mCaretPos=%d text:[%s]",mCaretPos,txt.c_str());
         if(mEditMode==0||mCaretPos>=mText.size()){
             mText.insert(mCaretPos,txt);
             mCaretPos++;
