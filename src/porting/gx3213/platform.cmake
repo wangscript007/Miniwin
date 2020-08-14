@@ -3,42 +3,72 @@
 add_definitions(-DLINUX_OS)
 
 set(GX_ROOT $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux)
+set(GX_SROOT $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/lib)
+set(GX_DROOT $ENV{HOME}/gx3213/irdeto_cca/dvt/platform/library/arm-linux/lib/share)
 
-set(HAL_EXTRA_LIBS1
+set(GXCOMMON_DLIBS
+       ${GX_DROOT}/libjpeg.so 
+       ${GX_DROOT}/libpng.so
+       ${GX_DROOT}/libiconv.so
+       ${GX_DROOT}/libfreetype.so
+       ${GX_DROOT}/libcurl.so 
+   )
+
+#dynamic linked libraries
+set(HAL_EXTRA_DLIBS
      -Wl,--start-group
-     -L${GX_ROOT}/share
-       c_sec  cyassl  curl db  dash enca freetype gxbuscore gxapi  gxdvb gxplayer 
-       gxcaption iconv jpeg lz4 mpeg2 png tiff ui webp xml xml2 z zvbi
-       #gxhotplug jansson  qrencode  lzo
+#      ${GX_DROOT}/libc_sec.so
+       ${GX_DROOT}/libcyassl.so
+       ${GX_DROOT}/libdb.so  
+       ${GX_DROOT}/libdash.so
+       ${GX_DROOT}/libenca.so
+       ${GX_DROOT}/libgxbuscore.so
+       ${GX_DROOT}/libgxapi.so
+       ${GX_DROOT}/libgxdvb.so 
+       ${GX_DROOT}/libgxplayer.so
+       ${GX_DROOT}/libgxcaption.so
+       ${GX_DROOT}/liblz4.so 
+       ${GX_DROOT}/libmpeg2.so
+       ${GX_DROOT}/libtiff.so
+       ${GX_DROOT}/libui.so
+       ${GX_DROOT}/libwebp.so
+       ${GX_DROOT}/libxml.so 
+       ${GX_DROOT}/libxml2.so 
+#      ${GX_DROOT}/libzvbi.so
+       
+       png jpeg iconv freetype curl zvbi
+       #gxhotplug jansson  qrencode  lzo zlib
      -Wl,--end-group
      CACHE INTERNAL "platform dependence libs")
 
-set(GXCOMMON_LIBS    
-       ${GX_ROOT}/lib/libz.a        
-       ${GX_ROOT}/lib/libiconv.a
-       ${GX_ROOT}/lib/libfreetype.a 
-       ${GX_ROOT}/lib/libcurl.a
-       ${GX_ROOT}/lib/libjpeg.a      
-       ${GX_ROOT}/lib/libpng.a
+set(GXCOMMON_SLIBS    
+       ${GX_SROOT}/libz.a        
+       ${GX_SROOT}/libiconv.a
+       ${GX_SROOT}/libfreetype.a 
+       ${GX_SROOT}/libcurl.a
+       ${GX_SROOT}/libjpeg.a      
+       ${GX_SROOT}/libpng.a
     )
+
+#static linked libraries
 set(HAL_EXTRA_LIBS 
      -Wl,--start-group
-       ${GX_ROOT}/lib/libcyassl.a  
-       ${GX_ROOT}/lib/libdash.a 
-       ${GX_ROOT}/lib/libenca.a 
-       ${GX_ROOT}/lib/libgxbuscore.a 
-       ${GX_ROOT}/lib/libgxcore.a 
-       ${GX_ROOT}/lib/libgxdvb.a 
-       ${GX_ROOT}/lib/libgxplayer.a 
-       ${GX_ROOT}/lib/liblz4.a 
-       ${GX_ROOT}/lib/libmpeg2.a 
-       ${GX_ROOT}/lib/libtiff.a 
-       ${GX_ROOT}/lib/libui.a 
-       ${GX_ROOT}/lib/libwebp.a 
-       ${GX_ROOT}/lib/libxml.a
-       ${GX_ROOT}/lib/libxml2.a
-       ${GX_ROOT}/lib/libgxcaption.a
-       ${GX_ROOT}/lib/libzvbi.a
+       ${GX_SROOT}/libcyassl.a  
+       ${GX_SROOT}/libdash.a 
+       ${GX_SROOT}/libenca.a 
+       ${GX_SROOT}/libgxbuscore.a 
+       ${GX_SROOT}/libgxcore.a 
+       ${GX_SROOT}/libgxdvb.a 
+       ${GX_SROOT}/libgxplayer.a 
+       ${GX_SROOT}/liblz4.a 
+       ${GX_SROOT}/libmpeg2.a 
+       ${GX_SROOT}/libtiff.a 
+       ${GX_SROOT}/libui.a 
+       ${GX_SROOT}/libwebp.a 
+       ${GX_SROOT}/libxml.a
+       ${GX_SROOT}/libxml2.a
+       ${GX_SROOT}/libgxcaption.a
+       ${GX_SROOT}/libzvbi.a
 
        zlib iconv freetype curl jpeg png
        #-lz -liconv -ldb -lc_sec -ljpeg -lpng -lfreetype -lcurl 

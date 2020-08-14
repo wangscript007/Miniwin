@@ -18,3 +18,4 @@ int nglSysInit(){
     GxCore_HwMallocInit();
     return 0;
 }
+vbi_fetch_vt_flags(){}

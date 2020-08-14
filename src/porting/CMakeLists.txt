@@ -30,6 +30,10 @@ else()
   list(REMOVE_ITEM SRCS_COMMON .//ngl_rfb.c)
 endif()
 
+if(NOT HAL_EXTRA_DLIBS)
+  set(HAL_EXTRA_DLIBS ${HAL_EXTRA_LIBS})
+endif()
+
 include_directories(
         include
         ${NGL_CHIPSET}
@@ -40,7 +44,7 @@ include_directories(
 add_library(tvhal SHARED ${SRCS_COMMON} ${SOURCES_${NGL_CHIPSET}})
 add_library(tvhal_static STATIC ${SRCS_COMMON} ${SOURCES_${NGL_CHIPSET}})
 
-target_link_libraries(tvhal ${HAL_EXTRA_LIBS})
+target_link_libraries(tvhal ${HAL_EXTRA_DLIBS})
 target_link_libraries(tvhal_static ${HAL_EXTRA_LIBS})
 set_target_properties(tvhal_static PROPERTIES OUTPUT_NAME "tvhal")
 
