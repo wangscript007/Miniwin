@@ -9,7 +9,7 @@
 #include <mutex>
 #include <thread>
 #include <renderimpl.h>
-
+#include <subscriber.h>
 #ifdef HAVE_CA
 void StartCA();
 #endif
@@ -39,7 +39,8 @@ DVBApp::DVBApp(int argc,const char**argv)
 #endif
 #ifdef HAVE_CA
     StartCA();
-#endif    
+#endif
+   addEventSource(Subscriber::getInstance(),nullptr);
 }
 
 int DVBApp::exec(){

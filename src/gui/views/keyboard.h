@@ -10,6 +10,7 @@ protected:
 public:
    Keyboard(int x,int y,int w,int h);
    void setBuddy(EditText*buddy);
+   virtual int setLanguage(const std::string&lan);
 };
 
 }//namespace

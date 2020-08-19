@@ -33,6 +33,10 @@ void Keyboard::setBuddy(EditText*buddy){
     kv->setBuddy(buddy);
 }
 
+int Keyboard::setLanguage(const std::string&lan){
+   return 0;
+}
+
 KEYDEF US[]={//English (US)
     { '`', '~' },    { '1', '!' },   { '2', '@' },   { '3', '#' },   { '4', '$' },    { '5', '%' },   { '6', '^' },    { '7', '&' },   { '8', '*' },    
     { '9', '(' },    { '0', ')' },   { '-', '_' },   { '=', '+' },   {KV::KC_NONE,KV::KC_NONE},  {KV::KC_NONE,KV::KC_NONE,20},

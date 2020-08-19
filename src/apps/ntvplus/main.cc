@@ -7,7 +7,7 @@
 #include <diseqc.h>
 #include <string>
 #include <ngl_log.h>
-
+#include <iostream>
 NGL_MODULE(MAIN);
 
 using namespace ntvplus;
@@ -44,11 +44,16 @@ static bool onKey(int key){
 int main(int argc,const char*argv[]){
     DVBApp app(argc,argv);
     Desktop*desktop=new Desktop();
-    app.setName("com.ntvplus.dvbs");
-
+    app.setName("com.ntvplus.dvbs");        
     app.setOpacity(app.getArgAsInt("alpha",255));
     app.getString("mainmenu",app.getArg("language","eng"));
     desktop->setKeyListener(onKey);
+    std::string svclc("1.2.3.4");
+    std::istream& iss=std::cin.getline((char*)svclc.c_str(),svclc.size(),'.');
+    std::string id;
+    while(iss >> id) {
+         printf("--%s\r\n",id.c_str());
+    }
     return app.exec();
 }
 
