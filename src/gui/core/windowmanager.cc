@@ -32,6 +32,7 @@ WindowManager* WindowManager::instance_ = nullptr;
 WindowManager::WindowManager()
 {
      GraphDevice::getInstance();
+     activeWindow=nullptr;
 }
 
 WindowManager&WindowManager::getInstance(){
@@ -60,6 +61,12 @@ void WindowManager::addWindow(Window*win){
         NGLOG_VERBOSE("addwin %p window %p[%s] type=%d layer=%d",win,w,w->getText().c_str(),w->window_type,w->mLayer);
     }
 
+    if(win->hasFlag(View::FOCUSABLE)){
+        NGLOG_DEBUG("ActiveWindow %p-->%p",activeWindow,win);
+        if(activeWindow)activeWindow->onDeactive();
+        win->onActive();
+        activeWindow=win;
+    }
     win->onResize(win->getWidth(),win->getHeight());
     App::getInstance().addEventSource(win->source,[](EventSource&e)->bool{
         return ((UIEventSource&)e).processEvents();
@@ -87,6 +94,7 @@ RefPtr<Region>WindowManager::getVisibleRegion(int mLayer){
 }
 
 void WindowManager::removeWindow(Window*w){
+   if(w==activeWindow)activeWindow=nullptr;
    for(auto win=windows_.begin();win!=windows_.end();win++){
        if((*win)==w){
             windows_.erase(win);
@@ -95,6 +103,13 @@ void WindowManager::removeWindow(Window*w){
             break;
        }
    }resetVisibleRegion();
+   for(auto w:windows_){
+       if(w->hasFlag(View::FOCUSABLE)){
+          w->onActive();
+          activeWindow=w;
+          break;
+       } 
+   }
    NGLOG_VERBOSE("w=%p windows.size=%d",w,windows_.size());
 }
 void WindowManager::processEvent(InputEvent&e){

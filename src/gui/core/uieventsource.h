@@ -31,7 +31,7 @@ public:
     bool check(){
         return  getEvents();
     }
-    bool dispatch(EventHandler &func) { return func(*this); }
+    bool dispatch(EventHandler &func)override;
     bool processEvents();
     bool hasMessage(const View*,DWORD msgid);
     void removeMessage(const View*,DWORD msgid);

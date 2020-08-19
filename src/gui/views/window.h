@@ -42,6 +42,8 @@ public:
   virtual View& setPos(int x,int y)override;
   virtual View& setSize(int cx,int cy)override;
   virtual bool onKeyUp(KeyEvent& evt) override;
+  virtual void onActive();
+  virtual void onDeactive();
   virtual void sendMessage(DWORD msgid,DWORD wParam,ULONG lParam,DWORD delayedtime=0){
      sendMessage(this,msgid,wParam,lParam,delayedtime);
   }

@@ -46,6 +46,7 @@ protected:
   virtual void onMotion(MotionEvent&event);
 private:
   WindowManager();
+  Window*activeWindow;/*activeWindow*/
   std::vector< Window* > windows_;
   static WindowManager* instance_;
   DISALLOW_COPY_AND_ASSIGN(WindowManager);

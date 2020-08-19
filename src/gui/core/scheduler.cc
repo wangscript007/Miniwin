@@ -60,9 +60,10 @@ void Scheduler::remove(system_clock::time_point t){
 
 bool Scheduler::check(){
     auto task=taskQueue.begin();
-    NGLOG_DEBUG("time.now=%lld",system_clock::now().time_since_epoch().count());
+    if(taskQueue.size()==0)return 0;
+    NGLOG_VERBOSE("time.now=%lld",system_clock::now().time_since_epoch().count());
     for(auto it=taskQueue.begin();it!=taskQueue.end();it++)
-        NGLOG_DEBUG("it->time=%lld",it->first.time_since_epoch().count());
+        NGLOG_VERBOSE("it->time=%lld",it->first.time_since_epoch().count());
     if(task->first<=system_clock::now()){
         task->second();
         taskQueue.erase(taskQueue.begin());

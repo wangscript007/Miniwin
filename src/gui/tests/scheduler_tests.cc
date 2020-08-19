@@ -33,6 +33,17 @@ TEST_F(SCHEDULER,FromNow){
    ASSERT_EQ(count,1);
 }
 
+TEST_F(SCHEDULER,Every){
+   Scheduler sch;
+   int count=0;
+   sch.scheduleEvery([&count](){count++;},5);
+   for(int i=0;i<20;i++){
+       sleep(1);
+       sch.check();
+   }
+   ASSERT_EQ(count,4);
+}
+
 TEST_F(SCHEDULER,Hourly){
    Scheduler sch;
    int count=0;
@@ -41,6 +52,16 @@ TEST_F(SCHEDULER,Hourly){
    sch.check();
    ASSERT_EQ(count,0);
 }
+
+TEST_F(SCHEDULER,Hourly1){
+   Scheduler sch;
+   int count=0;
+   sch.scheduleHourly([&count](){count++;},system_clock::now());
+   sleep(3600);
+   sch.check();
+   ASSERT_EQ(count,1);
+}
+
 TEST_F(SCHEDULER,Daily){
    Scheduler sch;
    int count=0;

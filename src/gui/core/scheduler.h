@@ -1,4 +1,5 @@
 #ifndef __SHCEDULE_H__
+#define __SHCEDULE_H__
 #include<chrono>
 #include<functional>
 #include<map>
@@ -22,7 +23,7 @@ public:
     void scheduleWeekly(Function f,system_clock::time_point t);
     void scheduleMonthly(Function f,system_clock::time_point t);/*TODO*/
 
-    void remove(system_clock::time_point t);
+    virtual void remove(system_clock::time_point t);
     bool dispatch(nglui::EventHandler &func)override{ return func(*this);}
     bool check()override;/*check schedulered item*/
 };

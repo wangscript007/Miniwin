@@ -120,6 +120,14 @@ Window::~Window() {
     delete canvas;
 }
 
+void Window::onActive(){
+    NGLOG_DEBUG("%p[%s]",this,getText().c_str());
+}
+
+void Window::onDeactive(){
+    NGLOG_DEBUG("%p[%s]",this,getText().c_str());
+}
+
 bool Window::onKeyUp(KeyEvent& evt){
     if(INHERITED::onKeyUp(evt))
         return true;

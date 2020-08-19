@@ -33,6 +33,11 @@ bool UIEventSource::processEvents(){
     return rc;
 }
 
+bool UIEventSource::dispatch(EventHandler &func){ 
+    if(func)return func(*this); 
+    return processEvents();
+}
+
 void UIEventSource::reset(){
     while(!delayed_msgs.empty())delayed_msgs.pop_front();
     while(!normal_msgs.empty())normal_msgs.pop_front();
