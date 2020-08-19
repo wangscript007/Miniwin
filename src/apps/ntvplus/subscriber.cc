@@ -41,6 +41,7 @@ int Subscriber::add(SubscribeItem&itm){
     }
     return 1;
 }
+
 int Subscriber::addOnce(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
     p.first->second.type=0;
@@ -57,6 +58,17 @@ int Subscriber::addWeekly(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
      p.first->second.type=2;
     scheduleWeekly(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
+}
+
+const SubscribeItem*Subscriber::find(int64_t tm){/*find subscribe by tm(time_t)*/
+    system_clock::time_point tp=time_point<system_clock,seconds>(seconds(tm));
+    auto p=items.find(tp);
+    return p==items.end()?nullptr:&p->second;
+}
+
+void Subscriber::remove(int64_t tm){
+    system_clock::time_point tp=time_point<system_clock,seconds>(seconds(tm));
+    items.erase(tp); 
 }
 
 int Subscriber::load(const std::string&filename){
@@ -88,10 +100,11 @@ int Subscriber::load(const std::string&filename){
 }
 
 int Subscriber::save(const std::string&filename){
-    Json::Value root;//(Json::arrayValue);
+    Json::Value root;
     Json::String errs;
     Json::StreamWriterBuilder builder;
     std::ofstream fout;
+    int comment=0;
     fout.open(filename);
     std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
     for(auto it=items.begin();it!=items.end();it++){
@@ -100,14 +113,17 @@ int Subscriber::save(const std::string&filename){
        if(false==root.isMember(svc)){
           Json::Value jssvc(Json::arrayValue);
           root[svc]=jssvc;
+          if(0==comment)root[svc].setComment("Service Locator",Json::commentAfterOnSameLine);
        }
-       //Json::Value jssvc=root[svc];
        Json::Value evt;
        evt["eventid"]=it->second.eventid;
        evt["type"]=it->second.type;
        evt["time"]=duration_cast<seconds>(it->second.time.time_since_epoch()).count();
        evt["name"]=it->second.name;
+       if(0==comment)
+          evt.setComment("type: 0-->runOnce,1-->Dialy,2-->Weekly",Json::commentAfterOnSameLine);
        root[svc].append(evt);
+       comment++;
     }
     writer->write(root,&fout);
 }

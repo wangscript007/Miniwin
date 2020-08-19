@@ -26,6 +26,8 @@ public:
     int addOnce(SubscribeItem&);
     int addDaily(SubscribeItem&);
     int addWeekly(SubscribeItem&);
+    const SubscribeItem*find(int64_t tm);/*find subscribe by tm(time_t)*/
+    void remove(int64_t tm);/*remove subscribe by tm(time_t)*/
     size_t size(){return items.size();}
     void clear(){items.clear();}
     int load(const std::string&filename);
