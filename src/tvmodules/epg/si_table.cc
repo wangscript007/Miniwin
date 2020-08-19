@@ -5,9 +5,24 @@
 #include<stdio.h>
 #include<ngl_log.h>
 #include<utils.h>
-
+#include<sstream>
 NGL_MODULE(SITABLE);
 
+const std::string SERVICELOCATOR2String(const SERVICELOCATOR*svc){
+    std::ostringstream oss;
+    oss<<svc->netid<<"."<<svc->tsid<<"."<<svc->sid<<"."<<svc->tpid;
+    return oss.str();
+}
+
+SERVICELOCATOR SERVICELOCATORFromString(const char*locstr){
+    SERVICELOCATOR svc={0,0,0,0};
+    const char*p=locstr;
+    if(p){ svc.netid=atoi(p); p=strpbrk(locstr,".");}
+    if(p){svc.tsid =atoi(p+1);p=strpbrk(p+1,".");}
+    if(p){svc.sid  =atoi(p+1);p=p=strpbrk(p+1,".");}
+    if(p)svc.tpid =atoi(p+1);
+    return svc;
+}
 
 PSITable::PSITable(const BYTE*buf,bool deepcopy){
     int slen=((buf[1]&0x0F)<<8)|buf[2];

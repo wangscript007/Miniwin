@@ -48,12 +48,6 @@ int main(int argc,const char*argv[]){
     app.setOpacity(app.getArgAsInt("alpha",255));
     app.getString("mainmenu",app.getArg("language","eng"));
     desktop->setKeyListener(onKey);
-    std::string svclc("1.2.3.4");
-    std::istream& iss=std::cin.getline((char*)svclc.c_str(),svclc.size(),'.');
-    std::string id;
-    while(iss >> id) {
-         printf("--%s\r\n",id.c_str());
-    }
     return app.exec();
 }
 

@@ -7,6 +7,7 @@
 #include <descriptors.h>
 #include <ngl_tuner.h>
 #include <vector>
+#include <string>
 enum{
    PID_PAT=0,
    PID_CAT=1,
@@ -103,6 +104,9 @@ public:
 }STREAMDB;
 
 typedef std::vector<STREAMDB>STREAMLIST;
+
+const std::string SERVICELOCATOR2String(const SERVICELOCATOR*svc);
+SERVICELOCATOR SERVICELOCATORFromString(const char*);
 
 class PSITable{
 protected:

@@ -18,18 +18,44 @@ Subscriber*Subscriber::getInstance(){
        mInst=new Subscriber();
     return mInst;
 }
+
+SubscribeItem Subscriber::FromEvent(const DVBEvent&e,const SERVICELOCATOR*svc){
+    SubscribeItem itm;
+    char name[256],desc[256];
+    auto t64=std::chrono::seconds(e.start_time);
+    if(svc)itm.svc=*svc;
+    e.getShortName(name,desc);
+    itm.eventid=e.event_id;
+    itm.name=name;
+    itm.time=time_point<system_clock,seconds>(t64);
+    itm.type=0;
+    return itm;
+}
+
+int Subscriber::add(SubscribeItem&itm){
+    switch(itm.type){
+    case 0:addOnce(itm);break;
+    case 1:addDaily(itm);break;
+    case 2:addWeekly(itm);break;
+    default:return 0;
+    }
+    return 1;
+}
 int Subscriber::addOnce(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
+    p.first->second.type=0;
     schedule(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
 int Subscriber::addDaily(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
+     p.first->second.type=1;
     scheduleDaily(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
 int Subscriber::addWeekly(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
+     p.first->second.type=2;
     scheduleWeekly(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
@@ -38,38 +64,82 @@ int Subscriber::load(const std::string&filename){
     Json::String errs;
     Json::CharReaderBuilder builder;
     std::ifstream fin;
+    int count=0;
     fin.open(filename);
     bool rc=Json::parseFromStream(builder,fin, &root, &errs);
     Json::Value::Members svcs=root.getMemberNames();
+    NGLOG_DEBUG("svcs.size=%d",svcs.size());
     for(auto s:svcs){
+       SubscribeItem itm; 
        Json::Value evts=root[s];
+       itm.svc=SERVICELOCATORFromString(s.c_str());
+       NGLOG_DEBUG("svc:%s=%d.%d.%d",s.c_str(),itm.svc.netid,itm.svc.tsid,itm.svc.sid);
        for(auto e:evts){
+           auto t64=std::chrono::seconds(e["time"].asInt64());
+           itm.eventid=e["eventid"].asInt();
+           itm.type=e["type"].asInt();
+           itm.time=time_point<system_clock,seconds>(t64); 
+           itm.name=e["name"].asString();
+           add(itm);
+           count++;
        }
     }
+    return count;
 }
 
 int Subscriber::save(const std::string&filename){
-    Json::Value root(Json::arrayValue);
+    Json::Value root;//(Json::arrayValue);
     Json::String errs;
     Json::StreamWriterBuilder builder;
     std::ofstream fout;
     fout.open(filename);
     std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
     for(auto it=items.begin();it!=items.end();it++){
-       std::ostringstream  oss;
-       oss<<it->second.svc.netid<<"."<<it->second.svc.tsid<<"."<<it->second.svc.sid;
-       std::string svc=oss.str();
+       const std::string svc=SERVICELOCATOR2String(&it->second.svc);
+       NGLOG_DEBUG("svc=%s",svc.c_str());
        if(false==root.isMember(svc)){
           Json::Value jssvc(Json::arrayValue);
-          root[svc].append(jssvc);
+          root[svc]=jssvc;
        }
-       Json::Value jssvc=root[svc];
+       //Json::Value jssvc=root[svc];
        Json::Value evt;
-       evt["eventid"]=Json::Value(it->second.eventid);
-       evt["name"]=Json::Value(it->second.name);
+       evt["eventid"]=it->second.eventid;
+       evt["type"]=it->second.type;
+       evt["time"]=duration_cast<seconds>(it->second.time.time_since_epoch()).count();
+       evt["name"]=it->second.name;
        root[svc].append(evt);
     }
     writer->write(root,&fout);
 }
+#ifdef DEBUG
+void subscribe_test(){
+    Subscriber&sc=*Subscriber::getInstance();
+    SubscribeItem itm;
+    itm.svc={1,2,3,4};
+    itm.eventid=100;
+    itm.name="test once";
+    itm.time=system_clock::now()+seconds(10);
+    sc.addOnce(itm);
+    NGLOG_DEBUG("sc.size=%d",sc.size());
+
+    itm.eventid++;
+    itm.name="test daily";
+    itm.time+=seconds(10); 
+    sc.addDaily(itm);
+    NGLOG_DEBUG("sc.size=%d",sc.size());
+
+    itm.eventid++;
+    itm.name="test weekly";
+    itm.time+=seconds(10); 
+    sc.addWeekly(itm);
+    NGLOG_DEBUG("sc.size=%d",sc.size());
+    sc.save("schedule.json");
+    sc.clear();
+    NGLOG_DEBUG("sc.size=%d",sc.size());
+    sc.load("schedule.json");
+    NGLOG_DEBUG("sc.size=%d",sc.size());
+    sc.save("schedule1.json");
+}
+#endif
 
 }

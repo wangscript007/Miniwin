@@ -40,6 +40,7 @@ DVBApp::DVBApp(int argc,const char**argv)
 #ifdef HAVE_CA
     StartCA();
 #endif
+   Subscriber::getInstance()->load("subscribe.json");
    addEventSource(Subscriber::getInstance(),nullptr);
 }
 
