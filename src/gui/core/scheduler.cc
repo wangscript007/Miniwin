@@ -17,7 +17,8 @@ static void Repeat2(Scheduler* s, Scheduler::Function f,system_clock::time_point
 }
 
 void Scheduler::schedule(Function f,system_clock::time_point t){
-    taskQueue.insert(std::make_pair(t, f));
+    if(t>system_clock::now())
+       taskQueue.insert(std::make_pair(t, f));
 }
 
 void Scheduler::scheduleFromNow(Function f, int64_t deltaSeconds){
