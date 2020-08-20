@@ -42,7 +42,8 @@ static INT PlayService(BYTE*pmtbuff,const char*lan){
     pcr=pmt.pcrPid();
     for(int i=0;i<cnt;i++){
        char*pc=es[i].iso639lan;
-       NGLOG_DEBUG("\t pid=%d type=%d %s",es[i].pid,es[i].getType(),pc);
+       NGLOG_VERBOSE("\t service:%d pid=%d[0x%x] type=%d[%d] cat=%d %s",pmt.getProgramNumber(),es[i].pid,es[i].pid,
+            es[i].getType(),es[i].stream_type,es[i].getCategory(),pc);
        switch(es[i].getCategory()){
        case ST_VIDEO:vi=i;break;
        case ST_AUDIO:

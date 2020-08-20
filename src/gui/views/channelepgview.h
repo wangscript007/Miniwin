@@ -7,6 +7,7 @@ struct TVEvent{
    UINT id;
    LONG start;
    LONG duration;
+   UINT flags;
    std::string name;
    std::string desc;
    std::string ext;

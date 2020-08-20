@@ -134,8 +134,10 @@ INT MpegElement::getType()const{
             return DECA_DTS;
         if(findDescriptor(TAG_AAC))
             return DECA_AAC_LATM;//??
-	NGLOG_DEBUG("pid:0x%x/%d type:%d",pid,pid,stream_type);
-	dump();
+        return 0;
+    default:
+        NGLOG_VERBOSE("pid:0x%x/%d type:%d",pid,pid,stream_type);
+        return 0;
     }
     return 0;
 }
@@ -223,13 +225,13 @@ int PMT::getElements(ELEMENTSTREAM*elements,bool own)const{
         es->pid=(des[1]&0x1F)<<8|des[2];
         es->setDescriptor(des+5,dlen,own);//es->length=(des[3]&0x0F)<<8|des[4];
         pca=es->findDescriptor(TAG_CA);
-        des+=dlen+5;
         if(pca){
             CADescriptor cad(pca,pca[1]+2);
             es_caid=cad.getCAID();
             svc_ecmpid=cad.getEcmPID();
         }
         GetExtESInfo(es);
+        des+=dlen+5;
         es++;
     }
     return es-elements;

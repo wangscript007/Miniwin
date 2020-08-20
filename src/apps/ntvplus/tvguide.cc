@@ -19,12 +19,10 @@ class TVChannelExt:public nglui::ChannelBar {
     SERVICELOCATOR svc;
     int update;
     BOOL isHD;
-    BOOL subscribed;
   public:
     TVChannelExt(const std::string&txt,const SERVICELOCATOR*svc_):ChannelBar(txt) {
         svc=*svc_;
         update=1;
-        subscribed=0;
     }
 };
 
@@ -94,7 +92,7 @@ class TVWindow:public NTVNavWindow {
                 for(e:evts) {
                     TVEvent te;
                     DVBEvent2TVEvent(e,te);
-                    te.subscribed=(nullptr==Subscriber::getInstance()->find(e->start_time));
+                    te.flags=(nullptr==Subscriber::getInstance()->find(e.start_time));/*set subscrib flags*/
                     ch->addEvent(te);
                 }
                 break;
