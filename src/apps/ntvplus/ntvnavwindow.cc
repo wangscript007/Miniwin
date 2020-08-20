@@ -102,6 +102,7 @@ int NTVNavWindow::loadEventPF(const SERVICELOCATOR*svc){
 int NTVNavWindow::loadEvents(const SERVICELOCATOR&svc){
     std::vector<DVBEvent>evts;
     DtvGetEvents(&svc,evts);
+    NGLOG_DEBUG("%s rcv %d events",SERVICELOCATOR2String(&svc).c_str(),evts.size());
     onEvents(svc,evts);
     return evts.size();
 }

@@ -126,6 +126,7 @@ public:
         TVChannelExt*ch=new TVChannelExt(name,&loc);
         ch->setId(lcn);
         ch->isHD=ISHDVIDEO(info->serviceType);
+        lv->addItem(ch);
         if(loc==cur)lv->setIndex(lv->getItemCount()-1);
    }
    void DVBEvent2TVEvent(const DVBEvent&e,TVEvent&te){

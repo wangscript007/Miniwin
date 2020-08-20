@@ -53,11 +53,12 @@ ChannelBar::ChannelBar(int x,int y,int w,int h):NTVNavWindow(x,y,w,h){
    chlst->clearFlag(View::FOCUSABLE);
    chlst->setBgColor(0).setFgColor(0xFFFFFFFF);
    addChildView(chlst);
-   chlst->setItemSelectListener([](AbsListView&lv,const ListView::ListItem&lvitem,int index){
+   chlst->setItemSelectListener([this](AbsListView&lv,const ListView::ListItem&lvitem,int index){
         ChannelItem&itm=(ChannelItem&)lvitem;
         SERVICELOCATOR&s=itm.svc;
         NGLOG_DEBUG("play %d.%d.%d",s.netid,s.tsid,s.sid);
         DtvPlay(&itm.svc,nullptr);
+        loadEventPF(&s);
     });
 
    event_name=new TextView(std::string(),495,46);
