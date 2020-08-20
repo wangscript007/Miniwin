@@ -32,9 +32,7 @@ namespace nglui{
   }
   void DtvEventSource::push_event(const SERVICELOCATOR&svc,int msg){
       int64_t s64=(svc.netid<<48)|(svc.tsid<<32)|(svc.sid<<16)|svc.tpid;
-      if(msgmap.find(s64)!=msgmap.end())
-          events[s64]=events[s64]|(1<<msgmap[msg]);
-      NGLOG_VERBOSE("msg=%x",msg);
+      events[s64]|=(1<<msgmap[msg]);
   }
   void DtvEventSource::process(){
       if(events.size()==0)return;
