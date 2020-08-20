@@ -23,10 +23,15 @@ namespace nglui{
           mInst=new DtvEventSource();
       return mInst;
   }
+  bool DtvEventSource::dispatch(EventHandler &func){
+      process();
+      return func(*this);
+  }
 
   bool DtvEventSource::prepare(int&){
       return events.size()>0;
   }
+
   bool DtvEventSource::check(){
       return events.size()>0;
   }

@@ -24,7 +24,7 @@ public:
     void scheduleMonthly(Function f,system_clock::time_point t);/*TODO*/
 
     virtual void remove(system_clock::time_point t);
-    bool dispatch(nglui::EventHandler &func)override{ return func(*this);}
+    bool dispatch(nglui::EventHandler &func)override;
     bool check()override;/*check schedulered item*/
 };
 

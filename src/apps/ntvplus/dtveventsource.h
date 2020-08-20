@@ -18,7 +18,7 @@ public:
     static DtvEventSource*getInstance();
     //bool is_idle_source() const override {return true;}/*idle will caused crash*/
     void push_event(const SERVICELOCATOR&svc,int msg);
-    bool dispatch(EventHandler &func)override{ return func(*this);}
+    bool dispatch(EventHandler &func)override;
     bool prepare(int&)override;
     bool check()override;/*check schedulered item*/
     void process();

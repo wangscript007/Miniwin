@@ -46,7 +46,7 @@ DVBApp::DVBApp(int argc,const char**argv)
    itm.name="subscribe.test";
    itm.time=system_clock::now()+seconds(10);
    Subscriber::getInstance()->addOnce(itm);
-   auto fun=[](EventSource&)->bool{NGLOG_DEBUG("");return true;};
+   auto fun=[](EventSource&)->bool{return true;};
    addEventSource(Subscriber::getInstance(),fun);
    addEventSource(DtvEventSource::getInstance(),fun);
 }

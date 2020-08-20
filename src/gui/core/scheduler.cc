@@ -16,6 +16,11 @@ static void Repeat2(Scheduler* s, Scheduler::Function f,system_clock::time_point
     s->schedule(std::bind(&Repeat2,s,f,t,deltaSeconds),t);
 }
 
+bool Scheduler::dispatch(nglui::EventHandler &func){
+    /*check(),check will be called by looper*/;
+    return func(*this);
+}
+
 void Scheduler::schedule(Function f,system_clock::time_point t){
     if(t>system_clock::now())
        taskQueue.insert(std::make_pair(t, f));
@@ -66,7 +71,7 @@ bool Scheduler::check(){
     for(auto it=taskQueue.begin();it!=taskQueue.end();it++)
         NGLOG_VERBOSE("it->time=%lld",it->first.time_since_epoch().count());
     if(task->first<=system_clock::now()){
-        task->second();
+        task->second();/*Call Function*/
         taskQueue.erase(taskQueue.begin());
         return 1;
     }
