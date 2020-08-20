@@ -121,7 +121,7 @@ public:
     int getY()const;//y pos to screen
     int getWidth()const;
     int getHeight()const;
-    virtual void setText(const std::string&txt);
+    virtual View& setText(const std::string&txt);
     virtual const std::string& getText()const;
     bool pointInView(int x,int y)const;
     void clip(GraphContext&canvas);
@@ -160,20 +160,20 @@ public:
     virtual void onLayout();
  
    // Attribute
-    virtual void setFlag(int flag);
-    virtual void clearFlag(int flag);
+    virtual View& setFlag(int flag);
+    virtual View& clearFlag(int flag);
     virtual bool hasFlag(int flag) const;
     virtual bool isFocused()const;
     // Enable & Visible
-    virtual void setVisible(bool visable);
+    virtual View& setVisible(bool visable);
     virtual bool isVisible() const;
-    virtual void setEnable(bool enable);
+    virtual View& setEnable(bool enable);
     virtual bool isEnable() const;
 
     // Parent and children views
     virtual int getViewOrder(View*v);
     virtual View*getParent();
-    virtual void setParent(View*p);
+    virtual View& setParent(View*p);
     virtual View*getChildView(size_t idx);
     virtual View*findViewById(int id);
     virtual View*addChildView(View* view);

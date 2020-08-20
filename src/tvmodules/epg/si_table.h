@@ -210,6 +210,7 @@ public:
      DVBService(const DVBService&b);
      DVBService(const BYTE*buf,INT len,bool deep=true);
      int getServiceName(char*name,char*provider=nullptr)const;
+     operator const SERVICELOCATOR()const;
 }SERVICE;
 
 class SDT :public PSITable{

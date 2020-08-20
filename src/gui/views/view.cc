@@ -279,9 +279,10 @@ int View::getY()const{
     return mBound.y;
 }
 
-void View::setText(const std::string&txt){
+View& View::setText(const std::string&txt){
     mText=txt;
     invalidate(nullptr);
+    return *this;
 }
 
 const std::string& View::getText()const{
@@ -364,18 +365,20 @@ const SIZE&View::getPreferSize(){
 void View::onFocusChanged(bool){
 }
 
-void View::setFlag(int flag) {
+View& View::setFlag(int flag) {
     mViewFlags |= flag;
     if((INT)flag&FOCUSED)
        onFocusChanged(TRUE);
     invalidate(nullptr);
+    return *this;
 }
 
-void View::clearFlag(int flag) {
+View& View::clearFlag(int flag) {
     mViewFlags&=(~flag);
     if(flag&FOCUSED)
        onFocusChanged(FALSE);
     invalidate(nullptr);
+    return *this;
 }
 
 bool View::hasFlag(int flag) const {
@@ -386,22 +389,24 @@ bool View::isFocused()const {
    return hasFlag(FOCUSED);
 }
 
-void View::setVisible(bool visable) {
+View& View::setVisible(bool visable) {
    if(visable)
         setFlag(VISIBLE);
    else 
         clearFlag(VISIBLE);
+   return *this;
 }
 
 bool View::isVisible() const {
    return hasFlag(VISIBLE);
 }
 
-void View::setEnable(bool enable) {
+View& View::setEnable(bool enable) {
     if(enable)
         setFlag(ENABLED);
     else 
         clearFlag(ENABLED);
+    return *this;
 }
 
 bool View::isEnable() const {
@@ -475,9 +480,10 @@ View*View::getParent(){
     return mParent;
 }
 
-void View::setParent(View*p){
+View& View::setParent(View*p){
     mParent=p;
     onAttached();
+    return *this;
 }
 
 int View::getViewOrder(View*v){

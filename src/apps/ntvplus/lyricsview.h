@@ -15,7 +15,7 @@ protected:
 public:
     LyricsView(const std::string& text);
     LyricsView(const std::string& text, int width, int height);
-    void setText(const std::string&txt)override;
+    View& setText(const std::string&txt)override;
     virtual void onDraw(GraphContext& canvas) override;
     virtual void setTime(UINT timems);
     const std::string getTitle()const;

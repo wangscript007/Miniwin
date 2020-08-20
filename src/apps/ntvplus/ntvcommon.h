@@ -72,6 +72,7 @@ public:
 };
 
 ToolBar*CreateNTVToolBar(int w,int h);
+void DrawSplitter(GraphContext&canvas,RECT&r);
 void ChannelPainter(AbsListView&lv,const ListView::ListItem&itm,int state,GraphContext&canvas);
 void ChannelPainterLCN(AbsListView&lv,const ListView::ListItem&itm,int state,GraphContext&canvas);
 

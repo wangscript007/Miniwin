@@ -10,33 +10,37 @@ RuleView::RuleView(int w,int h):View(w,h){
     onGetLabel=nullptr;
 }
 
-void RuleView::setMin(int v){
+RuleView& RuleView::setMin(int v){
     if(startValue!=v){
         startValue=v;
         endValue=v+getWidth()/interval;
         invalidate(nullptr);
     }
+    return *this;
 }
 
-void RuleView::setMax(int v){
+RuleView& RuleView::setMax(int v){
     if(endValue!=v){
         endValue=v;
         invalidate(nullptr);
     }
+    return *this;
 }
 
-void RuleView::setInterval(int v){
+RuleView& RuleView::setInterval(int v){
     if(interval!=v){
         interval=v;
         invalidate(nullptr);
     }
+    return *this;
 }
 
-void RuleView::setOffset(int v){
+RuleView& RuleView::setOffset(int v){
     if(offset!=v){
         offset=v;
         invalidate(nullptr);
     }
+    return *this;
 }
 
 void RuleView::setLabeListener(GetLabeListener listener){

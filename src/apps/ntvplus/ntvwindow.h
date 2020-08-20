@@ -26,7 +26,7 @@ public:
    NTVWindow(int x,int y,int w,int h);
    ~NTVWindow();
    virtual void initContent(int styles=NWS_TITLE|NWS_TOOLTIPS);//create children view. 
-   virtual void setText(const std::string&txt);
+   virtual View& setText(const std::string&txt);
    const std::string&getText()const;
    void addTipInfo(const std::string&img,const std::string&title,int width=-1);
    void clearTips();

@@ -15,10 +15,10 @@ protected:
    GetLabeListener onGetLabel;
 public:
    RuleView(int w,int h);
-   void setMin(int);
-   void setMax(int);
-   void setInterval(int);
-   void setOffset(int);
+   RuleView& setMin(int);
+   RuleView& setMax(int);
+   RuleView& setInterval(int);
+   RuleView& setOffset(int);
    void setLabeListener(GetLabeListener listener);
    int getMin()const{return startValue;}
    int getMax()const{return endValue;}

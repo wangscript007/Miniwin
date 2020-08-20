@@ -309,6 +309,15 @@ int DVBService::getServiceName(char*name,char*provider)const{
      return sd.getName(name,provider);
 }
 
+DVBService::operator const SERVICELOCATOR()const{
+     SERVICELOCATOR l;
+     l.netid=netid;
+     l.tsid=tsid;
+     l.sid=service_id;
+     l.tpid=0;
+     return l;
+}
+
 DVBEvent::DVBEvent():Descriptors(){
     event_id=0;
     start_time=0;

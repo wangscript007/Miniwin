@@ -259,7 +259,7 @@ INT DtvGetTPByService(const SERVICELOCATOR*loc,TRANSPONDER*tp){
          if( (t.netid==loc->netid) &&(t.tsid==loc->tsid) &&
             ((ISDVBS(t.tune.delivery_type)&&(t.tune.u.s.tpid==loc->tpid))||!ISDVBS(t.tune.delivery_type))){
              *tp=t.tune;
-             NGLOG_DEBUG("%d.%d.%d.%d freq=%d type=%d tpid=%d",loc->netid,loc->tsid,loc->sid,loc->tpid,tp->u.s.frequency,tp->delivery_type,tp->u.s.tpid);
+             NGLOG_VERBOSE("%d.%d.%d.%d freq=%d type=%d tpid=%d",loc->netid,loc->tsid,loc->sid,loc->tpid,tp->u.s.frequency,tp->delivery_type,tp->u.s.tpid);
              return NGL_OK;
          }
     }
@@ -272,7 +272,7 @@ INT DtvTuneByService(const SERVICELOCATOR*loc){
     DtvGetCurrentService(&cur);
     DtvGetTPByService(loc,&tp);
     if(cur.netid!=loc->netid||cur.tsid!=loc->tsid){
-         NGLOG_DEBUG("tunning to ts %d.%d %d",loc->netid,loc->tsid,tp.u.s.frequency);
+         NGLOG_INFO("tunning to ts %d.%d %d",loc->netid,loc->tsid,tp.u.s.frequency);
          if(tp.delivery_type==DELIVERY_S||tp.delivery_type==DELIVERY_S2)
             ConfigureTransponder(&tp);
          nglTunerLock(0,&tp);
@@ -325,8 +325,12 @@ INT DtvEnumTSService(const STREAMDB&ts,DTV_SERVICE_CBK cbk,void*userdata){
                 svcs[i].getServiceName(sname);
                 loc.sid=svcs[i].service_id;
                 const PSITable*pmt=FindPmtInTS(ts,loc.sid);
-                NGLOG_VERBOSE("%d.%d.%d.%d  %s",loc.netid,loc.tsid,loc.sid,loc.tpid,sname);
-                rc+=(0!=cbk(&loc,svcs+i,(pmt?(*pmt):nullptr),userdata));
+                NGLOG_VERBOSE("%d.%d.%d.%d  %s pmt=%p",loc.netid,loc.tsid,loc.sid,loc.tpid,sname,pmt);
+                NGLOG_ERROR_IF(nullptr==pmt,"%d.%d.%d's PMT is not found",loc.netid,loc.tsid,loc.sid);
+                if(NULL==pmt)
+                    rc+=(0!=cbk(&loc,svcs+i,NULL,userdata));
+                else
+                    rc+=(0!=cbk(&loc,svcs+i,*pmt,userdata));
             }
         }
     }else if( ts.pat.size() && ts.pmt.size() ){
@@ -344,7 +348,7 @@ INT DtvEnumTSService(const STREAMDB&ts,DTV_SERVICE_CBK cbk,void*userdata){
 }
 INT DtvEnumService(DTV_SERVICE_CBK cbk,void*userdata){
     int rc=0;
-     NGLOG_VERBOSE("%d streams",gStreams.size());
+    NGLOG_VERBOSE("%d streams",gStreams.size());
     for(auto itr_ts:gStreams ){
         rc+=DtvEnumTSService(itr_ts,cbk,userdata);
     }

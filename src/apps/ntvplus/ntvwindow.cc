@@ -80,9 +80,11 @@ void NTVWindow::addTipInfo(const std::string&img,const std::string&title,int wid
 void NTVWindow::clearTips(){
     if(toolbar)toolbar->clearAllItems();
 }
-void NTVWindow::setText(const std::string&txt){
+
+View& NTVWindow::setText(const std::string&txt){
     title=txt;
     if(titlebar)titlebar->setTitle(txt);
+    return *this;
 }
 const std::string& NTVWindow::getText()const{
     return title;

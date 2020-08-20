@@ -1,5 +1,5 @@
 #include<appmenus.h>
-#include<ntvwindow.h>
+#include<ntvnavwindow.h>
 #include<clockview.h>
 #include<ngl_log.h>
 
@@ -10,21 +10,8 @@ NGL_MODULE(CHANNELBAR)
 
 namespace ntvplus{
 
-static INT SVC_CBK2(const SERVICELOCATOR*loc,const DVBService*svc,const BYTE*pmt,void*userdata){
-   ListView*lv=(ListView*)userdata;
-   SERVICELOCATOR cur;
-   char servicename[128];
-   svc->getServiceName(servicename);
-   DtvGetCurrentService(&cur);
-   lv->addItem(new ChannelItem(servicename,loc,svc->freeCAMode));
-   if(cur==*loc){
-        lv->setIndex(lv->getItemCount()-1);
-        NGLOG_DEBUG("last played service =%d.%d.%d index=%d",loc->netid,loc->tsid,loc->sid,lv->getItemCount()-1);
-   }
-   return 1;
-}
 #define MSG_DATE_TIME 1010
-class ChannelBar:public NTVWindow{
+class ChannelBar:public NTVNavWindow{
 protected:
    bool present;
    Selector *chlst;
@@ -35,44 +22,30 @@ protected:
 public:
    ChannelBar(int x,int y,int w,int h);
    virtual bool onKeyUp(KeyEvent&k)override;
-   void getEvents();
-   virtual bool onMessage(DWORD msgid,DWORD wp,ULONG lp)override{
-        if(msgid==MSG_DATE_TIME){
-             char buf[64];
-             time_t now=time(NULL);
-             struct tm *tnow=localtime(&now);
-             sprintf(buf,"%02d/%02d/%d %02d:%02d:%02d",tnow->tm_mon+1,tnow->tm_mday,tnow->tm_year+1900,tnow->tm_hour,tnow->tm_min,tnow->tm_sec);
-             datetime->setText(buf);
-             getEvents();
-             sendMessage(MSG_DATE_TIME,wp,lp,1000);
-             return true;
-        }else return NTVWindow::onMessage(msgid,wp,lp);
+   void onService(const DVBService*svc)override{
+       SERVICELOCATOR cur;
+       TVChannel*ch=DVBService2Channel(svc);
+       chlst->addItem(ch);
+       DtvGetCurrentService(&cur);
+       if(cur==*svc)chlst->setIndex(chlst->getItemCount()-1);
+   }
+   void onEventPF(const SERVICELOCATOR&svc,const DVBEvent*e,bool present)override{
+       SERVICELOCATOR loc;
+       char name[256],desc[256];
+       ChannelItem*itm=(ChannelItem*)chlst->getItem(chlst->getIndex());
+       DtvGetCurrentService(&loc);
+       if(itm) loc=itm->svc;
+       if( (loc==svc) && (present==this->present)){
+           time_t now=time(NULL);
+           e->getShortName(name,desc);
+           event_name->setText(name);
+           event_des->setText(desc);
+           media_progress->setProgress((now-e->start_time)*100/e->duration);
+       }
    }
 };
-void ChannelBar::getEvents(){
-    SERVICELOCATOR loc;
-    DVBEvent pf[2],*p=nullptr;
-    char name[256],desc[256];
-    ChannelItem*itm=(ChannelItem*)chlst->getItem(chlst->getIndex());
-    if(itm) loc=itm->svc;
-    else DtvGetCurrentService(&loc);
-    int rc=DtvGetPFEvent(&loc,pf);
 
-    if( (rc&1) && present ){
-         time_t now=time(NULL);
-         p=pf;
-         media_progress->setProgress((now-pf->start_time)*100/pf->duration);
-    }
-
-    if( (rc&2) &&(present==false) ) p=pf+1;
-    if(p){ 
-        p->getShortName(name,desc);
-        event_name->setText(name);
-        event_des->setText(desc);
-    }
-}
-
-ChannelBar::ChannelBar(int x,int y,int w,int h):NTVWindow(x,y,w,h){
+ChannelBar::ChannelBar(int x,int y,int w,int h):NTVNavWindow(x,y,w,h){
    initContent(NWS_SIGNAL);
    chlst=new NTVSelector(std::string(),495,46);
    chlst->showArrows(Selector::SHOW_NEVER);
@@ -110,7 +83,7 @@ ChannelBar::ChannelBar(int x,int y,int w,int h):NTVWindow(x,y,w,h){
    media_progress->setPos(0,46);
    media_progress->setProgress(37);
    addChildView(media_progress);
-   DtvEnumService(SVC_CBK2,chlst);
+   loadServices(FAV_GROUP_ALL);
    sendMessage(MSG_DATE_TIME,0,0,1000);
    present=true;   
 }
@@ -126,7 +99,7 @@ bool ChannelBar::onKeyUp(KeyEvent&k){
    case KEY_LEFT:
    case KEY_RIGHT:
          present=!present;
-         getEvents();
+         loadEventPF(nullptr);
          return true;
    default:return NTVWindow::onKeyUp(k);
    }

@@ -53,10 +53,11 @@ const std::string LyricsView::getGenre()const{
     return std::string("Genre :")+id3.getGenre();
 }
 
-void LyricsView::setText(const std::string&txt){
+View& LyricsView::setText(const std::string&txt){
     mText=txt;
     id3.setUrl(txt);
     invalidate(nullptr);
+    return *this;
 }
 
 void LyricsView::onDraw(GraphContext& canvas){
