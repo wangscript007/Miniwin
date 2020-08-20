@@ -14,7 +14,7 @@ void SubscribeItem::onTriggered(){
     NGLOG_INFO("%d.%d.%d::%d [%p][%s]",svc.netid,svc.tsid,svc.sid,eventid,this,name.c_str());
     std::ostringstream oss;
     std::time_t tmTime = std::chrono::system_clock::to_time_t(time);
-    oss<<name<<std::put_time(std::localtime(&tmTime), "%F %T");
+    oss<<eventid<<":"<<name<<std::put_time(std::localtime(&tmTime), "%F %T");
     Toast::makeText(oss.str())->show();
     Subscriber::getInstance()->remove(time);
 }

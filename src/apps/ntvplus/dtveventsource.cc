@@ -36,7 +36,7 @@ namespace nglui{
       return events.size()>0;
   }
   void DtvEventSource::push_event(const SERVICELOCATOR&svc,int msg){
-      int64_t s64=(svc.netid<<48)|(svc.tsid<<32)|(svc.sid<<16)|svc.tpid;
+      int64_t s64=((int64_t)svc.netid<<48)|((int64_t)svc.tsid<<32)|(svc.sid<<16)|svc.tpid;
       events[s64]|=(1<<msgmap[msg]);
   }
   void DtvEventSource::process(){
@@ -51,7 +51,7 @@ namespace nglui{
       if(msg&8)dispatchMessage(MSG_EPG_SCHEDULE,svc>>32,svc);
   }
   void DtvEventSource::dispatchMessage(DWORD msg,DWORD wp,ULONG lp){
-      for(v:views){
+      for(auto v:views){
           v->sendMessage(msg,wp,lp);
       }
   }
