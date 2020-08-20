@@ -1,17 +1,22 @@
 #include <dtveventsource.h>
 #include <ngl_log.h>
 #include <view.h>
+#include <dvbepg.h>
 NGL_MODULE(DTVEVENTSOURCE);
 
 namespace nglui{
 
   DtvEventSource*DtvEventSource::mInst=nullptr;
-
+  static void TVMSG_CBK(UINT msg,const SERVICELOCATOR*svc,DWORD wp,ULONG lp,void*userdata){
+      DtvEventSource*source=(DtvEventSource*)userdata;
+      if(svc)source->push_event(*svc,msg);
+  }
   DtvEventSource::DtvEventSource():EventSource(){
       msgmap[MSG_STREAM_CHANGE]=0;
       msgmap[MSG_SERVICE_CHANGE]=1;
       msgmap[MSG_EPG_PF]=2;
       msgmap[MSG_EPG_SCHEDULE]=3;
+      DtvRegisterNotify(TVMSG_CBK,this);
   }
   DtvEventSource*DtvEventSource::getInstance(){
       if(nullptr==mInst)
@@ -29,6 +34,7 @@ namespace nglui{
       int64_t s64=(svc.netid<<48)|(svc.tsid<<32)|(svc.sid<<16)|svc.tpid;
       if(msgmap.find(s64)!=msgmap.end())
           events[s64]=events[s64]|(1<<msgmap[msg]);
+      NGLOG_VERBOSE("msg=%x",msg);
   }
   void DtvEventSource::process(){
       if(events.size()==0)return;
