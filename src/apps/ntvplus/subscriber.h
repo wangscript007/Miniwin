@@ -28,10 +28,12 @@ public:
     int addWeekly(SubscribeItem&);
     const SubscribeItem*find(int64_t tm);/*find subscribe by tm(time_t)*/
     void remove(int64_t tm);/*remove subscribe by tm(time_t)*/
+    void remove(system_clock::time_point&point);
     size_t size(){return items.size();}
     void clear(){items.clear();}
     int load(const std::string&filename);
     int save(const std::string&filename);
+    int getItems(std::vector<SubscribeItem>&itms);
 };
 }
 #endif

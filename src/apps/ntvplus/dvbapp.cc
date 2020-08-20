@@ -42,10 +42,6 @@ DVBApp::DVBApp(int argc,const char**argv)
     StartCA();
 #endif
    Subscriber::getInstance()->load("subscribe.json");
-   SubscribeItem itm;
-   itm.name="subscribe.test";
-   itm.time=system_clock::now()+seconds(10);
-   Subscriber::getInstance()->addOnce(itm);
    auto fun=[](EventSource&)->bool{return true;};
    addEventSource(Subscriber::getInstance(),fun);
    addEventSource(DtvEventSource::getInstance(),fun);

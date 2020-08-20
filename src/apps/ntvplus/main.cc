@@ -19,8 +19,6 @@ static bool onKey(int key){
      case KEY_UP:
      case KEY_DOWN:CreateChannelPF();return true;
      case KEY_EPG: CreateTVGuide();return true;
-     case KEY_F4:
-             return true;
      case KEY_F5:
              return true;
      case KEY_AUDIO:
@@ -34,9 +32,8 @@ static bool onKey(int key){
           break;
      case KEY_SUBTITLE:
           break;
-     case KEY_RED:
-          CreateManualChannelSearch();
-	  return true;
+     case KEY_RED  :CreateManualChannelSearch();return true;
+     case KEY_GREEN:CreateBookingEditor();      return true;
      default:return false;
      }
 }

@@ -3,13 +3,20 @@
 #include <ngl_log.h>
 #include <json/json.h>
 #include <fstream>
-
+#include <sstream>
+#include <iomanip>
+#include <toastwindow.h>
 NGL_MODULE(Subscribe);
 
 namespace nglui{
 
 void SubscribeItem::onTriggered(){
-   NGLOG_INFO("%d.%d.%d::%d [%p][%s]",svc.netid,svc.tsid,svc.sid,eventid,this,name.c_str());
+    NGLOG_INFO("%d.%d.%d::%d [%p][%s]",svc.netid,svc.tsid,svc.sid,eventid,this,name.c_str());
+    std::ostringstream oss;
+    std::time_t tmTime = std::chrono::system_clock::to_time_t(time);
+    oss<<name<<std::put_time(std::localtime(&tmTime), "%F %T");
+    Toast::makeText(oss.str())->show();
+    Subscriber::getInstance()->remove(time);
 }
 
 Subscriber*Subscriber::mInst=nullptr;
@@ -60,6 +67,11 @@ int Subscriber::addWeekly(SubscribeItem&itm){
     scheduleWeekly(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
+int Subscriber::getItems(std::vector<SubscribeItem>&itms){
+    for(auto i:items)
+       itms.push_back(i.second);
+    return itms.size();
+}
 const SubscribeItem*Subscriber::find(int64_t tm){/*find subscribe by tm(time_t)*/
     system_clock::time_point tp=time_point<system_clock,seconds>(seconds(tm));
     auto p=items.find(tp);
@@ -69,6 +81,10 @@ const SubscribeItem*Subscriber::find(int64_t tm){/*find subscribe by tm(time_t)*
 void Subscriber::remove(int64_t tm){
     system_clock::time_point tp=time_point<system_clock,seconds>(seconds(tm));
     items.erase(tp); 
+}
+
+void Subscriber::remove(system_clock::time_point&point){
+    items.erase(point);
 }
 
 int Subscriber::load(const std::string&filename){

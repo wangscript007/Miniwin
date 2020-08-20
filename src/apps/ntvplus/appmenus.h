@@ -33,7 +33,7 @@ Window*CreateTPEditorWindow (const TRANSPONDER*tp=nullptr,const UpdateTransponde
 
 Window*CreateChannelEditWindow();
 Window*CreateManualChannelSearch();
-
+Window*CreateBookingEditor();
 }//namespace
 
 #endif
