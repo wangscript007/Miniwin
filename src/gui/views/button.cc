@@ -1,23 +1,16 @@
 #include<button.h>
 
 namespace nglui{
-Button::Button(const std::string& text)
-  : Button(text, text.size() * getFontSize(), (getFontSize() * 3)){
-}
 
 Button::Button(const std::string& text, int32_t w, int32_t h)
   : INHERITED(text, w, h), state_(Button::State::STATE_NORMAL), style_(Button::Style::STYLE_STANDARD){
     mTextAlignment=DT_CENTER|DT_VCENTER;
     setFlag(FOCUSABLE|ENABLED);
-    if (w == 0 && h == 0) {
-        setBound(0, 0, text.size() * getFontSize(), (getFontSize() * 3));
-    } else if (w != 0 && h == 0) {
-        setBound(0, 0, w, (getFontSize() * 3));
-    } else if (w == 0 && h != 0) {
-        setBound(0, 0, text.size() * getFontSize(), h);
-    } else {
-        setBound(0, 0, w, h);
-    }
+
+    if(w==0)w=text.size() * getFontSize();
+    if(h==0)h=getFontSize()*5/2;
+    setFgColor(0xFF000000);
+    setBound(0, 0, w, h); 
 }
 
 Button::~Button() {
@@ -63,7 +56,7 @@ void Button::onDraw(GraphContext& canvas) {
         canvas.set_color(0xFFF0F0F0);
     } else {
         // Normal
-        canvas.set_color(0xFFFFFFFF);
+        canvas.set_color(getFgColor());
     }
     canvas.set_font_size(getFontSize());
     canvas.save();

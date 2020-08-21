@@ -102,7 +102,7 @@ public:
        SettingItem&itm=(SettingItem&)lvitem;
        ListView*right=(ListView*)lv.getParent()->findViewById(IDC_RIGHT);
        Json::Value array=itm.value["items"];
-       right->clearAllItems();
+       right->clear();
        for(int i=0;i<array.size();i++){
            Json::Value b,a=array[i];
            NGLOG_VERBOSE("%d:type:%d %s",i,array.type(),a.toStyledString().c_str());
@@ -167,7 +167,7 @@ int SettingWindow::loadSettings(Json::Value root_,bool stacked){
    Json::Value array=root_["items"];
    int index=0;
    NGLOG_VERBOSE("items.size=%d",array.size());
-   if(left)left->clearAllItems();
+   if(left)left->clear();
    if(root_.isMember("remembered_index")&&root_["remembered_index"].isInt())
        index=root_["remembered_index"].asInt();
    for(int i=0;i<array.size();i++){

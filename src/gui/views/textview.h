@@ -28,8 +28,7 @@ protected:
 public:
   static constexpr const char* VIEW_NAME = "TextField";
 public:
-  explicit TextView(const std::string& text);
-  explicit TextView(const std::string& text, int width, int height);
+  explicit TextView(const std::string& text, int width=0, int height=0);
   virtual ~TextView();
   virtual void setImage(int dir,const std::string&resname);
   virtual void onDraw(GraphContext& canvas) override;

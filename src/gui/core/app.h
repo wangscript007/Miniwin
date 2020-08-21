@@ -41,7 +41,7 @@ public:
      int addEventSource(EventSource *source, EventHandler handler);
      int removeEventSource(EventSource*source);
      virtual int exec();
-     void quit(int code);
+     void exit(int code);
 };
 
 }//namespace

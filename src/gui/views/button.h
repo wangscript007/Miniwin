@@ -19,8 +19,7 @@ class Button : public Widget {
   };
 
  public:
-  explicit Button(const std::string& text);
-  explicit Button(const std::string& text, int w, int h);
+  explicit Button(const std::string& text, int w=0, int h=0);
   virtual ~Button();
 
   virtual State getState() const;

@@ -21,7 +21,7 @@ class TestWindow:public Window{
 public:
    TestWindow(int x,int y,int w,int h):Window(x,y,w,h){}
    virtual bool onKeyRelease(KeyEvent& evt){
-     App::getInstance().quit(0);
+     App::getInstance().exit(0);
      sendMessage(View::WM_DESTROY,0,0);
      return true;
    }

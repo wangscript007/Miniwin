@@ -21,11 +21,6 @@ NGL_MODULE(TextView);
 
 namespace nglui {
 
-TextView::TextView(const std::string& text)
-  : TextView(text,0,0) {
-//  internal_name_ = VIEW_NAME;
-}
-
 TextView::TextView(const std::string& text, int width, int height)
   : INHERITED(text, width, height) {
     multiline=false;

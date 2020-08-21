@@ -282,7 +282,7 @@ int MediaWindow::loadMedia(const std::string&path,int filter_type){
     struct dirent *ent;
     std::string filter=FILTERS[filter_type];
     std::vector<std::string>exts=split(filter,";");
-    mdlist->clearAllItems();
+    mdlist->clear();
     NGLOG_DEBUG("%s :%s",path.c_str(),filter.c_str());
     if(dir==nullptr)return 0;
     while(ent=readdir(dir)){

@@ -79,7 +79,7 @@ SearchWindow::SearchWindow(int x,int y,int w,int h,bool advance):NTVWindow(x,y,w
         NGLOG_DEBUG("prepare to switch sateliite");
         int cnt=GetSatelliteTp(index,tps,32);
         NGLOG_DEBUG("switch to satellite %d has %d tp",index,cnt);
-        tplst->clearAllItems();
+        tplst->clear();
         for(int i=0;i<cnt;i++)tplst->addItem(new TransponderItem(tps[i]));
         tplst->setIndex(0);
     });

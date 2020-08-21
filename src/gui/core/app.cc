@@ -181,7 +181,7 @@ int App::exec(){
     return looper.run();
 }
 
-void App::quit(int code){
+void App::exit(int code){
     looper.quit(code);
 }
 

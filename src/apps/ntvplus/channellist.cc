@@ -32,7 +32,7 @@ public:
         chlst->addItem(ch);
    }
    virtual int loadServices(UINT favid)override{
-       chlst->clearAllItems(); 
+       chlst->clear(); 
        NTVNavWindow::loadServices(favid);
        chlst->sort([](const ListView::ListItem&a,const ListView::ListItem&b)->int{
                             return a.getId()-b.getId()<0;

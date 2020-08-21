@@ -6,10 +6,6 @@ Widget::Widget(int w,int h)
   : Widget(std::string(),w,h){
 }
 
-Widget::Widget(const std::string& text)
-  : Widget(text,0,0) {
-}
-
 Widget::Widget(const std::string& txt, int width, int height)
   : INHERITED(width,height)//,text(txt)
 {

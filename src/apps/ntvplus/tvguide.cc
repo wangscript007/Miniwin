@@ -50,7 +50,7 @@ class TVWindow:public NTVNavWindow {
         c.restore();
     }
     int loadServices(UINT favid)override {
-        lv->clearAllItems();
+        lv->clear();
         int rc=NTVNavWindow::loadServices(favid);
         lv->sort([](const ListView::ListItem&a,const ListView::ListItem&b)->int{
             return a.getId()-b.getId()<0;

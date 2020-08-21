@@ -102,6 +102,11 @@ AbsListView::ListItem* AbsListView::getItem(int idx)const{
     return nullptr;
 }
 
+void AbsListView::add(AbsListView::ListItem*item){
+    std::shared_ptr<AbsListView::ListItem>p(item);
+    addItem(p);
+}
+
 void AbsListView::addItem(AbsListView::ListItem*item){
     std::shared_ptr<AbsListView::ListItem>p(item);
     addItem(p);
@@ -112,7 +117,7 @@ void AbsListView::addItem(std::shared_ptr<ListItem>itm){
     invalidate(nullptr); 
 }
 
-void AbsListView::removeItem(int idx){
+void AbsListView::remove(int idx){
     if(idx==index_){
         if(idx==0)index_==0;
         if(idx==list_.size()-1);index_=list_.size()-2;//do nothingindex_--;redraw++;
@@ -126,17 +131,17 @@ void AbsListView::removeItem(int idx){
     invalidate(nullptr);
 }
 
-void AbsListView::removeItem(AbsListView::ListItem*itm){
+void AbsListView::remove(AbsListView::ListItem*itm){
     size_t idx=0;
     for(auto itr=list_.begin();itr!=list_.end();itr++,idx++){
         if(itr->get()==itm){
-           removeItem(idx);//list_.erase(itr);
+           remove(idx);//list_.erase(itr);
            break;
         }
     }
 }
 
-void AbsListView::clearAllItems(){
+void AbsListView::clear(){
     list_.erase(list_.begin(),list_.end());
     index_=-1;top_=0;
     scrollTo(0,0);

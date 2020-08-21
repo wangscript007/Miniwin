@@ -78,7 +78,7 @@ void NTVWindow::addTipInfo(const std::string&img,const std::string&title,int wid
 }
 
 void NTVWindow::clearTips(){
-    if(toolbar)toolbar->clearAllItems();
+    if(toolbar)toolbar->clear();
 }
 
 View& NTVWindow::setText(const std::string&txt){

@@ -50,10 +50,11 @@ public:
    virtual void setItemClickListener(ItemClickListener lis);
    virtual ListItem* getItem(int idx)const;
    virtual void addItem(ListItem*itm);
+   virtual void add(ListItem*itm);
    virtual void addItem(std::shared_ptr<ListItem>itm);
-   virtual void removeItem(int idx);
-   virtual void removeItem(ListItem*itm);
-   virtual void clearAllItems();
+   virtual void remove(int idx);
+   virtual void remove(ListItem*itm);
+   virtual void clear();
    virtual bool onKeyUp(KeyEvent&k)override;
    typedef Widget INHERITED;
 

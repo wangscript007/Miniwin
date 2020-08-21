@@ -11,8 +11,7 @@ protected:
   static constexpr const char* VIEW_NAME = "Widget";
 
  public:
-  explicit Widget(const std::string& text);
-  explicit Widget(const std::string& text, int width, int height);
+  explicit Widget(const std::string& text, int width=0, int height=0);
   explicit Widget(const std::string& text, RECT& bound);
   explicit Widget(int width, int height);
 

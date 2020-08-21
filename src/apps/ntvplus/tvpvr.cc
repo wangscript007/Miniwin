@@ -130,8 +130,8 @@ PVRWindow::PVRWindow(int x,int y,int w,int h):NTVWindow(x,y,w,h){
 }
 
 void PVRWindow::setMode(int md){
-    header->clearAllItems();
-    mdlist->clearAllItems();
+    header->clear();
+    mdlist->clear();
     if(md==0){
         header->addButton("NO.",-1,W_ID);
         header->addButton("Program",-1,W_PROGRAM);
@@ -164,7 +164,7 @@ int PVRWindow::loadPVR(const std::string&path){
     DIR *dir=opendir(path.c_str());
     struct dirent *ent;
     setMode(0);
-    mdlist->clearAllItems();
+    mdlist->clear();
     NGLOG_DEBUG("%s",path.c_str());
     pvr_path=path;
     NGLOG_DEBUG("loadpvr from %s  dir=%p",path.c_str(),dir);

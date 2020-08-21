@@ -61,7 +61,7 @@ TPManagerWindow::TPManagerWindow(int x,int y,int w,int h)
         NGLOG_DEBUG("prepare to switch sateliite");
         int cnt=GetSatelliteTp(index,tps,32);
         NGLOG_DEBUG("switch to satellite %d has %d tp",index,cnt);
-        tplst->clearAllItems();
+        tplst->clear();
         for(int i=0;i<cnt;i++)tplst->addItem(new TransponderItem(tps[i]));
         tplst->setIndex(0);
         NGLOG_DEBUG("");
@@ -119,11 +119,11 @@ bool TPManagerWindow::onKeyUp(KeyEvent&k){
     case KEY_BLUE://delete sat | tp
            if(satmd){
                RemoveSatellite(satlst->getIndex());
-               satlst->removeItem(satlst->getIndex());
+               satlst->remove(satlst->getIndex());
            }else{
                TRANSPONDER*tp=getTransponder();
                RemoveTransponder(tp?tp->u.s.tpid:-1);
-               tplst->removeItem(tplst->getIndex());
+               tplst->remove(tplst->getIndex());
            }
            break;
     default:return NTVWindow::onKeyUp(k);

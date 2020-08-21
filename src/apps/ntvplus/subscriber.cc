@@ -6,16 +6,29 @@
 #include <sstream>
 #include <iomanip>
 #include <toastwindow.h>
+#include <dialog.h>
 NGL_MODULE(Subscribe);
 
 namespace nglui{
+class Test{
+public:
+  Test(){NGLOG_DEBUG("%p",this);}
+  ~Test(){NGLOG_DEBUG("%p",this);}
+};
 
 void SubscribeItem::onTriggered(){
     NGLOG_INFO("%d.%d.%d::%d [%p][%s]",svc.netid,svc.tsid,svc.sid,eventid,this,name.c_str());
     std::ostringstream oss;
     std::time_t tmTime = std::chrono::system_clock::to_time_t(time);
     oss<<eventid<<":"<<name<<std::put_time(std::localtime(&tmTime), "%F %T");
-    Toast::makeText(oss.str())->show();
+    //Toast::makeText(oss.str())->show();
+    Dialog dialog;
+    std::shared_ptr<Test>pp=std::make_shared<Test>();
+    dialog.setTitle("Prompt")
+         .setMessage(oss.str())
+         .setPositiveButton("Yes",[pp](View&){NGLOG_DEBUG("Pressed YES");})
+         .setNegativeButton("No",[](View&){App::getInstance().exit(1);})
+         .show();
     Subscriber::getInstance()->remove(time);
 }
 
