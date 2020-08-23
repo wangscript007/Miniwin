@@ -89,7 +89,7 @@ class TVWindow:public NTVNavWindow {
             if(ch->svc==svc) {
                 ch->update++;
                 ch->clearEvents();
-                for(e:evts) {
+                for(auto e:evts) {
                     TVEvent te;
                     DVBEvent2TVEvent(e,te);
                     te.flags=(nullptr==Subscriber::getInstance()->find(e.start_time));/*set subscrib flags*/

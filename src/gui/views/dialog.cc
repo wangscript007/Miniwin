@@ -69,7 +69,7 @@ Dialog& Dialog::setSingleChoiceItems(const std::vector<std::string>&items,int ch
 
 void Dialog::createContent(){
     if(nullptr==window){
-        window=new Window(0,0,600,200);
+        window=new Window(0,0,600,280);
         window->setText(title).setBgColor(0x80000000);
         window->addChildView(new TextView(title,598,40))->setPos(1,1).setBgColor(0x80222222);
         window->setVisible(0);
@@ -77,10 +77,14 @@ void Dialog::createContent(){
     if(onCreateContent!=nullptr)onCreateContent(window);
     int x=10;
     int mw=0;
-    int interval=0;
-    for(auto b:buttons)
+    int interval=window->getWidth();;
+    for(auto b:buttons){
         mw=std::max(mw,b.second->getWidth());
-    interval=window->getWidth()-mw*buttons.size();
+        mw=std::max(mw,b.second->getHeight()*2);
+    }
+    interval=(window->getWidth()-mw*buttons.size())/(1+buttons.size());
+    x=interval*2-6;
+
     if(!message.empty()){
         messageView=new TextView(message,window->getWidth()-10,window->getHeight()-100);
         messageView->setMultiLine(true);
@@ -88,13 +92,14 @@ void Dialog::createContent(){
     }  
     if(listview){
        listview->setSize(window->getWidth()-10,window->getHeight()-100);
+       listview->setFlag(View::BORDER);
        window->addChildView(listview)->setPos(5,45); 
     }
     for(auto it=buttons.rbegin();it!=buttons.rend();it++){
         Button*b=it->second;
         b->setSize(mw,b->getHeight());
         window->addChildView(b)->setPos(x,window->getHeight()-b->getHeight()-6);
-        x=b->getBound().right()+20;
+        x=b->getBound().right()+interval;
     } 
 }
 
