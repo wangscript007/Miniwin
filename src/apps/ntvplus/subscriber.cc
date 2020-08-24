@@ -21,15 +21,17 @@ void SubscribeItem::onTriggered(){
     std::ostringstream oss;
     std::time_t tmTime = std::chrono::system_clock::to_time_t(time);
     oss<<eventid<<":"<<name<<std::put_time(std::localtime(&tmTime), "%F %T");
-    //Toast::makeText(oss.str())->show();
     Dialog dialog;
-    std::shared_ptr<Test>pp=std::make_shared<Test>();
-    dialog.setTitle("Prompt")
-         .setMessage(oss.str())
-         .setPositiveButton("Yes",[pp](View&){NGLOG_DEBUG("Pressed YES");})
-         .setNegativeButton("No",[](View&){App::getInstance().exit(1);})
-         .show();
-    Subscriber::getInstance()->remove(time);
+    struct tm*t=std::localtime(&tmTime);
+    if( (weekday==0) || (weekday&(1<<t->tm_wday)) ){
+        std::shared_ptr<Test>pp=std::make_shared<Test>();
+        dialog.setTitle("Prompt")
+          .setMessage(oss.str())
+          .setPositiveButton("Yes",[pp](View&){NGLOG_DEBUG("Pressed YES");})
+          .setNegativeButton("No",[](View&){App::getInstance().exit(1);})
+          .show();
+        if(type==0)Subscriber::getInstance()->remove(time);
+    }
 }
 
 Subscriber*Subscriber::mInst=nullptr;
@@ -65,19 +67,29 @@ int Subscriber::add(SubscribeItem&itm){
 int Subscriber::addOnce(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
     p.first->second.type=0;
+    p.first->second.weekday=0;
     schedule(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
 int Subscriber::addDaily(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
-     p.first->second.type=1;
+    p.first->second.type=1;
+    p.first->second.weekday=0;
     scheduleDaily(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
 int Subscriber::addWeekly(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
-     p.first->second.type=2;
+    p.first->second.type=2;
+    p.first->second.weekday=0;
     scheduleWeekly(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
+}
+
+int Subscriber::addWeekly(SubscribeItem&itm,int weekday){
+    auto p=items.insert(std::make_pair(itm.time,itm));
+    p.first->second.type=1;
+    p.first->second.weekday=weekday;
+    scheduleDaily(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
 }
 
 int Subscriber::getItems(std::vector<SubscribeItem>&itms){
@@ -119,6 +131,7 @@ int Subscriber::load(const std::string&filename){
            auto t64=std::chrono::seconds(e["time"].asInt64());
            itm.eventid=e["eventid"].asInt();
            itm.type=e["type"].asInt();
+           itm.weekday=e["weekday"].asInt();
            itm.time=time_point<system_clock,seconds>(t64); 
            itm.name=e["name"].asString();
            add(itm);
@@ -147,6 +160,7 @@ int Subscriber::save(const std::string&filename){
        Json::Value evt;
        evt["eventid"]=it->second.eventid;
        evt["type"]=it->second.type;
+       evt["weekday"]=it->second->weekday;
        evt["time"]=duration_cast<seconds>(it->second.time.time_since_epoch()).count();
        evt["name"]=it->second.name;
        if(0==comment)

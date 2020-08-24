@@ -10,6 +10,7 @@ struct SubscribeItem{
    UINT duration;/*unint in seconds*/ 
    std::string name;
    int type;/*0-->once,1-->daily,2-->weekly...*/
+   int weekday;/*only for weekly:one bits per weekday:bit 0-->sunday,...,bit1 -->Monday...*/
    void onTriggered();
 };
 
@@ -26,6 +27,7 @@ public:
     int addOnce(SubscribeItem&);
     int addDaily(SubscribeItem&);
     int addWeekly(SubscribeItem&);
+    int addWeekly(SubscribeItem&,int weekday);
     const SubscribeItem*find(int64_t tm);/*find subscribe by tm(time_t)*/
     void remove(int64_t tm);/*remove subscribe by tm(time_t)*/
     void remove(system_clock::time_point&point);
