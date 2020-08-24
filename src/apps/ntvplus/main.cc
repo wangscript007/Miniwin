@@ -8,6 +8,7 @@
 #include <string>
 #include <ngl_log.h>
 #include <iostream>
+#include <teletextview.h>
 NGL_MODULE(MAIN);
 
 using namespace ntvplus;
@@ -41,6 +42,7 @@ static bool onKey(int key){
 int main(int argc,const char*argv[]){
     DVBApp app(argc,argv);
     Desktop*desktop=new Desktop();
+    desktop->addChildView(new TeletextView(640,480))->setId(100);
     app.setName("com.ntvplus.dvbs");        
     app.setOpacity(app.getArgAsInt("alpha",255));
     app.getString("mainmenu",app.getArg("language","eng"));

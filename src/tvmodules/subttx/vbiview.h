@@ -5,7 +5,6 @@
 #include <ngl_dmx.h>
 #include <ngl_log.h>
 #include <ngl_os.h>
-#include <pixman.h>
 extern "C"{
 #include <vbi.h>
 #include <exp-gfx.h>

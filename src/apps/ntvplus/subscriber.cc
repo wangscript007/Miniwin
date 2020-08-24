@@ -160,7 +160,7 @@ int Subscriber::save(const std::string&filename){
        Json::Value evt;
        evt["eventid"]=it->second.eventid;
        evt["type"]=it->second.type;
-       evt["weekday"]=it->second->weekday;
+       evt["weekday"]=it->second.weekday;
        evt["time"]=duration_cast<seconds>(it->second.time.time_since_epoch()).count();
        evt["name"]=it->second.name;
        if(0==comment)

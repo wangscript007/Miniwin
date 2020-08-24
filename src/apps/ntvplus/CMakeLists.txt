@@ -9,6 +9,8 @@ include_directories(
    ./${NGL_CA}/cca_gui/include
    ./${NGL_CA}/cca_mw/inc
    ./${NGL_CA}/cca_mw/inc/decoder_msg
+   ${CMAKE_SOURCE_DIR}/src/tvmodules/subttx
+   ${CMAKE_SOURCE_DIR}/src/3rdparty/zvbi-0.2.35/src
    ${CMAKE_BINARY_DIR}/include
    ${CMAKE_BINARY_DIR}/include/gui
    ${CMAKE_BINARY_DIR}/include/porting
@@ -31,8 +33,8 @@ endif()
 add_executable(ntvplus ${SRCS_NTV_PLUS} )
 add_executable(ntvplusd ${SRCS_NTV_PLUS} )
 
-target_link_libraries(ntvplus jsoncpp_lib gui_static dvbepg_static ${APP_EXTLIBS} ${NGL_CALIBS})
-target_link_libraries(ntvplusd pthread jsoncpp_lib gui dvbepg ${APP_EXTLIBS}  ${NGL_CALIBS})
+target_link_libraries(ntvplus jsoncpp_lib gui_static dvbepg_static subttx ${APP_EXTLIBS} ${NGL_CALIBS})
+target_link_libraries(ntvplusd pthread jsoncpp_lib gui dvbepg subttx ${APP_EXTLIBS}  ${NGL_CALIBS})
 
 add_custom_command (TARGET ntvplus PRE_BUILD
   COMMAND zip -r -0  ${CMAKE_CURRENT_BINARY_DIR}/ntvplus.pak *

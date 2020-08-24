@@ -165,19 +165,17 @@ void TeletextView::onPageReceived(vbi_event&ev){
 }
 
 bool TeletextView::onKeyUp(KeyEvent&event){
+    if(links.size()==0)
+        return INHERITED::onKeyUp(event);
     switch(event.getKeyCode()){
     case KEY_LEFT:
     case KEY_UP:
-          if(links.size()==0)
-             return INHERITED::onKeyUp(event);
           selected_link=(selected_link-1+links.size())%links.size();
           invalidate(nullptr);
           NGLOG_DEBUG("focus=%d",selected_link);
           return true;
     case KEY_RIGHT:
     case KEY_DOWN:
-          if(links.size()==0)
-             return INHERITED::onKeyUp(event);
           selected_link=(selected_link+1)%links.size();
           invalidate(nullptr);
           NGLOG_DEBUG("focus=%d",selected_link);
@@ -209,188 +207,6 @@ BOOL TeletextView::vbi_page_has_flash(const vbi_page *pg){
    for (cp = pg->text; cp < end; ++cp)
        if(cp->flash)return TRUE;
    return FALSE;
-}
-void TeletextView::destroy_patch(struct ttx_patch *p){
-    assert (NULL != p);
-    if (p->scaled_on)
-       pixman_image_unref (p->scaled_on);
-    if (p->scaled_off)
-       pixman_image_unref (p->scaled_off);
-    if (p->unscaled_on)
-       pixman_image_unref (p->unscaled_on);
-    if (p->unscaled_off)
-       pixman_image_unref (p->unscaled_off);
-    memset(p,0,sizeof(ttx_patch));
-}
-void TeletextView::delete_patches(){
-    struct ttx_patch *p;
-    struct ttx_patch *end;
-
-    end = patches + n_patches;
-    for (p = patches; p < end; ++p)
-       destroy_patch (p);
-
-    free (patches);
-    patches = NULL;
-    n_patches = 0;
-}
-void TeletextView::add_patch(UINT column,UINT row,UINT columns,vbi_size size, BOOL flash)
-{
-    struct ttx_patch *p;
-    struct ttx_patch *end;
-    INT  pw, ph;
-    INT ux, uy;
-    UINT endcol;
-
-    assert (NULL != unscaled_on);
-    assert (NULL != unscaled_off);
-
-    end = patches + n_patches;
-    endcol = column + columns;
-
-    for (p = patches; p < end; ++p)
-       if (p->row == row && p->column < endcol
-          && (p->column + p->columns) > column){
-	  /* Patches overlap, we replace the old one. */
-  	  destroy_patch (p);
-	  break;
-       }
-
-      if (p >= end){
-         UINT size;
-
-         size = (n_patches + 1) * sizeof (*patches); 
-         patches = (ttx_patch*)realloc(patches,size);
-
-         p = patches + n_patches;
-         ++n_patches;
-      }
-
-      p->column		= column;
-      p->row		= row;
-      p->scaled_on	= NULL;
-      p->scaled_off	= NULL;
-      p->unscaled_off	= NULL;
-      p->columns	= columns;
-      p->phase		= 0;
-      p->flash		= flash;
-      p->dirty		= TRUE;
-
-      switch (size){
-      case VBI_DOUBLE_WIDTH:
-         p->width = 2;    p->height = 1;
-         break;
-      case VBI_DOUBLE_HEIGHT:
-         p->width = 1;    p->height = 2;
-         break;
-      case VBI_DOUBLE_SIZE:
-         p->width = 2;    p->height = 2;
-         break;
-      default:
-         p->width = 1;    p->height = 1;
-         break;
-     }
-
-     ux = (0 == p->column) ? 0 : p->column * CW - 5;
-     uy = (0 == p->row) ? 0 : p->row * CH - 5;
-
-     pw = p->width * p->columns * CW + 10;
-     ph = p->height * CH + 10;
-
-     p->unscaled_on = pixman_image_create_bits(PIXMAN_a8r8g8b8,pw, ph,NULL,0);
-     assert (NULL != p->unscaled_on);
-     //z_pixbuf_copy_area(/*src*/unscaled_on,ux,uy,pw,ph,/*dst*/p->unscaled_on,0,0);
-
-     if (flash){
-         p->unscaled_off = pixman_image_create_bits (PIXMAN_a8r8g8b8,pw, ph,NULL,0);
-         assert (p->unscaled_off != NULL);
-         //z_pixbuf_copy_area (/*src*/unscaled_off, ux, uy, pw, ph,/*dst*/p->unscaled_off,0,0);
-     }
-
-     if (scaled_on){
-         UINT sw, sh;
-         UINT uw, uh;
-
-         sw = pixman_image_get_width (scaled_on);
-         sh = pixman_image_get_height(scaled_on);
-
-         uw = pixman_image_get_width (unscaled_on);
-         uh = pixman_image_get_height(unscaled_on);
-
-         scale_patch (p, sw, sh, uw, uh);
-     }
-}
-void TeletextView::scale_patch(struct ttx_patch *p, UINT sw, UINT sh, UINT uw, UINT uh)
-{
-    UINT srcw;
-    UINT srch;
-    UINT dstw;
-    UINT dsth;
-    INT n;
- 
-    assert (NULL != p);
-
-    if (p->scaled_on){
-       pixman_image_unref (p->scaled_on);
-       p->scaled_on = NULL;
-    }
-
-    if (p->scaled_off){
-       pixman_image_unref(p->scaled_off);
-       p->scaled_off = NULL;
-    }
-
-    srch = p->height * CH + 10;
-    dsth = (sh * srch + (uh >> 1)) / uh;
-    n = (0 == p->row) ? 0 : 5;
-    p->sy = dsth * n / srch;
-    p->sh = ceil (dsth * (n + p->height * CH) / (double) srch) - p->sy;
-    p->dy = p->sy + lrint (floor (sh * p->row * CH / (double) uh - dsth * n / (double) srch + .5));
- 
-    srcw = p->width * p->columns * CW + 10;
-    dstw = (sw * srcw + (uw >> 1)) / uw;
-    n = (0 == p->column) ? 0 : 5;
-    p->sx = dstw * n / srcw;
-    p->sw = ceil (dstw * (n + p->width * p->columns * CW)/ (double) srcw) - p->sx;
-    p->dx = p->sx + lrint (floor (sw * p->column * CW / (double) uw - dstw * n / (double) srcw + .5));
-
-    /*if (dstw > 0 && dsth > 0){
-       p->scaled_on =z_pixbuf_scale_simple (p->unscaled_on,(int) dstw, (int) dsth, interp_type);
-
-       if (p->flash)
-           p->scaled_off =  z_pixbuf_scale_simple (p->unscaled_off,(int) dstw, (int) dsth,interp_type);
-
-       p->dirty = TRUE;
-    }*/
-}
-
-void  TeletextView::build_patches(){
-    vbi_char *cp;
-    UINT row;
-
-    delete_patches ();
-
-    //if (!page)return;
-
-    cp = page.text;
-
-    for (row = 0; row < page.rows; ++row){
-       UINT col = 0;
-       while (col < page.columns){
-	  if ((cp[col].flash) && cp[col].size <= VBI_DOUBLE_SIZE){
-	      UINT n;
-	      for (n = 1; col + n < page.columns; ++n)
-		 if (!(cp[col + n].flash)
-		     || cp[col].size != cp[col + n].size)
-	 	   break;
-	      add_patch (col, row, n, (vbi_size)cp[col].size, /* flash */ TRUE);
-	      col += n;
-	  }else{
-	      ++col;
-	  }
-       }
-       cp += page.columns;
-    }
 }
 
 
