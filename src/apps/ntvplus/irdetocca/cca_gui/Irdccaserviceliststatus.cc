@@ -42,7 +42,7 @@ bool IrdCcaServiceListStatus::updateStatus()
 
     if (u16ServiceNum > 0)
     {
-		if(sllv) sllv->clearAllItems();
+		if(sllv) sllv->clear();
 		else{
 			sllv = new ListView(790,480);
 			addChildView(sllv)->setPos(10,80);

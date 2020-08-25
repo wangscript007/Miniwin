@@ -67,7 +67,7 @@ ChannelsWindow::ChannelsWindow(int x,int y,int w,int h):NTVNavWindow(x,y,w,h){
     addChildView(new TextView("tpinfo",200,28))->setId(IDC_TPINFO).setPos(1000,630).setFontSize(20).setBgColor(0);
 
     chlst->setItemSelectListener([this](AbsListView&lv,const ListView::ListItem&lvitem,int index){
-        ChannelItem&ch=(ChannelItem&)lvitem;
+        TVChannel&ch=(TVChannel&)lvitem;
         int lcn;char buf[8];
         DtvGetServiceItem(&ch.svc,SKI_LCN,&lcn);
         sprintf(buf,"%d",lcn);
@@ -83,7 +83,7 @@ ChannelsWindow::ChannelsWindow(int x,int y,int w,int h):NTVNavWindow(x,y,w,h){
         loadEventPF(&ch.svc); 
     });
     chlst->setItemClickListener([](AbsListView&lv,const ListView::ListItem&lvitem,int index){
-        ChannelItem&ch=(ChannelItem&)lvitem;
+        TVChannel&ch=(TVChannel&)lvitem;
         DtvPlay(&ch.svc,nullptr);
     });
 
@@ -122,7 +122,7 @@ bool ChannelsWindow::onKeyUp(KeyEvent&k){
    case KEY_ENTER:
         {
             int idx=chlst->getIndex();
-            ChannelItem*itm=(ChannelItem*)chlst->getItem(idx);
+            TVChannel*itm=(TVChannel*)chlst->getItem(idx);
             NGLOG_VERBOSE("itm=%p",itm);
             if(itm)DtvPlay(&itm->svc,nullptr); 
         }break;

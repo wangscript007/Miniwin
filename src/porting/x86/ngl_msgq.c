@@ -60,7 +60,7 @@ DWORD nglMsgQSend(HANDLE msgid, const void* pvmsg, int msgsize, DWORD timeout)
     }
     if(0==timeout){ts.tv_sec=ts.tv_nsec=0;}
     pthread_mutex_lock(&q->mutex);
-    NGLOG_VERBOSE("rdidx=%d wridx=%d msgsize=%d/%d",q->rdidx,q->wridx,q->msgCount,q->queSize);
+    //NGLOG_VERBOSE("rdidx=%d wridx=%d msgsize=%d/%d",q->rdidx,q->wridx,q->msgCount,q->queSize);
     if((q->wridx==q->rdidx)&&(q->queSize==q->msgCount)){
         NGLOG_VERBOSE("queue is full");
         rc=pthread_cond_timedwait(&q->cput,&q->mutex,&ts);
@@ -89,9 +89,9 @@ DWORD nglMsgQReceive(HANDLE msgid, const void* pvmsg, DWORD msgsize, DWORD timeo
     }
     if(0==timeout){ts.tv_sec=ts.tv_nsec=0;}
     pthread_mutex_lock(&q->mutex);
-    NGLOG_VERBOSE("rdidx=%d wridx=%d msgsize=%d/%d",q->rdidx,q->wridx,q->msgCount,q->queSize);
+    //NGLOG_VERBOSE("rdidx=%d wridx=%d msgsize=%d/%d",q->rdidx,q->wridx,q->msgCount,q->queSize);
     if((q->wridx==q->rdidx)&&(q->msgCount==0)){
-        NGLOG_VERBOSE("queue is empty waiting...");
+        //NGLOG_VERBOSE("queue is empty waiting...");
         rc=pthread_cond_timedwait(&q->cget,&q->mutex,&ts);
     }
     if(0==rc){

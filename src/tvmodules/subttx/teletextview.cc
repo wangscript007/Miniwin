@@ -107,7 +107,7 @@ void TeletextView::getLinkRect(vbi_link_ext&l,RECT&rect){
 
 void TeletextView::onDraw(GraphContext&canvas){
     RECT rc=getClientRect();
-       
+
     vbi_draw_vt_page(&page, VBI_PIXFMT_RGBA32_LE,imagesurface->get_data(),FALSE,FALSE);
     canvas.draw_image(imagesurface,&rc,NULL,ST_FIT_XY);
 

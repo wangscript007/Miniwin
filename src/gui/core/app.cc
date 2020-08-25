@@ -86,16 +86,16 @@ App::App(int argc,const char*argv[],const struct option*extoptions){
     
     InputEventSource::play(getArg("monkey",""));
 
-    SignalSource*sigsource=new GenericSignalSource(false);
-    addEventSource(sigsource,[&](EventSource&s){
+    /*SignalSource*sigsource=new GenericSignalSource(false);
+    addEventSource(sigsource,[this](EventSource&s){
         NGLOG_INFO("Sig interrupt");
-        looper.quit(0);
+        this->exit(0);//looper.quit(0);
         return false;
     });
 
     sigsource->add(SIGINT);
     sigsource->add(SIGTERM);
-    sigsource->add(SIGKILL);
+    sigsource->add(SIGKILL);*/
 }
 
 App::~App(){

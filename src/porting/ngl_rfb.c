@@ -119,8 +119,9 @@ static void onVNCClientKey(rfbBool down,rfbKeySym key,rfbClientPtr cl)
      case XK_F4:SENDKEY(KEY_BLUE,down);break;
      case XK_F5:SENDKEY(KEY_VOLUMEUP,down);break;
      case XK_F6:SENDKEY(KEY_VOLUMEDOWN,down);break;
-     case XK_F12:SENDKEY(KEY_MENU,down);break;
+     case XK_F10:SENDKEY(KEY_POWER,down);break;
      case XK_F11:SENDKEY(KEY_EPG,down);break;
+     case XK_F12:SENDKEY(KEY_MENU,down);break;
      case XK_Page_Up:SENDKEY(KEY_PAGEUP,down);break;
      case XK_Page_Down:SENDKEY(KEY_PAGEDOWN,down);break;
      case XK_Up   : SENDKEY(KEY_UP,down)  ;break;

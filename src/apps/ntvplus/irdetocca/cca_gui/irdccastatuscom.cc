@@ -187,7 +187,7 @@ bool IrdCcaStatusCom:: updateStatusCom(UINT8 menuflag,UINT8 index){
 			default:return false;
 		}
 		
-		inflst->clearAllItems();
+		inflst->clear();
 		for(INT8 i=0;i<u16LineCount;i++){
 			inflst->addItem(new ListView::ListItem((const char*)(buffer+i*STATUS_ITEM_MAX_LINE_LENGTH),i));
 		}

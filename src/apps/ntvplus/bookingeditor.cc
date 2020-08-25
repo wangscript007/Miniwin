@@ -63,7 +63,7 @@ static void BookingPainter(AbsListView&lv,const ListView::ListItem&itm,int state
     oss.str("");
 
     std::time_t tmTime = std::chrono::system_clock::to_time_t(md.time);
-    oss<<std::put_time(std::localtime(&tmTime), "%F %T");
+    oss<<ctime(&tmTime);//std::put_time(std::localtime(&tmTime), "%F %T");
     canvas.draw_text(r,oss.str(),DT_LEFT|DT_VCENTER);//draw datetime
     r.offset(W_TIME,0);
     oss.str(md.type2Name());
