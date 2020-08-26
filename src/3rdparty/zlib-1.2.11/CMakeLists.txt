@@ -231,7 +231,8 @@ endif()
 #============================================================================
 # Example binaries
 #============================================================================
-include_directories(${CMAKE_SOURCE_DIR}/include)
+if( BUILD_TESTS )
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(example test/example.c)
 target_link_libraries(example zlib)
@@ -250,5 +251,6 @@ if(HAVE_OFF64_T)
     target_link_libraries(minigzip64 zlib)
     set_target_properties(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
 endif()
+endif(BUILD_TESTS)
 
 file(COPY ${ZLIB_PUBLIC_HDRS} DESTINATION ${CMAKE_BINARY_DIR}/include )
