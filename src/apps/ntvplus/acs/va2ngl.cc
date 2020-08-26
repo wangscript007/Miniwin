@@ -241,7 +241,7 @@ void VA_ShowMessage(const std::string&txt){
     ToastWindow::makeWindow([&]()->ToastWindow*{
            ToastWindow*w=new ToastWindow(680,120);
            w->setLayout(new LinearLayout())->setPaddings(2);
-           w->setFlag(View::Attr::ATTR_FOCUSABLE);
+           w->setFlag(View::FOCUSABLE);
            TextView*t=new TextView(txt,670,68);
            t->setMultiLine(true);
            w->addChildView(t);

@@ -51,7 +51,7 @@ static int InitCRC32(){
     }
 }
 
-UINT GetCRC32(const BYTE*buffer, size_t size){
+static UINT GetCRC32(const BYTE*buffer, size_t size){
     unsigned int crc32 = 0xFFFFFFFF;
     unsigned int cntByte;
     if(CRC32_Table[2]==0)
