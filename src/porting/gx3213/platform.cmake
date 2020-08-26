@@ -34,7 +34,6 @@ set(HAL_EXTRA_DLIBS
        ${GX_DROOT}/libwebp.so
        ${GX_DROOT}/libxml.so 
        ${GX_DROOT}/libxml2.so 
-#      ${GX_DROOT}/libzvbi.so
        
        png jpeg iconv freetype curl zvbi
        #gxhotplug jansson  qrencode  lzo zlib
@@ -68,9 +67,8 @@ set(HAL_EXTRA_LIBS
        ${GX_SROOT}/libxml.a
        ${GX_SROOT}/libxml2.a
        ${GX_SROOT}/libgxcaption.a
-       ${GX_SROOT}/libzvbi.a
 
-       zlib iconv freetype curl jpeg png
+       zlib iconv freetype curl jpeg png zvbi
        #-lz -liconv -ldb -lc_sec -ljpeg -lpng -lfreetype -lcurl 
        #libs of this line comefrom 3rdparty 
      -Wl,--end-group

@@ -43,6 +43,7 @@ include_directories(
 
 add_library(tvhal SHARED ${SRCS_COMMON} ${SOURCES_${NGL_CHIPSET}})
 add_library(tvhal_static STATIC ${SRCS_COMMON} ${SOURCES_${NGL_CHIPSET}})
+target_compile_definitions(tvhal PRIVATE LINK_SHARED=1)
 
 target_link_libraries(tvhal ${HAL_EXTRA_DLIBS})
 target_link_libraries(tvhal_static ${HAL_EXTRA_LIBS})
