@@ -39,7 +39,7 @@ public :
        UriUriA baseuri,uri,absuri;
        char string[128];
        int res,len;
-
+#ifdef ENABLE_CAIROSVG
        memset(&baseuri,0,sizeof(UriUriA));
        memset(&uri,0,sizeof(UriUriA));
        memset(&absuri,0,sizeof(UriUriA));
@@ -57,6 +57,7 @@ public :
        uriAddBaseUriA(&absuri,&baseuri,&uri);
        uriToStringA(string,&absuri,sizeof(string),&len);
        printf("absuri=%s len=%d\r\n",string,len);
+#endif
        images.clear();
    }
    virtual void TearDown(){
