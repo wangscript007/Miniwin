@@ -16,8 +16,8 @@ OPTION(ENABLE_WINDOWS_CRYPTO "Enable use of Windows cryptography libraries" ON)
 OPTION(ENABLE_BZIP2 "Enable use of BZip2" ON)
 OPTION(ENABLE_LZMA "Enable use of LZMA" ON)
 
-OPTION(BUILD_TOOLS "Build tools in the src directory (zipcmp, zipmerge, ziptool)" ON)
-OPTION(BUILD_REGRESS "Build regression tests" ON)
+OPTION(BUILD_TOOLS "Build tools in the src directory (zipcmp, zipmerge, ziptool)" OFF)
+OPTION(BUILD_REGRESS "Build regression tests" OFF)
 OPTION(BUILD_DOC "Build documentation" ON)
 
 INCLUDE(CheckFunctionExists)

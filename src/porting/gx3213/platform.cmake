@@ -50,7 +50,7 @@ set(GXCOMMON_SLIBS
     )
 
 #static linked libraries
-set(HAL_EXTRA_LIBS 
+set(HAL_EXTRA_SLIBS 
      -Wl,--start-group
        ${GX_SROOT}/libcyassl.a  
        ${GX_SROOT}/libdash.a 
