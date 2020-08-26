@@ -98,4 +98,5 @@ set(SOURCES_GX3213
      ngl_misc.c
      ngl_mediaplayer.c
   )
-
+file(GLOB EXTRA_INSTALL_LIBS  ${GX_DROOT}/*)
+file(COPY ${EXTRA_INSTALL_LIBS} DESTINATION ${CMAKE_BINARY_DIR}/lib)
