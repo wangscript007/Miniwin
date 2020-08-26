@@ -18,6 +18,7 @@ int nglSysInit(){
     GxCore_HwMallocInit();
     return 0;
 }
-#ifdef LINK_SHARED
-vbi_fetch_vt_flags(){}
-#endif
+
+vbi_fetch_vt_flags(){
+    NGLOG_INFO("DUMMY");
+}
