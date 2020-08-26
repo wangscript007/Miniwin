@@ -158,6 +158,7 @@ TEST_F(IMAGE,Image_JPG){
     nglSleep(2500);
 }
 
+#ifdef ENABLE_CAIROSVG
 TEST_F(IMAGE,SVG){
      svg_cairo_t *svg;
      CURL *hcurl;
@@ -251,6 +252,7 @@ TEST_F(IMAGE,SVG){
      }
      nglSleep(3000);
 }
+#endif
 
 TEST_F(IMAGE,Resource_Image){
    RefPtr<GraphContext>ctx(GraphDevice::getInstance().createContext(800,600));

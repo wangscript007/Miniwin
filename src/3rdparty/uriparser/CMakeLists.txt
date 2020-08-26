@@ -280,6 +280,8 @@ install(
         uriparser::
 )
 
+file(COPY ${PROJECT_SOURCE_DIR}/include/uriparser  DESTINATION ${CMAKE_BINARY_DIR}/include)
+
 #
 # pkg-config file
 #

@@ -10,11 +10,12 @@ include_directories(
    ${CMAKE_BINARY_DIR}/include/epg
    ${CMAKE_SOURCE_DIR}/src/3rdparty/libsvg/src
    ${CMAKE_SOURCE_DIR}/src/3rdparty/libsvg-cairo/src
+   ${CMAKE_SOURCE_DIR}/src/3rdparty/uriparser/include
 )
 
 add_executable(gui_test ${SRCS_GUI_TESTS})
 
-target_link_libraries(gui_test gui_static gtest dvbepg_static)
+target_link_libraries(gui_test gui_static gtest dvbepg_static uriparser)
 
 install(TARGETS gui_test DESTINATION bin)
 
