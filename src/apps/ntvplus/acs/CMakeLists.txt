@@ -10,12 +10,11 @@ set(SRCS_ACS
 #  Stubs/Src/va_dscr.c   Stubs/Src/va_schip.c
 )
 list(REMOVE_ITEM SRCS_ACS ./Stubs/Src/stub_main.c ./Stubs/Src/dmxtest.c)
-message("SRCS_ACS=${SRCS_ACS}")
 
 #set(CMAKE_CXX_STANDARD 11)
 
 link_directories(./)
-
+set(NGL_CALIBDIR ${PROJECT_SOURCE_DIR} PARENT_SCOPE)
 add_library(acs STATIC ${SRCS_ACS})
 
 add_definitions(-DVAOPT_ENABLE_SCHIP=1)
@@ -29,6 +28,12 @@ include_directories(
 )
 
 target_link_libraries(acs pthread aui tvhal gui dvbepg curl acs_va m)
+set(NGL_CALIBS
+   -Wl,--start-group
+   acs_va acs
+   -Wl,--end-group
+   ${HAL_EXTRA_LIBS} PARENT_SCOPE
+)
 
 #add_executable(acstest main.c )
 #stub_main.c )
