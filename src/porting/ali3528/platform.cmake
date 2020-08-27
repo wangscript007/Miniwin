@@ -9,7 +9,8 @@ set(HAL_EXTRA_LIBDIRS
  ${TOOLCHAIN_DIR}/target/mipsel-buildroot-linux-gnu/sysroot/lib
 )
 
-set(HAL_EXTRA_LIBS pthread aui direct directfb)
+set(HAL_EXTRA_DLIBS pthread aui direct directfb)
+set(HAL_EXTRA_SLIBS pthread aui direct directfb)
 
 set(SOURCES_ali3538
    ngl_os.c

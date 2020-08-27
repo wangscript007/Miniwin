@@ -19,12 +19,12 @@ add_library(acs STATIC ${SRCS_ACS})
 
 add_definitions(-DVAOPT_ENABLE_SCHIP=1)
 include_directories(
-     ./ include
-     ../../include/
-     ../porting/inc/
-     ${CMAKE_SOURCE_DIR}/include
-     ${CMAKE_SOURCE_DIR}/include/curl
-     ${CMAKE_SOURCE_DIR}/epg
+     ./  ./include
+     ${CMAKE_BINARY_DIR}/include/
+     ${CMAKE_BINARY_DIR}/include/porting
+     ${CMAKE_BINARY_DIR}/include/freetype2
+     ${CMAKE_BINARY_DIR}/include/curl
+     ${CMAKE_BINARY_DIR}/epg
 )
 
 target_link_libraries(acs pthread aui curl acs_va m)
