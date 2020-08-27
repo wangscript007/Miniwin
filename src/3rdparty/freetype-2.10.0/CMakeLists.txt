@@ -504,4 +504,4 @@ set(CPACK_COMPONENT_HEADERS_GROUP "Development")
 
 include(CPack)
 
-file(COPY include/ DESTINATION ${CMAKE_BINARY_DIR}/include/freetype2)
+file(COPY include/ DESTINATION ${CMAKE_BINARY_DIR}/include)

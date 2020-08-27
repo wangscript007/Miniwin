@@ -45,4 +45,5 @@ add_custom_command (TARGET ntvplus PRE_BUILD
   )
 
 install (TARGETS ntvplus  DESTINATION bin)
+install (TARGETS ntvplusd  DESTINATION bin)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/ntvplus.pak  DESTINATION bin)

@@ -41,7 +41,7 @@ if(FREETYPE_FOUND)
     list(APPEND CAIRO_LIBS ${FREETYPE_LIBRARIES} ${BZIP2_LIBRARIES})
 else()
     set(FREETYPE_FOUND TRUE)
-    include_directories(${CMAKE_BINARY_DIR}/include/freetype2)
+    include_directories(${CMAKE_BINARY_DIR}/include)
     list(APPEND CAIRO_LIBS freetype ${BZIP2_LIBRARIES})
 endif()
 

@@ -11,4 +11,4 @@ add_executable(epgtests ${SRCS_EPG_TESTS})
 
 target_link_libraries(epgtests  tvhal_static dvbepg_static gtest)
 
-install (TARGETS epgtests DESTINATION bin)
+install (TARGETS epgtests DESTINATION bin/tests)

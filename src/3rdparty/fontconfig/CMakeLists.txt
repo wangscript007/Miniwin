@@ -3,8 +3,8 @@ set( CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
 
 #find_package( EXPAT REQUIRED )
 #find_package( Freetype REQUIRED )
-set(FREETYPE_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include/freetype2})
-set(EXPAT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include/expat})
+set(FREETYPE_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include)
+set(EXPAT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include/expat)
 set(EXPAT_LIBRARY expat)
 set(FREETYPE_LIBRARIES freetype)
 include_directories(

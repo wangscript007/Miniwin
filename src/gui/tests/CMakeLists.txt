@@ -17,5 +17,5 @@ add_executable(gui_test ${SRCS_GUI_TESTS})
 
 target_link_libraries(gui_test gui_static gtest dvbepg_static uriparser)
 
-install(TARGETS gui_test DESTINATION bin)
+install(TARGETS gui_test DESTINATION bin/tests)
 

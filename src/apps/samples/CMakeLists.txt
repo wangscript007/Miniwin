@@ -24,5 +24,6 @@ foreach(Example ${ExamplesFileList})
   target_link_libraries(${ExampleName} gui_static)
   # make the meta target depend on this example.
   add_dependencies(build_app_examples ${ExampleName})
+  install(TARGETS ${ExampleName} DESTINATION bin/examples)
 endforeach(Example ${ExamplesFileList})
 

@@ -29,7 +29,6 @@ include_directories(
     ${CMAKE_BINARY_DIR}/include/pixman
     ${CMAKE_BINARY_DIR}/include/cairo
     ${CMAKE_BINARY_DIR}/include/porting
-    ${CMAKE_BINARY_DIR}/include/freetype2
     ${CMAKE_SOURCE_DIR}/src/3rdparty/libunibreak/src
     ${CMAKE_SOURCE_DIR}/src/modules/vold
     ${CMAKE_SOURCE_DIR}/src/3rdparty/grt

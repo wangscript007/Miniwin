@@ -22,7 +22,6 @@ include_directories(
      ./  ./include
      ${CMAKE_BINARY_DIR}/include/
      ${CMAKE_BINARY_DIR}/include/porting
-     ${CMAKE_BINARY_DIR}/include/freetype2
      ${CMAKE_BINARY_DIR}/include/curl
      ${CMAKE_BINARY_DIR}/epg
 )
