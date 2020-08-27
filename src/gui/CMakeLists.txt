@@ -7,7 +7,6 @@ option( GUI_STATIC "UI is static link" ON)
 
 aux_source_directory(core SRCS_GUICORE)
 aux_source_directory(views SRCS_VIEWS)
-#aux_source_directory(core/svg SRCS_SVG)
 aux_source_directory(cairomm   SRCS_CAIROMM)
 aux_source_directory(dialogs SRCS_DIALOG)
 aux_source_directory(looper SRCS_LOOP)
@@ -38,7 +37,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/3rdparty/Choreograph/src/
 )
 
-set(SOURCES_GUI ${SRCS_GUICORE} ${SRCS_VIEWS} ${SRCS_CAIROMM} ${SRCS_DIALOG} ${SRCS_LUABIND} ${SRCS_LOOP} ${SRCS_SVG})
+set(SOURCES_GUI ${SRCS_GUICORE} ${SRCS_VIEWS} ${SRCS_CAIROMM} ${SRCS_DIALOG} ${SRCS_LUABIND} ${SRCS_LOOP})
 
 add_library(gui_objs OBJECT ${SOURCES_GUI})
 add_library(gui_static STATIC ${SOURCES_GUI})
