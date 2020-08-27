@@ -33,7 +33,7 @@ endif()
 add_executable(ntvplus ${SRCS_NTV_PLUS} )
 add_executable(ntvplusd ${SRCS_NTV_PLUS} )
 
-target_link_libraries(ntvplus jsoncpp_lib gui_static dvbepg_static subttx ${APP_EXTLIBS} ${NGL_CALIBS})
+target_link_libraries(ntvplus jsoncpp_lib -Wl,--start-group gui_static dvbepg_static subttx_static ${APP_EXTLIBS} ${NGL_CALIBS} -Wl,--end-group)
 target_link_libraries(ntvplusd pthread jsoncpp_lib gui dvbepg subttx ${APP_EXTLIBS}  ${NGL_CALIBS})
 
 add_custom_command (TARGET ntvplus PRE_BUILD

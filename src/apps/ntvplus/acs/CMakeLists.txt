@@ -27,7 +27,7 @@ include_directories(
      ${CMAKE_SOURCE_DIR}/epg
 )
 
-target_link_libraries(acs pthread aui tvhal gui dvbepg curl acs_va m)
+target_link_libraries(acs pthread aui curl acs_va m)
 set(NGL_CALIBS
    -Wl,--start-group
    acs_va acs
@@ -35,12 +35,6 @@ set(NGL_CALIBS
    ${HAL_EXTRA_LIBS} PARENT_SCOPE
 )
 
-#add_executable(acstest main.c )
-#stub_main.c )
-#target_link_libraries(acstest pthread aui tvhal curl acs acs_va m )
-#target_link_libraries(acstest pthread tvhal  acs)
 
 install (TARGETS acs  DESTINATION lib)
-#install (TARGETS acs_static  DESTINATION lib)
-#install (TARGETS acstest  DESTINATION bin)
 
