@@ -19,11 +19,6 @@ private:
    static GraphDevice*mInst;
    GraphDevice(int format=-1);
    void sortLayers();
-#ifndef CAIRO_HAS_FC_FONT
-   struct FT_LibraryRec_*ft_library;
-   std::map<std::string,RefPtr<const FontFace>>fonts;
-   RefPtr<const FontFace>getFont(const std::string&family=std::string());
-#endif
 public:
    static GraphDevice&getInstance();
    ~GraphDevice();

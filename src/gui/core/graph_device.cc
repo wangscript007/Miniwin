@@ -12,9 +12,6 @@
 #include <cairomm/ngl_surface.h>
 #include <cairomm/region.h>
 #include <cairomm/fontface.h>
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <fontmanager.h>
 #include <pixman.h>
 #include <chrono>
 
@@ -48,48 +45,13 @@ GraphDevice::GraphDevice(int fmt){
     NGLOG_DEBUG("primarySurface=%p size=%dx%d",primarySurface,width,height);
 
     primaryContext=new GraphContext(mInst,primarySurface);
-#ifndef CAIRO_HAS_FC_FONT
-    const char*fontpath=getenv("FONT_PATH");
-    if(fontpath){
-        NGLOG_DEBUG("load font from %s",fontpath);
-        FontManager::getInstance().loadFonts(fontpath);
-    }else{
-        FontManager::getInstance().loadFonts("/usr/share/fonts");
-        FontManager::getInstance().loadFonts("/usr/lib/fonts");
-    }
-    FT_Init_FreeType(&ft_library);
-    std::vector<std::string>families;
-    FontManager::getInstance().getFamilies(families);
-    NGLOG_DEBUG("Fonts count=%d",families.size());
-    for(auto family:families){
-        FT_Face ft_face;
-        std::string path=FontManager::getInstance().getFontFile(family);
-        FT_New_Face(ft_library,path.c_str(),0,&ft_face);
-        RefPtr<FontFace>face=FtFontFace::create(ft_face,FT_LOAD_FORCE_AUTOHINT);
-        fonts[family]=face;
-    }
-#endif
 }
 
 GraphDevice::~GraphDevice(){
-#ifndef CAIRO_HAS_FC_FONT
-    fonts.clear();
-    FT_Done_FreeType(ft_library);
-#endif
     //nglDestroySurface(primarySurface);//surface will be destroied by NGLSurface
     //delete primaryContext;delete by desktop window
     NGLOG_DEBUG("%p Destroied",this);
 }
-
-#ifndef CAIRO_HAS_FC_FONT
-RefPtr<const FontFace>GraphDevice::getFont(const std::string&family){
-    RefPtr<const FontFace>face;
-    if(fonts.size()){
-        face=fonts.begin()->second;//family.empty()?fonts.begin()->second:fonts[family];
-    }
-    return face;
-}
-#endif
 
 void GraphDevice::getScreenSize(int &w,int&h){
     w=width;

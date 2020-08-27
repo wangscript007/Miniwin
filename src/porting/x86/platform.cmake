@@ -1,8 +1,8 @@
 #set platform include dirs & library path
 
 if ( TRUE )
-	set(HAL_EXTRA_LIBS vncserver jrtplib-static CACHE INTERNAL "platform dependence libs")
-	set(HAL_EXTRA_LIBS1 vncserver jrtplib-static CACHE INTERNAL "platform dependence libs")
+	set(HAL_EXTRA_DLIBS vncserver jrtplib-static CACHE INTERNAL "platform dependence libs")
+	set(HAL_EXTRA_SLIBS vncserver jrtplib-static CACHE INTERNAL "platform dependence libs")
 	set(HAL_EXTRA_INCDIRS 
         ${CMAKE_SOURCE_DIR}/src/3rdparty/libvncserver/
         ${CMAKE_BINARY_DIR}/src/3rdparty/libvncserver/

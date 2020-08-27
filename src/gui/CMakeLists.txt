@@ -51,10 +51,8 @@ file(GLOB GUIHEADERS  ${PROJECT_SOURCE_DIR}/core/*.h)
 file(GLOB VIEWSHEADERS  ${PROJECT_SOURCE_DIR}/views/*.h)
 file(GLOB LOOPERHEADERS  ${PROJECT_SOURCE_DIR}/looper/*.h)
 
-target_link_libraries(gui pixman-1 png jpeg freetype cairo unibreak 
-    usbmanager zip tvhal choreograph ${OPTIONAL_LIBS})
-target_link_libraries(gui_static pixman-1 png jpeg cairo_static freetype unibreak 
-   zip usbmanager tvhal_static choreograph ${OPTIONAL_LIBS})
+target_link_libraries(gui pixman-1 png jpeg cairo unibreak zip usbmanager tvhal choreograph ${OPTIONAL_LIBS})
+target_link_libraries(gui_static pixman-1 png jpeg cairo_static unibreak  zip usbmanager tvhal_static choreograph ${OPTIONAL_LIBS})
 
 file(COPY ${GUIHEADERS} ${VIEWSHEADERS} DESTINATION ${CMAKE_BINARY_DIR}/include/gui PATTERN "*.h")
 file(COPY ${MMHEADERS}     DESTINATION ${CMAKE_BINARY_DIR}/include/gui/cairomm PATTERN "*.h")
