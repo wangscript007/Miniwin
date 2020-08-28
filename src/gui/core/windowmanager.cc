@@ -49,8 +49,8 @@ public:
       for(auto a:windows){
          Window*w=a.win;
          if(w->hasFlag(View::FOCUSABLE)&&a.action==0){
-             w->onActive();
              if(a.userdata)((Window*)a.userdata)->onDeactive();
+             w->onActive();
          }
          w->onResize(w->getWidth(),w->getHeight());
       }
