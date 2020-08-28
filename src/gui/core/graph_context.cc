@@ -197,21 +197,20 @@ void GraphContext::draw_text(const RECT&rect,const std::string&text,int text_ali
      double x,y;
      double total_width=0, total_height=0;
      get_font_extents(ftext);
-     //NGLOG_VERBOSE("ascent=%.3f descent=%.3f height=%.3f xy_advance=%.3f/%.3f",ftext.ascent,ftext.descent,ftext.height,ftext.max_x_advance,ftext.max_x_advance);
+     //NGLOG_VERBOSE("ascent=%.3f descent=%.3f height=%.3f xy_advance=%.3f/%.3f",ftext.ascent,ftext.descent,ftext.height,ftext.max_x_advance,ftext.max_y_advance);
      for(int i=0; i<text.length();i++){
          switch(brks[i]){
          case WORDBREAK_BREAK:{
                  std::string word(pword,ptxt+i-pword+1);
                  get_text_extents(word,extents);
-
-                 if( ((total_width+extents.width >= rect.width) || (text[i]=='\n')) && (text_alignment&DT_MULTILINE) ){
+                 if( ((total_width+extents.width > rect.width) || (text[i]=='\n')) && (text_alignment&DT_MULTILINE) ){
                      lines.push_back(line);
-                     total_height+=extents.height;
+                     total_height+=ftext.height;
                      line="";total_width=0;
                      size_t ps=word.find('\n');
                      if(ps!=std::string::npos)word.erase(ps,1);
                  }
-                 total_width+=extents.width;
+                 total_width+=extents.x_advance;
                  line.append(word);
                  pword=ptxt+i+1;
              }
