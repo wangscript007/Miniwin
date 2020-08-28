@@ -78,7 +78,6 @@ App::App(int argc,const char*argv[],const struct option*extoptions){
     }while(c>=0);
 
     setOpacity(getArgAsInt("alpha",255));
-
     addEventSource(new InputEventSource(getArg("record","")),[](EventSource&s){
         ((InputEventSource&)s).processKey();
         return true;
@@ -86,20 +85,21 @@ App::App(int argc,const char*argv[],const struct option*extoptions){
     
     InputEventSource::play(getArg("monkey",""));
 
-    /*SignalSource*sigsource=new GenericSignalSource(false);
+    SignalSource*sigsource=new GenericSignalSource(false);
     addEventSource(sigsource,[this](EventSource&s){
         NGLOG_INFO("Sig interrupt");
-        this->exit(0);//looper.quit(0);
+        this->exit(0);//looper->quit(0);
         return false;
     });
-
+    sigsource->add(SIGABRT);
     sigsource->add(SIGINT);
     sigsource->add(SIGTERM);
-    sigsource->add(SIGKILL);*/
+    sigsource->add(SIGKILL);
 }
 
 App::~App(){
     delete assets;
+    delete EventLoop::getDefaultLoop();
     delete &WindowManager::getInstance();
     delete &GraphDevice::getInstance();
     NGLOG_DEBUG("%p Destroied",this);
@@ -170,19 +170,19 @@ std::unique_ptr<std::istream>App::getInputStream(const std::string&fname){
 }
 
 int App::addEventSource(EventSource *source, EventHandler handler){
-    return looper.add_event_source(source,handler);
+    return EventLoop::getDefaultLoop()->add_event_source(source,handler);
 }
 
 int App::removeEventSource(EventSource*source){
-    return looper.remove_event_source(source);
+    return  EventLoop::getDefaultLoop()->remove_event_source(source);
 }
 
 int App::exec(){
-    return looper.run();
+    return  EventLoop::getDefaultLoop()->run();
 }
 
 void App::exit(int code){
-    looper.quit(code);
+     EventLoop::getDefaultLoop()->quit(code);
 }
 
 void App::setName(const std::string&appname){

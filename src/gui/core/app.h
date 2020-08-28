@@ -19,7 +19,6 @@ private:
 protected:
     static App*mInst;
     std::string name;
-    EventLoop looper;
 public:
      App(int argc=0,const char*argv[]=NULL,const option*extoptions=NULL);
      ~App();

@@ -35,6 +35,8 @@ public:
         }
         return source;
     }
+    
+    static EventLoop*getDefaultLoop();
 
     bool add_event_source(EventSource *source, EventHandler handler=nullptr);
     bool set_source_handler(EventSource *source, EventHandler handler);
@@ -46,8 +48,8 @@ public:
     EventSource *add_file(int fd, FileEvents events, EventHandler handler=nullptr);
     EventSource *add_idle(EventHandler handler=nullptr);
     EventSource *add_timeout(int timeout_ms, EventHandler handler=nullptr);
-
 private:
+    static EventLoop*mInst;
     struct Private;
     std::shared_ptr<Private> impl;
     void iteration();

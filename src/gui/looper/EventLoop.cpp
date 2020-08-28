@@ -66,6 +66,13 @@ struct EventLoop::Private {
     }
 };
 
+EventLoop*EventLoop::mInst=nullptr;
+EventLoop*EventLoop::getDefaultLoop(){
+    if(mInst==nullptr)
+       mInst=new EventLoop();
+    return mInst;
+}
+
 EventLoop::EventLoop()
     : impl(make_shared<Private>()) {
 }

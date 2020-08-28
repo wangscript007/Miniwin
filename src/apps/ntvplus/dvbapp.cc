@@ -48,7 +48,7 @@ DVBApp::DVBApp(int argc,const char**argv)
 }
 
 int DVBApp::exec(){
-    std::thread th([&](){looper.run();});
+    std::thread th([&](){App::exec();});
     th.join();
 }
 

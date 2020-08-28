@@ -38,10 +38,9 @@ Window::Window(int x,int y,int width,int height,int type)
     source=new UIEventSource();
     NGLOG_VERBOSE("%p source=%p visible=%d size=%dx%d",this,source,hasFlag(VISIBLE),width,height);
     setBound(x, y, width, height);
-    WindowManager::getInstance().addWindow(this);
-    //we need at least 1 invalidate after add UIEventSource to make sure the window have a invalidate message on message queue
-    setFlag(BORDER);
     setFlag(FOCUSABLE);
+    setFlag(BORDER);
+    WindowManager::getInstance().addWindow(this);
 }
 
 void Window::show(){

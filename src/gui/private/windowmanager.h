@@ -47,8 +47,9 @@ protected:
 private:
   WindowManager();
   Window*activeWindow;/*activeWindow*/
-  std::vector< Window* > windows_;
-  static WindowManager* instance_;
+  std::vector< Window* > windows;
+  class WindowEventSource*winSource;
+  static WindowManager* instance;
   DISALLOW_COPY_AND_ASSIGN(WindowManager);
 };
 
