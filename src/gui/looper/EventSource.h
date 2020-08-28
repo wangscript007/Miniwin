@@ -13,7 +13,7 @@
 namespace nglui
 {
 
-class EventLoop;
+class Looper;
 class EventSource;
 
 typedef std::function<bool(EventSource&)> EventHandler;
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    friend class EventLoop;
+    friend class Looper;
     struct {
         bool ready;
         EventHandler handler;

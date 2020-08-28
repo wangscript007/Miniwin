@@ -99,7 +99,7 @@ App::App(int argc,const char*argv[],const struct option*extoptions){
 
 App::~App(){
     delete assets;
-    delete EventLoop::getDefaultLoop();
+    delete Looper::getDefault();
     delete &WindowManager::getInstance();
     delete &GraphDevice::getInstance();
     NGLOG_DEBUG("%p Destroied",this);
@@ -170,19 +170,19 @@ std::unique_ptr<std::istream>App::getInputStream(const std::string&fname){
 }
 
 int App::addEventSource(EventSource *source, EventHandler handler){
-    return EventLoop::getDefaultLoop()->add_event_source(source,handler);
+    return Looper::getDefault()->add_event_source(source,handler);
 }
 
 int App::removeEventSource(EventSource*source){
-    return  EventLoop::getDefaultLoop()->remove_event_source(source);
+    return  Looper::getDefault()->remove_event_source(source);
 }
 
 int App::exec(){
-    return  EventLoop::getDefaultLoop()->run();
+    return  Looper::getDefault()->run();
 }
 
 void App::exit(int code){
-     EventLoop::getDefaultLoop()->quit(code);
+     Looper::getDefault()->quit(code);
 }
 
 void App::setName(const std::string&appname){

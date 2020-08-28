@@ -1,5 +1,5 @@
 //
-// EventLoop.cpp - This file is part of the Looper library
+// Looper.cpp - This file is part of the Looper library
 //
 // Copyright (c) 2015 Matthew Brush <mbrush@codebrainz.ca>
 // All rights reserved.
@@ -22,7 +22,7 @@ using namespace std;
 
 namespace nglui {
 
-struct EventLoop::Private {
+struct Looper::Private {
     bool quit;
     int exit_code;
     int epoolfd;
@@ -66,18 +66,18 @@ struct EventLoop::Private {
     }
 };
 
-EventLoop*EventLoop::mInst=nullptr;
-EventLoop*EventLoop::getDefaultLoop(){
+Looper*Looper::mInst=nullptr;
+Looper*Looper::getDefault(){
     if(mInst==nullptr)
-       mInst=new EventLoop();
+       mInst=new Looper();
     return mInst;
 }
 
-EventLoop::EventLoop()
+Looper::Looper()
     : impl(make_shared<Private>()) {
 }
 
-void EventLoop::iteration() {
+void Looper::iteration() {
     int max_timeout =10;//-1;
     int n_ready = 0;
     // prepare and check for already ready event sources
@@ -154,11 +154,11 @@ void EventLoop::iteration() {
         remove_event_source(source);
 }
 
-bool EventLoop::contains_source(EventSource *source) const {
+bool Looper::contains_source(EventSource *source) const {
     return (impl->source_set.count(source) > 0);
 }
 
-int EventLoop::run() {
+int Looper::run() {
     impl->quit = false;
     impl->exit_code = 0;
     while (! impl->quit)
@@ -166,12 +166,12 @@ int EventLoop::run() {
     return impl->exit_code;
 }
 
-void EventLoop::quit(int exit_code) {
+void Looper::quit(int exit_code) {
     impl->exit_code = exit_code;
     impl->quit = true;
 }
 
-bool EventLoop::add_event_source(EventSource *source, EventHandler handler) {
+bool Looper::add_event_source(EventSource *source, EventHandler handler) {
     if (contains_source(source))
         return false;
 
@@ -183,13 +183,13 @@ bool EventLoop::add_event_source(EventSource *source, EventHandler handler) {
     return true;
 }
 
-bool EventLoop::set_source_handler(EventSource *source, EventHandler handler) {
+bool Looper::set_source_handler(EventSource *source, EventHandler handler) {
     if (contains_source(source))
         source->loop_data.handler = handler;
     return false;
 }
 
-bool EventLoop::remove_event_source(EventSource *source) {
+bool Looper::remove_event_source(EventSource *source) {
     if (! contains_source(source))
         return false;
     impl->remove_event_source(source);
@@ -197,7 +197,7 @@ bool EventLoop::remove_event_source(EventSource *source) {
     return true;
 }
 
-EventSource *EventLoop::add_file(int fd, FileEvents events, EventHandler handler) {
+EventSource *Looper::add_file(int fd, FileEvents events, EventHandler handler) {
     auto source = new FileSource(fd, events);
     if (! add_event_source(source, handler)) {
         delete source;
@@ -206,7 +206,7 @@ EventSource *EventLoop::add_file(int fd, FileEvents events, EventHandler handler
     return source;
 }
 
-EventSource *EventLoop::add_idle(EventHandler handler) {
+EventSource *Looper::add_idle(EventHandler handler) {
     auto source = new IdleSource;
     if (! add_event_source(source, handler)) {
         delete source;
@@ -215,7 +215,7 @@ EventSource *EventLoop::add_idle(EventHandler handler) {
     return source;
 }
 
-EventSource *EventLoop::add_timeout(int timeout_ms, EventHandler handler) {
+EventSource *Looper::add_timeout(int timeout_ms, EventHandler handler) {
     auto source = new TimeoutSource(timeout_ms);
     if (! add_event_source(source, handler)) {
         delete source;

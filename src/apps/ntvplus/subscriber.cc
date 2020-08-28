@@ -41,7 +41,7 @@ Subscriber*Subscriber::mInst=nullptr;
 Subscriber*Subscriber::getInstance(){
     if(nullptr==mInst){
        mInst=new Subscriber();
-       EventLoop::getDefaultLoop()->add_event_source(mInst,[](EventSource&){return true;}); 
+       Looper::getDefault()->add_event_source(mInst,[](EventSource&){return true;}); 
     }
     return mInst;
 }

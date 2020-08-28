@@ -1,5 +1,5 @@
 //
-// EventLoop.h - This file is part of the Grinder library
+// Looper.h - This file is part of the Grinder library
 //
 // Copyright (c) 2015 Matthew Brush <mbrush@codebrainz.ca>
 // All rights reserved.
@@ -19,10 +19,10 @@
 namespace nglui
 {
 
-class EventLoop
+class Looper
 {
 public:
-    EventLoop();
+    Looper();
     int run();
     void quit(int exit_code=0);
 
@@ -36,7 +36,7 @@ public:
         return source;
     }
     
-    static EventLoop*getDefaultLoop();
+    static Looper*getDefault();
 
     bool add_event_source(EventSource *source, EventHandler handler=nullptr);
     bool set_source_handler(EventSource *source, EventHandler handler);
@@ -49,7 +49,7 @@ public:
     EventSource *add_idle(EventHandler handler=nullptr);
     EventSource *add_timeout(int timeout_ms, EventHandler handler=nullptr);
 private:
-    static EventLoop*mInst;
+    static Looper*mInst;
     struct Private;
     std::shared_ptr<Private> impl;
     void iteration();

@@ -21,7 +21,7 @@ namespace nglui{
   DtvEventSource*DtvEventSource::getInstance(){
       if(nullptr==mInst){
           mInst=new DtvEventSource();
-          EventLoop::getDefaultLoop()->add_event_source(mInst,[](EventSource&){return true;});
+          Looper::getDefault()->add_event_source(mInst,[](EventSource&){return true;});
       }
       return mInst;
   }

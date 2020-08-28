@@ -61,7 +61,7 @@ WindowManager::WindowManager(){
      GraphDevice::getInstance();
      activeWindow=nullptr;
      winSource=new WindowEventSource();
-     EventLoop::getDefaultLoop()->add_event_source(winSource,[this](EventSource&s)->bool{
+     Looper::getDefault()->add_event_source(winSource,[this](EventSource&s)->bool{
          ((WindowEventSource&)s).processEvents();
          return true;
      });
@@ -93,7 +93,7 @@ void WindowManager::addWindow(Window*win){
         NGLOG_VERBOSE("addwin %p window %p[%s] type=%d layer=%d",win,w,w->getText().c_str(),w->window_type,w->mLayer);
     }
     winSource->push_window(win,1,activeWindow);
-    EventLoop::getDefaultLoop()->add_event_source(win->source,[](EventSource&e)->bool{
+    Looper::getDefault()->add_event_source(win->source,[](EventSource&e)->bool{
         return ((UIEventSource&)e).processEvents();
     });
     resetVisibleRegion();
