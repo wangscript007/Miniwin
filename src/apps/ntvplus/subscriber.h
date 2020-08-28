@@ -11,6 +11,7 @@ struct SubscribeItem{
    std::string name;
    int type;/*0-->once,1-->daily,2-->weekly...*/
    int weekday;/*only for weekly:one bits per weekday:bit 0-->sunday,...,bit1 -->Monday...*/
+   void onPrompt();
    void onTriggered();
 };
 

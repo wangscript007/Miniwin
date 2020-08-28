@@ -19,7 +19,6 @@
 #include <ngl_os.h>
 #include <ngl_log.h>
 #include <ngl_timer.h>
-#include <app.h>
 #include <graph_device.h>
 #include <uieventsource.h>
 
@@ -94,7 +93,7 @@ void WindowManager::addWindow(Window*win){
         NGLOG_VERBOSE("addwin %p window %p[%s] type=%d layer=%d",win,w,w->getText().c_str(),w->window_type,w->mLayer);
     }
     winSource->push_window(win,1,activeWindow);
-    App::getInstance().addEventSource(win->source,[](EventSource&e)->bool{
+    EventLoop::getDefaultLoop()->add_event_source(win->source,[](EventSource&e)->bool{
         return ((UIEventSource&)e).processEvents();
     });
     resetVisibleRegion();

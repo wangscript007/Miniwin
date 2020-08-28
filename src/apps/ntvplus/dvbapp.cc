@@ -10,7 +10,6 @@
 #include <thread>
 #include <renderimpl.h>
 #include <subscriber.h>
-#include <dtveventsource.h>
 #ifdef HAVE_CA
 void StartCA();
 #endif
@@ -42,9 +41,6 @@ DVBApp::DVBApp(int argc,const char**argv)
     StartCA();
 #endif
    Subscriber::getInstance()->load("subscribe.json");
-   auto fun=[](EventSource&)->bool{return true;};
-   addEventSource(Subscriber::getInstance(),fun);
-   addEventSource(DtvEventSource::getInstance(),fun);
 }
 
 int DVBApp::exec(){

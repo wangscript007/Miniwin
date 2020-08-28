@@ -19,8 +19,10 @@ namespace nglui{
       DtvRegisterNotify(TVMSG_CBK,this);
   }
   DtvEventSource*DtvEventSource::getInstance(){
-      if(nullptr==mInst)
+      if(nullptr==mInst){
           mInst=new DtvEventSource();
+          EventLoop::getDefaultLoop()->add_event_source(mInst,[](EventSource&){return true;});
+      }
       return mInst;
   }
   bool DtvEventSource::dispatch(EventHandler &func){

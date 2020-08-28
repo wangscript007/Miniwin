@@ -17,4 +17,4 @@
 
 #define DM_BUF_SIZE 4096
 
-#endif __CORE_FS_MGR_PRIV_H__
+#endif //__CORE_FS_MGR_PRIV_H__

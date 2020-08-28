@@ -16,7 +16,7 @@ public:
   ~Test(){NGLOG_DEBUG("%p",this);}
 };
 
-void SubscribeItem::onTriggered(){
+void SubscribeItem::onPrompt(){
     NGLOG_INFO("%d.%d.%d::%d [%p][%s]",svc.netid,svc.tsid,svc.sid,eventid,this,name.c_str());
     std::ostringstream oss;
     std::time_t tmTime = std::chrono::system_clock::to_time_t(time);
@@ -34,10 +34,15 @@ void SubscribeItem::onTriggered(){
     }
 }
 
+void SubscribeItem::onTriggered(){
+}
+
 Subscriber*Subscriber::mInst=nullptr;
 Subscriber*Subscriber::getInstance(){
-    if(nullptr==mInst)
+    if(nullptr==mInst){
        mInst=new Subscriber();
+       EventLoop::getDefaultLoop()->add_event_source(mInst,[](EventSource&){return true;}); 
+    }
     return mInst;
 }
 
@@ -68,28 +73,28 @@ int Subscriber::addOnce(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
     p.first->second.type=0;
     p.first->second.weekday=0;
-    schedule(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
+    schedule(std::bind(&SubscribeItem::onPrompt,&p.first->second),itm.time);
 }
 
 int Subscriber::addDaily(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
     p.first->second.type=1;
     p.first->second.weekday=0;
-    scheduleDaily(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
+    scheduleDaily(std::bind(&SubscribeItem::onPrompt,&p.first->second),itm.time);
 }
 
 int Subscriber::addWeekly(SubscribeItem&itm){
     auto p=items.insert(std::make_pair(itm.time,itm));
     p.first->second.type=2;
     p.first->second.weekday=0;
-    scheduleWeekly(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
+    scheduleWeekly(std::bind(&SubscribeItem::onPrompt,&p.first->second),itm.time);
 }
 
 int Subscriber::addWeekly(SubscribeItem&itm,int weekday){
     auto p=items.insert(std::make_pair(itm.time,itm));
     p.first->second.type=1;
     p.first->second.weekday=weekday;
-    scheduleDaily(std::bind(&SubscribeItem::onTriggered,&p.first->second),itm.time);
+    scheduleDaily(std::bind(&SubscribeItem::onPrompt,&p.first->second),itm.time);
 }
 
 int Subscriber::getItems(std::vector<SubscribeItem>&itms){
@@ -155,7 +160,7 @@ int Subscriber::save(const std::string&filename){
        if(false==root.isMember(svc)){
           Json::Value jssvc(Json::arrayValue);
           root[svc]=jssvc;
-          if(0==comment)root[svc].setComment("Service Locator",Json::commentAfterOnSameLine);
+          if(0==comment)root[svc].setComment(Json::String("Service Locator"),Json::commentAfterOnSameLine);
        }
        Json::Value evt;
        evt["eventid"]=it->second.eventid;
@@ -164,7 +169,7 @@ int Subscriber::save(const std::string&filename){
        evt["time"]=duration_cast<seconds>(it->second.time.time_since_epoch()).count();
        evt["name"]=it->second.name;
        if(0==comment)
-          evt.setComment("type: 0-->runOnce,1-->Dialy,2-->Weekly",Json::commentAfterOnSameLine);
+          evt.setComment(Json::String("type: 0-->runOnce,1-->Dialy,2-->Weekly"),Json::commentAfterOnSameLine);
        root[svc].append(evt);
        comment++;
     }
