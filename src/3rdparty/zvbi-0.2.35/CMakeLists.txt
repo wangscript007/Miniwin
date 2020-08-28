@@ -59,7 +59,8 @@ add_executable(vbitest test/test-dvb_demux.cc)
 
 target_link_libraries(zvbi iconv pthread png)
 target_link_libraries(vbitest zvbi)
-
+install(TARGETS zvbi DESTINATION lib)
+install(TARGETS vbitest DESTINATION bin/tests)
 
 
 

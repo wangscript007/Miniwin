@@ -145,4 +145,5 @@ target_include_directories(uuid INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:.>
 )
+install(TARGETS uuid DESTINATION lib)
 file(COPY uuid.h DESTINATION ${CMAKE_BINARY_DIR}/include/uuid)
