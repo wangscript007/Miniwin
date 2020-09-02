@@ -17,7 +17,6 @@
 #include <groupview.h>
 #include <ngl_log.h>
 #include <uievents.h>
-#include <interpolators.h>
 
 NGL_MODULE(GroupView);
 
