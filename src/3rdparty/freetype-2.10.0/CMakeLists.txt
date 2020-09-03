@@ -136,7 +136,8 @@ project(freetype C)
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "10")
 set(VERSION_PATCH "0")
-set(FT_WITH_HARFBUZZ OFF)
+set(FT_WITH_HARFBUZZ ON)
+set(BUILD_SHARED_LIBS ON)
 # SOVERSION scheme: CURRENT.AGE.REVISION
 #   If there was an incompatible interface change:
 #     Increment CURRENT. Set AGE and REVISION to 0
@@ -189,6 +190,9 @@ if (FT_WITH_HARFBUZZ)
   find_package(HarfBuzz 1.3.0 REQUIRED)
 else ()
   find_package(HarfBuzz 1.3.0)
+  set(HARFBUZZ_FOUND TRUE)
+  set(HARFBUZZ_LIBRARIES harfbuzz)
+  set(HARFBUZZ_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include/harfbuzz)
 endif ()
 
 if (FT_WITH_PNG)
