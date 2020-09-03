@@ -136,7 +136,6 @@ project(freetype C)
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "10")
 set(VERSION_PATCH "0")
-set(FT_WITH_HARFBUZZ ON)
 set(BUILD_SHARED_LIBS ON)
 # SOVERSION scheme: CURRENT.AGE.REVISION
 #   If there was an incompatible interface change:
@@ -187,12 +186,13 @@ endif ()
 
 # Find dependencies
 if (FT_WITH_HARFBUZZ)
-  find_package(HarfBuzz 1.3.0 REQUIRED)
-else ()
   find_package(HarfBuzz 1.3.0)
   set(HARFBUZZ_FOUND TRUE)
   set(HARFBUZZ_LIBRARIES harfbuzz)
   set(HARFBUZZ_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/include/harfbuzz)
+else ()
+  find_package(HarfBuzz 1.3.0)
+  add_definitions(-DHB_SCRIPT_ADLAM=1 -DHB_SCRIPT_OSAGE=1)
 endif ()
 
 if (FT_WITH_PNG)
@@ -263,7 +263,7 @@ if (PNG_FOUND)
     "/\\* +(#define +FT_CONFIG_OPTION_USE_PNG) +\\*/" "\\1"
     FTOPTION_H "${FTOPTION_H}")
 endif ()
-if (HARFBUZZ_FOUND AND FALSE)
+if (HARFBUZZ_FOUND)
   string(REGEX REPLACE
     "/\\* +(#define +FT_CONFIG_OPTION_USE_HARFBUZZ) +\\*/" "\\1"
     FTOPTION_H "${FTOPTION_H}")
@@ -407,7 +407,7 @@ if (PNG_FOUND)
   target_include_directories(freetype PRIVATE ${PNG_INCLUDE_DIRS})
   list(APPEND PKG_CONFIG_REQUIRED_PRIVATE libpng)
 endif ()
-if (HARFBUZZ_FOUND)
+if (HARFBUZZ_FOUND AND FT_WITH_HARFBUZZ)
   target_link_libraries(freetype PRIVATE ${HARFBUZZ_LIBRARIES})
   target_include_directories(freetype PRIVATE ${HARFBUZZ_INCLUDE_DIRS})
   list(APPEND PKG_CONFIG_REQUIRED_PRIVATE harfbuzz)

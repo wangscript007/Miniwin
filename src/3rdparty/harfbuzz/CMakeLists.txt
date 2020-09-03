@@ -698,9 +698,9 @@ endif ()
 ## Install
 include (GNUInstallDirs)
 
+file(COPY  ${project_headers} DESTINATION ${CMAKE_BINARY_DIR}/include/harfbuzz)
 if (NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL)
   install(FILES ${project_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/harfbuzz)
-  file(COPY  ${project_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/harfbuzz)
   if (HB_HAVE_GOBJECT)
     install(FILES ${hb_gobject_headers} ${hb_gobject_gen_headers} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/harfbuzz)
   endif ()
