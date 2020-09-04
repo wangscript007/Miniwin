@@ -277,8 +277,9 @@ std::vector<std::string> MediaWindow::split(const std::string& s,const std::stri
     return elems;
 }
 
-int MediaWindow::loadMedia(const std::string&path,int filter_type){
+int MediaWindow::loadMedia(const std::string&filepath,int filter_type){
     int count=0;
+    std::string path=SimplifyPath(filepath);
     DIR *dir=opendir(path.c_str());
     struct dirent *ent;
     std::string filter=FILTERS[filter_type];
