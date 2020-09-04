@@ -47,7 +47,7 @@ TEST_F(CONTEXT,SURFACE_CREATE_1){
             "Innovation in China","中国智造，惠及全球 0123456789"};
          ctx1->set_font_size(i==j?40:28);
          ctx1->save();
-         ctx1->select_font_face("simhei",ToyFontFace::Slant::ITALIC,ToyFontFace::Weight::BOLD);
+         ctx1->select_font_face("Khek Sangker",ToyFontFace::Slant::ITALIC,ToyFontFace::Weight::BOLD);
          if(i==j){
              RECT rc={400,i*40,400,40};
              ctx1->set_color(255,0,0);

@@ -34,7 +34,7 @@ endif ()
 
 ## HarfBuzz build configurations
 option(HB_HAVE_FREETYPE "Enable freetype interop helpers" ON)
-option(HB_HAVE_GRAPHITE2 "Enable Graphite2 complementary shaper" OFF)
+option(HB_HAVE_GRAPHITE2 "Enable Graphite2 complementary shaper" ON)
 option(HB_HAVE_GLIB "Enable glib unicode functions" OFF)
 option(HB_HAVE_ICU "Enable icu unicode functions" OFF)
 if (APPLE)
@@ -204,6 +204,10 @@ if (HB_HAVE_GRAPHITE2)
   find_path(GRAPHITE2_INCLUDE_DIR graphite2/Font.h)
   find_library(GRAPHITE2_LIBRARY graphite2)
 
+  if(NOT GRAPHITE2_LIBRARY)
+    set(GRAPHITE2_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+    set(GRAPHITE2_LIBRARY graphite2)
+  endif()
   include_directories(${GRAPHITE2_INCLUDE_DIR})
 
   list(APPEND project_headers ${PROJECT_SOURCE_DIR}/src/hb-graphite2.h)

@@ -27,6 +27,7 @@ add_subdirectory(fontconfig)
 add_subdirectory(grt/build)
 add_subdirectory(mbedtls)
 add_subdirectory(harfbuzz)
+add_subdirectory(graphite2-1.3.14)
 #add_subdirectory(breakpad)
 
 add_subdirectory(libvncserver)
