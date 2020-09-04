@@ -29,3 +29,4 @@ add_subdirectory(tests)
 
 install (TARGETS dvbepg  DESTINATION lib)
 install (TARGETS dvbepg_static  DESTINATION lib)
+install (FILES dvb_programs.dat DESTINATION bin)

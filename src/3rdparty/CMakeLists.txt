@@ -24,7 +24,11 @@ add_subdirectory(libzip)
 add_subdirectory(libUPnP)
 add_subdirectory(uuid)
 add_subdirectory(fontconfig)
+
+if(ENABLE_GESTURE)
 add_subdirectory(grt/build)
+endif(ENABLE_GESTURE)
+
 add_subdirectory(mbedtls)
 add_subdirectory(harfbuzz)
 add_subdirectory(graphite2-1.3.14)
@@ -32,9 +36,7 @@ add_subdirectory(graphite2-1.3.14)
 
 add_subdirectory(libvncserver)
 add_subdirectory(xLua/build)
-add_subdirectory(Choreograph)#compiled  failed
+add_subdirectory(Choreograph)
 
 #add_subdirectory(glog)
 #add_subdirectory(libxml2)
-#add_subdirectory(svg-native-viewer/svgnative)
-#add_subdirectory(libsvgtiny)

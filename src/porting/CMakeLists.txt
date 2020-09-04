@@ -51,12 +51,12 @@ set_target_properties(tvhal_static PROPERTIES OUTPUT_NAME "tvhal")
 add_subdirectory(tests)
 
 file(GLOB HAL_HEADERS  ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB KEYMAPS   ${PROJECT_SOURCE_DIR}/${NGL_CHIPSET}/*.map)
 
 install (TARGETS tvhal  DESTINATION lib)
 install (TARGETS tvhal_static  DESTINATION lib)
 install (FILES ${HAL_HEADERS} DESTINATION include/porting/)
 
 file(COPY ${HAL_HEADERS} DESTINATION ${CMAKE_BINARY_DIR}/include/porting)
-file(GLOB KEYMAPS   ${PROJECT_SOURCE_DIR}/${NGL_CHIPSET}/*.map)
-file(COPY ${KEYMAPS} DESTINATION ${CMAKE_BINARY_DIR} PATTERN "*.map")
+file(COPY ${KEYMAPS} DESTINATION ${CMAKE_BINARY_DIR}/bin PATTERN "*.map")
 
