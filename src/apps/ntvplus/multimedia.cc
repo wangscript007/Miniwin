@@ -12,7 +12,7 @@
 #include <assets.h>
 #include <fstream>
 #include <lyricsview.h>
-
+#include <ntvutils.h>
 NGL_MODULE(MULTIMEDIA)
 #define IDC_CHANNELS 100
 #define W_ID   100
@@ -38,6 +38,7 @@ public:
         std::string name=fname.substr(pos+1);
         setText(name);
         path=fname.substr(0,pos);
+        path=SimplifyPath(path);
         stat(fname.c_str(),&st);
         size=st.st_size;
         isdir=S_ISDIR(st.st_mode);
